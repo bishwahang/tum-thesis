@@ -40,9 +40,8 @@ In order to run the pair of malware together in side the Anubis environment we m
 We wrote a packer script that would add the candidate binary pair at the end of Unpacker binary and then further append the time delay and file size of each candidate binary as meta information.
 The unpacker binary when executed would read itself to fetch the meta information and then the candidate binary bytes.\\
 \begin{figure}[htbp]
-\begin{center}
+  \centering
   \includegraphics[scale=0.5]{figures/unpacker.png}
-\end{center}
 \caption{[Packer structure] Structure of the Packer binary that would create the candidate pair and run them with delay.}
 \label{fig:unpacker}
 \end{figure}
@@ -178,7 +177,7 @@ We represented each resource type and activities as numeric value. And each reso
   OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
 \end{lstlisting}
 So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with file\_name\_id, ``4986'' in our database, by some malware ``A'', would be represented as single word ``1\_3\_4986''. Each such resource activities related to one single malware would be a bag of words representing  a single document representing that particular malware.\\
-After days of running the script we could gather all the resource activity of \gettotalmalware2 malware. This was about 81 Gigabytes of data.
+After days of running the script we could gather all the resource activity of {\gettotalmalwareii} malware. This was about 81 Gigabytes of data.
 We used python module Gensim~\cite[Gensim]{gensim}  for the topic clustering and used the LDA model as described in Methodology section. We filtered our corpora by disacarding any resource activity that occurred in less than 1000 or more than 1 million for clustering.
 This was based on heuristic after studying the cdf graph of activities to number of malware.
 %TODO: add cdf of reverse index
