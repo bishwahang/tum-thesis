@@ -160,6 +160,55 @@ DELETE_LIST = {
         }
 
 \end{lstlisting}
+We used MySql for the database and followed the previous table structure so that we could reuse our previous program on the newly created database.
+The final database size was 1.2 Terrabytes. The basic CRUD operations were expensive and we hit the integer overflow for registry access activities table. We had to spent much time then expected on database tuning to make the program run faster to complete in reasonable time.
+Most part of the execution time was taken to read the profile gzip pickle and then normal sql queries. This was for 17 million malware pickle profiles and their resource activities as defined above.
+%TODO: put profile.png
+After the creation of new database, we made a reverse index from the new refined data for the resource to malware ids.
+We took into account those activity that had successful creation and failed access or delete action. We made a mapping like before and started to run the candidate pairs to test the behavioral interaction between the pairs. But, since the number of pairs were too many we hit the \emph{n-comination} problem.
+A single resource \texttt{`r'} would have been created by more than thousands of malware and also same resource \texttt{`r'} would have been tried to access or delete with a failed attempt by another thousands of malware. If we made a pair out of every malware as possible candidate it would be too many candidates for us to run and analyze result.
+We looked into clustering of the malware behavior to address this problem so that we could cluster malware on different topic and only choose one sample from the list of topic.
+\section{Clustering}
+\label{sec:Clustering}
+We researched on many types of clustering algorithm that we could use to cluster our malware. Our idea of clustering was based on malware resource activities.
+We had all the resource activities such as modification, access and deletion related to different resource types as discussed above.
+We represented each resource type and activities as numeric value. And each resource name woul be represented by it's unique resource name id on our database system.
+\begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
+  RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
+  OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
+\end{lstlisting}
+So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with file\_name\_id, ``4986'' in our database, by some malware ``A'', would be represented as single word ``1\_3\_4986''. Each such resource activities related to one single malware would be a bag of words representing  a single document representing that particular malware.\\
+After days of running the script we could gather all the resource activity of \gettotalmalware2 malware. This was about 81 Gigabytes of data.
+We used python module Gensim~\cite[Gensim]{gensim}  for the topic clustering and used the LDA model as described in Methodology section. We filtered our corpora by disacarding any resource activity that occurred in less than 1000 or more than 1 million for clustering.
+This was based on heuristic after studying the cdf graph of activities to number of malware.
+%TODO: add cdf of reverse index
+
+The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
+We calculated the distance.
+\begin{lstlisting}[language=python,caption={Script to run Gensim LDA},label={lbl:lda.py}]
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from gensim import corpora, models, similarities
+import sys
+document_name = sys.argv[1]
+# read through the text to create dictionary
+dictionary = corpora.Dictionary(line.split() for line in open(document_name))
+# filtered dictionary
+dictionary.filter_extremes(1000,0.6)
+# removed gaps in id sequence after filtering
+dictionary.compactify()
+# read through the text and create corpus from dicionary
+# use iterator beause of large data 80 gigs
+class MyCorpus(object):
+    def __iter__(self):
+        for line in open(document_name):
+            yield dictionary.doc2bow(line.split())
+
+corpus = MyCorpus()
+corpora.MmCorpus.serialize('1K_06_corpus.mm', corpus)
+\end{lstlisting}
+
+
 
 
 
