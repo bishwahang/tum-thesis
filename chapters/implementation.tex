@@ -163,8 +163,11 @@ We used MySql for the database and followed the previous table structure so that
 The final database size was 1.2 Terrabytes. The basic CRUD operations were expensive and we hit the integer overflow for registry access activities table. We had to spent much time then expected on database tuning to make the program run faster to complete in reasonable time.
 Most part of the execution time was taken to read the profile gzip pickle and then normal sql queries. This was for 17 million malware pickle profiles and their resource activities as defined above.
 %TODO: put profile.png
-After the creation of new database, we made a reverse index from the new refined data for the resource to malware ids.
-We took into account those activity that had successful creation and failed access or delete action. We made a mapping like before and started to run the candidate pairs to test the behavioral interaction between the pairs. But, since the number of pairs were too many we hit the \emph{n-comination} problem.
+After the creation of new database, we made a reverse index from the new refined data for the resource\_name and to malware ids modifying, accessing, and deleting the resource.
+We again made the resource mapping taking into account those activity that had successful creation with those activities with failed access and another mapping between successful creation and delete activity.
+We made this mapping for every resource types. So we had mapping between successful file creation and failed file deletion and mapping between successful file creation and failed file access.
+Same was done for resource types registry, sync, section, mutex, job, and driver. The resource name was always the common key for the mapping between the malware.
+We made a mapping like before and started to run the candidate pairs to test the behavioral interaction between the pairs. But, since the number of pairs were too many we hit the \emph{n-comination} problem.
 A single resource \texttt{`r'} would have been created by more than thousands of malware and also same resource \texttt{`r'} would have been tried to access or delete with a failed attempt by another thousands of malware. If we made a pair out of every malware as possible candidate it would be too many candidates for us to run and analyze result.
 We looked into clustering of the malware behavior to address this problem so that we could cluster malware on different topic and only choose one sample from the list of topic.
 \section{Clustering}
@@ -183,7 +186,6 @@ This was based on heuristic after studying the cdf graph of activities to number
 %TODO: add cdf of reverse index
 
 The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
-We calculated the distance.
 \begin{lstlisting}[language=python,caption={Script to run Gensim LDA},label={lbl:lda.py}]
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -204,22 +206,69 @@ class MyCorpus(object):
             yield dictionary.doc2bow(line.split())
 
 corpus = MyCorpus()
-corpora.MmCorpus.serialize('1K_06_corpus.mm', corpus)
+lda = models.ldamulticore.LdaMulticore(corpus=corpus,id2word=dictionary,num_topics=700)
 \end{lstlisting}
-
-
-
-
-
-
+We calculated the distance between different clusters. We had quite a good results with small distance between the documents\(malware\) belonging to same cluster, intra topic distance, and larger distance between documents of different cluster, inter topic topic distance.
+\section{Weeding}
+\label{sec:Weeding}
+For the next Clustering run we wanted to decrease the number of malware\(documents\).
+We did not had any resource activity mapping for resource type Mutex, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.
+To do this we tried the manual approach. We sorted the reverse index of resource to malware with respect to the number of malware associated with the resource.
+Once we had it sorted in descending order, we got mostly modified/accessed/created resource at the top of the list, and went through all the mapping one by one until we found some interesting resource name. Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.
+Resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.
+We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.
+We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.
+%TODO : Add graph inter intra
+\section{Finding out the candidate pairs}
+\label{sec:Finding out the candidate pairs}
+After the clustering of the malware was done, we used the result and the our mapping of resource to malware to find the candidate pairs for experiment.
+In order to find the optimal set of candidate we interpreted the the Flow Network
+\subsection{Max Flow apporach}
+\label{sub:Max Flow apporach}
+We wanted to find the optimal pair of malware such that we have all the interesting mapped resource covered along with the cluster associated with it.
+We represented the mapping between the resource, malware, and cluster as a flow network, and run the max flow algorithm as shown in Figure~\ref{fig:maxflow}, to yield the optimal solution.\\
+The network is made of 4 layers, other than sink and source. Layer one is reading malware, the samples that tried to access or delete interesting resources but failed.
+Layer two is combinations of clusters, \emph{ic=input cluster} that the malware with failed access or delete attempt belongs to, and the interesting resources that they tried to operate on.
+Layer three is the combinations of clusters,\emph{oc=output cluster} that the malware with successful modification operation belongs to, and the interesting resources that they modified.
+Layer four is the malware that successfully created the resource.\\
+The flow rules were:
+\begin{itemize}
+  \item All malware from layer one is connected from source and also connected to the input cluster and resource combination it belongs to.
+  \item All input cluster resource combination in layer two is connected to all output cluster resource combination in layer 3 that has a matching resource.
+  \item All output cluster resource in layer 3 is connected to the corresponding malware in layer 4.
+  \item Each malware in layer 4 is connected to the sink (T).
+\end{itemize}
+The capacities were:
+\begin{itemize}
+  \item All connections have capacity of infinite except connections from layer 2 to layer 3.
+  \item All connections from layer 2 to layer 3 have a capacity of one.
+  \item The maximum flow in this network is corresponding to an optimum match up.
+\end{itemize}
+Of course combinations and nodes that do not have a path from source to sink should not be put in the graph (there are some in my example)
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.23]{figures/maxflow.png}
-  \caption[Big Picture]{Max flow implementation to find out candidates with optimal number of resource}\label{fig:maxflow}
+  \caption[Max Flow]{Graph representing the max flow implementation}\label{fig:maxflow}
 \end{figure}
+% We see in the first approach, we are not covering all resource interactions that were meticulously carved from millions of data points. 
+
+
+The problem is to find the ``minimal set'' of md5 pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource r from resources R, at least one md5\_pair from the final set should correspond the resource r.
+The relations can be represented in the graph below, where, I is a set of input clusters from set \emph{``A''} and \emph{``O''} is the output clusters from set B. Set A, B, and R has usual meanings as described in the\textit{~\nameref{chapter:methedology} Section}.
+
+E.g., in the Figure~\ref{fig:dhkheuristics},  m1,m2, m5 samples create resource r1, which is accessed (failed) by m6, m3, and m4.\ m1 and m2 maps to cluster c1. Malware m6 and m3 maps to cluster c4 \dots etc.
+The problem is to find the minimal number of paths from each element c\_x of set I to all reachable elements in O (reachable from c\_x), such that all reachable elements r in R (reachable from c\_x) are traversed. From such minimal set, we generate the candidate pair by taking members of A and B from the path.
+
+This should work as we hard clusters (sample only falls into one cluster).
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.45]{figures/dhkherusitcs.png}
-  \caption[Cluster, Malware, Resource relation chart]{Chart showing the interconnection between Cluster topics, Malware, and Resources.}\label{fig:dhkheuristics}
+  \caption[]{Graph showing the interconnection between Cluster topics, Malware, and Resources.}\label{fig:dhkheuristics}
 \end{figure}
+
+% TODO: put db_dic lstlisting
+The db is a dict. All candidate cluster pairs are keys and the value is a dictionary whose keys are md5 pairs (all md5 pairs) and values are the list of corresponding resource ids. 
+
+Then the reduced candidate set can be computed as follows. It's a greedy algo starting from the md5 pair that corresponds most number of resource interactions.
+% TODO: put algorithm pseudo code
