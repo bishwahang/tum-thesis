@@ -186,37 +186,34 @@ This was based on heuristic after studying the cdf graph of activities to number
 %TODO: add cdf of reverse index
 
 The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
-\begin{lstlisting}[language=python,caption={Script to run Gensim LDA},label={lbl:lda.py}]
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from gensim import corpora, models, similarities
+\begin{lstlisting}[float,floatplacement=H,language=python,caption={Script to run Gensim LDA},label={lbl:lda.py}]
+from gensim import corpora, models
 import sys
 document_name = sys.argv[1]
-# read through the text to create dictionary
+# read the file with malware activities and create dictionary
 dictionary = corpora.Dictionary(line.split() for line in open(document_name))
-# filtered dictionary
+# filter the dictionary for extreme
 dictionary.filter_extremes(1000,0.6)
-# removed gaps in id sequence after filtering
-dictionary.compactify()
-# read through the text and create corpus from dicionary
-# use iterator beause of large data 80 gigs
+# create a iterator corpus as the file is large 80GB
 class MyCorpus(object):
     def __iter__(self):
         for line in open(document_name):
             yield dictionary.doc2bow(line.split())
 
 corpus = MyCorpus()
-lda = models.ldamulticore.LdaMulticore(corpus=corpus,id2word=dictionary,num_topics=700)
+lda = models.ldamulticore.LdaMulticore(corpus=corpus,id2word=dictionary,num_topics=1000)
 \end{lstlisting}
 We calculated the distance between different clusters. We had quite a good results with small distance between the documents\(malware\) belonging to same cluster, intra topic distance, and larger distance between documents of different cluster, inter topic topic distance.
-\section{Weeding}
-\label{sec:Weeding}
+% \section{Weeding}
+% \label{sec:Weeding}
+\\
 For the next Clustering run we wanted to decrease the number of malware\(documents\).
-We did not had any resource activity mapping for resource type Mutex, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.
+We did not had any resource activity mapping for resource type Mutex, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.\\
 To do this we tried the manual approach. We sorted the reverse index of resource to malware with respect to the number of malware associated with the resource.
-Once we had it sorted in descending order, we got mostly modified/accessed/created resource at the top of the list, and went through all the mapping one by one until we found some interesting resource name. Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.
-Resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.
-We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.
+Once we had it sorted in descending order, we got most commonly modified/accessed/created resource at the top of the list, and went through all the mapping line by line until we found some interesting resource name.
+Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.\\
+For instance, Resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.
+We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.\\
 We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.
 %TODO : Add graph inter intra
 \section{Finding out the candidate pairs}
@@ -244,31 +241,68 @@ The capacities were:
   \item All connections from layer 2 to layer 3 have a capacity of one.
   \item The maximum flow in this network is corresponding to an optimum match up.
 \end{itemize}
-Of course combinations and nodes that do not have a path from source to sink should not be put in the graph (there are some in my example)
-\begin{figure}[htbp]
+Combinations and nodes that do not have a path from source to sink were not be put in the graph.\\
+\begin{figure}[h]
   \centering
   \includegraphics[scale=0.23]{figures/maxflow.png}
   \caption[Max Flow]{Graph representing the max flow implementation}\label{fig:maxflow}
 \end{figure}
+The thing wrong with this approach was the number of candidate pair to test were too many.
+We wanted to decrease this number in such a way that there were no repetition of malware pair.
+In order to achieve that, we tried Heuristic approach as described next.
+\subsection{Heuristics Approach}
+\label{sub:Heuristics Approach}
 % We see in the first approach, we are not covering all resource interactions that were meticulously carved from millions of data points. 
-
-
-The problem is to find the ``minimal set'' of md5 pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource r from resources R, at least one md5\_pair from the final set should correspond the resource r.
-The relations can be represented in the graph below, where, I is a set of input clusters from set \emph{``A''} and \emph{``O''} is the output clusters from set B. Set A, B, and R has usual meanings as described in the\textit{~\nameref{chapter:methedology} Section}.
-
-E.g., in the Figure~\ref{fig:dhkheuristics},  m1,m2, m5 samples create resource r1, which is accessed (failed) by m6, m3, and m4.\ m1 and m2 maps to cluster c1. Malware m6 and m3 maps to cluster c4 \dots etc.
-The problem is to find the minimal number of paths from each element c\_x of set I to all reachable elements in O (reachable from c\_x), such that all reachable elements r in R (reachable from c\_x) are traversed. From such minimal set, we generate the candidate pair by taking members of A and B from the path.
-
-This should work as we hard clusters (sample only falls into one cluster).
-
+The problem was to find the ``minimal set'' of md5 pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource \emph{r} from resources \emph{R}, at least one md5\_pair from the final set should correspond the resource \emph{r}.
+The relations has been represented in the graph below, where, \emph{I} is a set of input clusters from set \emph{`A'} and \emph{`O'} is the output clusters from set \emph{B}. Set \emph{A,B} and \emph{R} has usual meanings as described in the\textit{~\nameref{chapter:methedology} Section}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.45]{figures/dhkherusitcs.png}
   \caption[]{Graph showing the interconnection between Cluster topics, Malware, and Resources.}\label{fig:dhkheuristics}
 \end{figure}
-
-% TODO: put db_dic lstlisting
-The db is a dict. All candidate cluster pairs are keys and the value is a dictionary whose keys are md5 pairs (all md5 pairs) and values are the list of corresponding resource ids. 
-
-Then the reduced candidate set can be computed as follows. It's a greedy algo starting from the md5 pair that corresponds most number of resource interactions.
-% TODO: put algorithm pseudo code
+\\
+In the Figure~\ref{fig:dhkheuristics},  m1,m2, m5 samples create resource r1, which is accessed (failed attempt) by m6, m3, and m4.\ m1 and m2 maps to cluster c1. Malware m6 and m3 maps to cluster c4 \dots.
+The problem is to find the minimal number of paths from each element \emph{c\_x} of set \emph{`I'} to all reachable elements in \emph{`O'} (reachable from \emph{c\_x}), such that all reachable elements \emph{`r'} in \emph{`R'} (reachable from \emph{c\_x}) are traversed. From such minimal set, we generated the candidate pairs by taking members of \emph{A} and \emph{B} from the path.
+% This should work as we hard clusters (sample only falls into one cluster).
+We created the following data structure as shown in~\ref{lst:dbdict}.
+The data is a dictionary. All candidate cluster pairs are keys and the value is a dictionary whose keys are md5 pairs (all md5 pairs) and values are the list of corresponding resource ids.
+\begin{lstlisting}[language=python,floatplacement=H,caption={Database Structure},label={lst:dbdict}]
+db = { (c_i, c_o) :
+    { (m_a, m_b) : [ r1, r2 ,...],
+        ...,
+     }
+}
+\end{lstlisting}
+The reduced candidate set was computed as shown in below algorithm~\ref{lst:heuristicalgo}.
+It's a greedy algorithm starting from the md5 pair that corresponds most number of resource interactions.
+For each md5 pair it checks if that pair has been already, and if not, adds the pair to the candidate list.
+\begin{lstlisting}[float,floatplacement=htbp,language=python,caption={Alogrithm to get minimal set of candidates for all resource},label={lst:heuristicalgo}]
+candidate_set = set()
+for c_pair, v in db.iteritems():
+    # reverse sort md5 pairs by number of associated resources
+    x = sorted( [(len(b), a) for a,b in v.iteritems()] , reverse=True)
+    r_set = set()
+    for c, m_pair in x:
+        cur_r = v[m_pair]
+        if not r_set.issuperset(cur_r):
+            r_set = r_set.union(cur_r)
+            candidate_set.add(m_pair)
+\end{lstlisting}
+\section{Running the Experiment}
+\label{sec:Running the Experiment}
+In total we had \emph{263,701} candidate pairs to run the experiment.
+The breakdown of the number is given below.
+Modified has the usual meaning of successful operation, and access and delete are the failed attempt.
+\begin{itemize}
+  \item process\_modified\_vs\_process\_deleted: 54
+  \item file\_modified\_vs\_file\_deleted: 589
+  \item section\_modified\_vs\_section\_accessed: 2786
+  \item registry\_modified\_vs\_registry\_deleted: 4781
+  \item sync\_modified\_vs\_sync\_accessed: 7791
+  \item registry\_modified\_vs\_registry\_accessed: 35118
+  \item file\_modified\_vs\_file\_accessed: 212582
+\end{itemize}
+We were provided with 7 instances of Anubis worker for conducting the experiment.
+For each candidate pairs we packed them together using the method as described in~\ref{sec:packerunpacker}.
+Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.\\
+The Anubis worker should have been remotely accessed and operated. The result of the Anubis run were later copied to local machine to analyze.
