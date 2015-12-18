@@ -10,7 +10,7 @@ These activities were saved in db\_report database table. The resource activitie
 SELECT result_id FROM web_analysis.task join web_analysis.file_task using (task_id) join web_analysis.file using (file_id) WHERE task_id=result_id;
 SELECT name from db_report.file_created join db_report.file_name using (file_name_id) where result_id ='12345';
 \end{lstlisting}
-We looked upon 3 resource type for the beginning. The resources type were \textit{File, Registry, Mutex}. For each resource type we took into account their \textit{create, read, delete} activities. The total number of malware sample that we had in our test database was \textbf{22154180}.\\
+We looked upon 3 resource type for the beginning. The resources type were \textit{File, Registry, Mutex}. For each resource type we took into account their \textit{create, read, delete} activities. The total number of malware sample that we had in our test database was \textbf{\gettotalmalwarei{}}.\\
 Our first step was to create a reverse index from the database so that we could get the list of malware that is associated with the resource activities. We started with writing a python script to do the task and save it in the file.
 However we found the first hurdle of our project. Since the number of malware were too large trying to save all their activities in data structure would cause our machine to run out of memory and hence crash the system. To solve this we took the approach of map reduce.\\
 We ran our script in batch 50K malware at a time and saved the reverse index of activity to the file with numbering. Around 420 files were created for each resource type. The result files were in the format where resource name and list of result ids were separated by commas (,) as delimiter.
@@ -121,8 +121,12 @@ We had these behavioral profiles saved as python pickle file in our system and w
 \end{lstlisting}
 \section{Creation of Database}
 \label{sec:Creation of Database}
-Recreating the database was one of the bottleneck in our project and consumed much time. The profile files were needed to be accessed via network file system, walking through list of directories and file to find the profile pickle of malware. Not all of the profile pickle were found. We found \emph{16031518 } out of \emph{22154180} malware.
-We mapped the Windows Native and Windows Api call into three category modified, accessed, and delete. We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Mutex, Job, and Driver. We went through the most common used API calls and then mapped them into the broad three categories as described earlier.
+Recreating the database was one of the bottleneck in our project and consumed much time.
+The profile files were needed to be accessed via network file system, walking through list of directories and file to find the profile pickle of malware.
+Not all of the profile pickle were found. We found \emph{\gettotalmalwareii{}} out of \emph{\gettotalmalwarei{}} malware.\\
+We mapped the Windows Native and Windows Api call into three category modified, accessed, and delete.
+We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Mutex, Job, and Driver
+We went through the most common used API calls and then mapped them into the broad three categories as described earlier.
 
 \begin{lstlisting}[language=ruby,caption={Mapping of WinodowsNT and Windows API call},label={lbl:ntapi}]
 MODIFY_LIST = {
@@ -214,12 +218,59 @@ Once we had it sorted in descending order, we got most commonly modified/accesse
 Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.\\
 For instance, Resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.
 We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.\\
-We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.
-%TODO : Add graph inter intra
+We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.\\
+The malware were clustered into 662 clusters. The largest cluster size was {\getlargestclustersize{}} and the lowest was {\getlowestclustersize{}}
+The histogram and cumulative distributive graph showing the sizes of cluster can be seen in~\ref{fig:histclustersize},~\ref{fig:cdfclusterlen}, and~\ref{fig:ecdfclustersize}.\\
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.3]{figures/histclustersize.png}
+\end{center}
+\caption{Histogram showing the distribution of Cluster size}
+\label{fig:histclustersize}
+\end{figure}
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.3]{figures/ecdfclustersize.png}
+\end{center}
+\caption{Graph showing cdf between size of cluster and topic fraction}
+\label{fig:ecdfclustersize}
+\end{figure}
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.3]{figures/cdfclusterlen2.png}
+\end{center}
+\caption{Graph showing cdf between size of cluster and total number of malware}
+\label{fig:cdfclusterlen}
+\end{figure}
+From the above graph we can see that distribution of cluster size was mostly below 50,000.
+$90\%$ of the cluster topic, about \emph{629}, falls under the cluster size of less than 50,000, where as about \emph{4 million} malware, which is the $65\%$ of total malware, are in the clsuter size of less than 50K.\\
+To see the quality of our clustering we present the following graph showing the graph of inter-cluster and intra-cluster distance in Figure~\ref{fig:interclustcommon} and Figure~\ref{fig:intraclustcommon}
+In case of intra-distance, for each topic family, we sampled at maximum 1000 malware, if the topic had that many number of malware. We calculated the average number of resource activities\textit{(words)} present among those sampled mawlare\textit{(document)}
+We then calculated the average common resources between the combinations of sample. We could see that the average common words between the intra malware sample were quite good with intra-distance of at least \emph{500} covering $80\%$ of family topics.
+For the inter-distance calculation, we took a random combination pair of topic \emph{`x'} with other topics, and randomly sampled 1000 malware sample, if present, from those topic pair.
+We calculated the average common words between those the sampled malware for each pair to find the inter distance between the malware of different family topics.
+We found out the inter-distance of only 10 was covering almost $90\%$ of family topic.
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.7]{figures/intra_clustered_common.png}
+\end{center}
+\captionsetup{font=small}
+\caption{ Graph showing cdf distribution of common resource between same family topic}
+\label{fig:intraclustcommon}
+\end{figure}
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.7]{figures/inter_clustered_common.png}
+\end{center}
+\captionsetup{font=small}
+\caption{Graph showing cdf distribution of common resource between different family topic}
+\label{fig:interclustcommon}
+\end{figure}
+
 \section{Finding out the candidate pairs}
 \label{sec:Finding out the candidate pairs}
 After the clustering of the malware was done, we used the result and the our mapping of resource to malware to find the candidate pairs for experiment.
-In order to find the optimal set of candidate we interpreted the the Flow Network
+In order to find the optimal set of candidate we interpreted the interaction of malware and resource with respect to cluster into Flow Network.
 \subsection{Max Flow apporach}
 \label{sub:Max Flow apporach}
 We wanted to find the optimal pair of malware such that we have all the interesting mapped resource covered along with the cluster associated with it.
@@ -305,4 +356,4 @@ Modified has the usual meaning of successful operation, and access and delete ar
 We were provided with 7 instances of Anubis worker for conducting the experiment.
 For each candidate pairs we packed them together using the method as described in~\ref{sec:packerunpacker}.
 Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.\\
-The Anubis worker should have been remotely accessed and operated. The result of the Anubis run were later copied to local machine to analyze.
+The Anubis worker were remotely accessed and operated. The result of the Anubis run were then copied to local machine to analyze further.
