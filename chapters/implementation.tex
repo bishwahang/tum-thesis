@@ -111,11 +111,8 @@ Our notion behind checking the malware interaction was finding candidate pairs s
 But since Anubis ran each submitted binary in an isolated environment, there was no way that a malware `b' would find the resource that was supposed to be created by malware `a'.\\
 We should have been looking for failed attempt activities, where a malware unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
 This lead us to look for the alternatives were we could find log of such failed attempt activities during the execution of binary.\\
-\section{Behavioral Profile}
-\label{sec:behvairoalprofile}
-Previously,~\citeauthor{bayer} used Anubis system for the dynamic analysis of malware to gets it execution traces~\cite[]{bayer}.
-They created a behavioral profile based on the execution traces of programs irrespective of order execution. It consisted a list of different operations operated on the different OS objects during the execution of binary.
-We had these behavioral profiles saved as python pickle file in our system and we used this to recreate new database that had the record of failed attempts of delete or read.\\
+We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile} to find such failed activities of deletion and access.
+A snippet of behavioral profile in show in~\autoref{lst:bpsample}.
 \begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
   op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
    create:1

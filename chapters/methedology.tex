@@ -1,39 +1,69 @@
 %!TEX root = ../main.tex
-\chapter{Methedology}\label{chapter:methedology}
-In this chapter we outlay how we performed our research.
-We will look upon the overall procedure we planned to perform and also discuss on why we chose certain approach.
-First let us see how we planned to execute the experiment process with the big picture and it's details.
-\section{The Big Picture}
+\chapter{Methodology}\label{chapter:methodology}
+In this chapter we outlay how we planned and performed our research.
+We will look upon the overall procedure and also discuss on why we chose certain approach.
+Let us start with the overview of our experiment.
+\section{Overview}
+\label{sec:Overview}
+Figure~\ref{fig:bigpicture} shows the overall structure of the procedure we followed to perform our research.
+We started with old database which had all the analysis result saved for the samples submitted to Anubis.
+We made a reverse index from the database such that every resource name had the malware id associated with the resource through some resource activity.
+Initially, we took into account resource type \emph{File, Registry, and Mutex}, and the resource activity \emph{create, read, modify, and delete}.\\
+After the reverse index was created, we mapped the create activity with read, modify, and delete activities.
+As the result of the mapping we had list of malware that created a \textit{resource name}, and a list of malware that either read/modify/delete the same resource name.
+We used some heuristics such as resource name created by exactly one single malware and delete by another single malware, to get the candidate pair and run the candidate pair in Anubis system.
+We analyzed the result and found some interesting case of dropper malware, self reading malware, and most importantly a logical flaw in our current approach.\\
+The flaw in our current approach was we did not had failed attempt of malware activity such as read and delete logged in our database.
+This was because every sample binary submitted to anubis system for analysis were run in complete isolation.
+Hence any other malware binary which would try to access the resource created by malware other than itself would result into failed access or delete.
+We needed this failed operation we needed to create the new database. We used behavioral profile described in~\ref{sec:Behavioral Profile}to recreate the database.\\
+We also used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
+We used approach as discussed in~\autoref{sec:Running Experiment} to find the probable candidate pairs.
+After we had minimal number of candidate pairs covering all the family topic and interesting resources, we run those pairs in the Anubis system and analyzed the result to find battle activities between the two candidates.
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.4]{figures/bigpicture.png}
-  \caption[Big Picture]{Illustration of how we planned to perform the experiment}\label{fig:bigpicture}
+  \caption[Big Picture]{Overview of the research and experiment}\label{fig:bigpicture}
 \end{figure}
-\section{Research Tools}
-\label{sec:Research Tools}
-\subsection{Anubis}
-\label{sub:Anubis}
-\subsection{Python}
-\label{sub:Python}
-\subsection{MySql}
-\label{sub:MySql}
-\section{Topic model: LDA}
-\label{sec:Topic model: LDA}
+\section{Behavioral Profile}
+\label{sec:Behavioral Profile}
+Previously,~\citeauthor{bayer} used Anubis system for the dynamic analysis of malware to gets it execution traces~\cite[]{bayer}.
+According to the authors,~\citeauthor{bayer}, ``\textbf{behavioral profile}'', is defined as the abstraction of a program's execution trace that provides information on the OS objects that the program operated on, along with the operations.
+As OS Object refers to resource type such as file, registry or section, that could be modified or queried with the system calls.
+System calls consisted of Windows NT, native API and the Windows API functions.\\
+They created a behavioral profile based on the execution traces of programs irrespective of order execution.
+It consisted of a list of different operations operated on the different OS objects during the execution of binary.
+The system calls that had same purpose as resultant output but different calling API name were generalize under single name.
+We had these behavioral profiles saved as python pickle~\cite[]{pythonpickle} file in our system and we used this to recreate new database that had the record of failed attempts of delete or read.\\
+\section{Topic modeling}
+\label{sec:Topic model}
 We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
 To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\cite[Bayer]{bayer}.
 The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to (16M) millions of samples.
-The approach has a linear bootstrapping phase of Locality-sensitive hashing \(LSH\), after which the $O(n^2)$ hierarchical clustering starts.
+The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75K samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
 Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
 \\
-Another alternative was VirusTotal labels (which we will be using as additional information), but unfortunately are not very accurate.
+Another alternative was VirusTotal labels, but unfortunately are not very accurate.
 \\
 A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
 We decided to map the problem to document clustering (considering each malware as a document, and the its resource activities as its words).
 As {tf-idf} approaches have a large memory footprint $(O(\#docs \times \#words))$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents.
 \\
-Latent Dirichlet allocation\(LDA\), equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm and its memory footprint is $(O(\#docs \times \#words))$. This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.
+\subsection{Latent Dirichlet Allocation}
+\label{sub:LDA}
+\textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
+\textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $(O(\#words\times \#clusters))$.
+This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
+\subsection{Gensim}
+\label{sub:Gensim}
+Gensim (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}. We used it to perform the LDA on our resource activities data. We chose it because of its simplicity, well documented API, and ability to work on large corpus.\\
+We used the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
+Some of the benefits of using the \emph{ldamulticore} model were, the model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
+The training algorithm is streamed and we could feed the input documents sequentially even for large data.
+Also the training algorithm ran in constant memory with respect to number of documents. This made possible for us to process corpora that was larger than the memory size of machine, as size of training corpus did not affect the memory footprint. Our corpora data had maximum size of 81 Gigabytes.
+
 \section{Running Experiment}
 \label{sec:Running Experiment}
 \begin{itemize}
@@ -43,11 +73,5 @@ Latent Dirichlet allocation\(LDA\), equivalent to dimension-reduction algorithms
     \item We generate such $(x_r, y_r)$ pairs for all possible cluster pairs $(C(x_r), C(y_r))$ corresponding to a resource ``r''.
     \item The final experiment set \emph{E} is a set of such $(x_r, y_r)$ for all resources \emph{r} in \emph{R}.
     \item Finally for any resource ``r'', if the size of the set $| C(x) : x \in A_r | > 10 or  | C(x) : x \in B_r | > 10$, we discard \emph{r} and its corresponding experiment pairs from \emph{E}, since the resource created/read by too many families is less interesting.
-    \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first. In rare case, both samples may be trying detect each other.
-
+    \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first. In rare case, both samples may be trying to detect each other.
 \end{itemize}
-
-
-
-
-Citation test~\parencite{latex}.
