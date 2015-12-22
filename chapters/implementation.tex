@@ -112,7 +112,7 @@ But since Anubis ran each submitted binary in an isolated environment, there was
 We should have been looking for failed attempt activities, where a malware unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
 This lead us to look for the alternatives were we could find log of such failed attempt activities during the execution of binary.\\
 We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile} to find such failed activities of deletion and access.
-A snippet of behavioral profile in show in~\autoref{lst:bpsample}.
+A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
 \begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
   op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
    create:1
@@ -135,18 +135,21 @@ A snippet of behavioral profile in show in~\autoref{lst:bpsample}.
    mem_read:1
    mem_write:1
 \end{lstlisting}
-If we look at the listing of operation in~\autoref{lst:bpsample}, we can see it records all the operation executed on a resource such as file, registry, section. If the operation was successful the result value is \emph{1}, else it is \emph{0}.\\
+If we look at the listing of operation in~\autoref{lst:bpsample}, we can see it records all the OS operation executed on a OS Object such as file, registry, section.
+If the operation was successful the result value is \emph{1}, else it is \emph{0}.
+We discussed the structure of \emph{OS Object} and \emph{OS Operations} in~\autoref{sub:OS Objects} and~\autoref{sub:OS Operations}  respectively.\\
 For an instance, \textit{`create'} operation for file \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful, where as \textit{`query\_value'} operation with argument value \emph{'InprocServer32'} for registry \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'} failed. % chktex-file 8
 \section{Creation of Database}
 \label{sec:Creation of Database}
 Recreating the database was one of the bottleneck in our project and consumed much time.
 The profile files were needed to be accessed via network file system, walking through list of directories and file to find the profile pickle of malware.
 Not all of the profile pickle were found. We found \emph{\gettotalmalwareii{}} out of \emph{\gettotalmalwarei{}} malware.\\
-We mapped the Windows Native and Windows Api call into three category modified, accessed, and delete.
-We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Mutex, Job, and Driver
-We went through the most common used API calls and then mapped them into the broad three categories as described earlier.
+% We mapped the Windows Native and Windows Api call into three category modified, accessed, and delete.
+We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Service, Job, and Driver.
+We went through the most common used system calls defined as OS Operation as described in~\autoref{sec:Behavioral Profile} and then mapped them into the broad three categories \emph{Modify, Access, and Delete}.
+Windows Native and Windows API calls were already generalized during the creation of behavioral profile.
 
-\begin{lstlisting}[language=ruby,caption={Mapping of WinodowsNT and Windows API call},label={lbl:ntapi}]
+\begin{lstlisting}[language=ruby,caption={Mapping of generalize system calls with regard to behavioral profile },label={lbl:ntapi}]
 MODIFY_LIST = {
         file:      ["create_named_pipe", "create_mailslot", "create", "rename", "lock", "set_information", "write", "unlock", "flush_buffer", "suspend", "map", "resume"],
         registry:  ["create", "restore_key", "save_key", "map", "set_value", "set_information", "compress_key", "lock", "resume", "suspend", "mem_write"],
@@ -181,14 +184,34 @@ DELETE_LIST = {
         }
 
 \end{lstlisting}
-We used MySql for the database and followed the previous table structure so that we could reuse our previous wrote program on the newly created database.
-The final database size was 1.2 Terabyte. The basic CRUD operations were expensive and we hit the integer overflow for registry access activities table. We had to spent much time then expected on database tuning to make the program run faster so that it would complete in reasonable time.
-Most part of the execution time was taken to read the profile gzip pickle and then normal sql queries. These was for \gettotalmalwareii{} binary pickle profiles and their resource activities as defined above.\\
+We used \textbf{MySql Version 5.5.46} as our database engine.MySQL~\cite[]{mysql} is highly scalable and flexible relational database system which complies with the ACID model design principle.
+We followed the previous table structure to design our new database so that we could reuse parts of our previous program for data processing.
+The final database size was 1.2 Terabyte.\\
+The basic CRUD operations were time expensive and made the overall operation slow.
+We also hit the integer overflow for the primary index of registry access activities table.
+The total registry access activities were more than 4 billion of records.
+To solve this, we had to create another registry access table and start inserting the registry access records in new table.
+When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware.\\
+We had to spent much time then expected on database tuning to make the program run faster so that it would complete in reasonable time.
+Most part of the execution time was taken to read the profile gzip pickle and then normal sql CRUD operation as shown in Figure~\ref{fig:dbcreation}.\\
+These were for \gettotalmalwareii{} binary pickle profiles and their resource activities.
+% The execution profile is shown in~\autoref{fig:dbcreation}
 %TODO: put profile.png
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.27]{figures/db_creation.png}
+\end{center}
+\caption{profiling of database creation program}
+\label{fig:dbcreation}
+\end{figure}
+\\
 After the creation of new database, we made a reverse index from the new refined data for the \emph{resource\_name} to malware ids modifying, accessing, and deleting the resource.
-While creating the resource mapping this time, we took into account those activity that had successful creation with those activities with failed access and another mapping between successful creation and delete activity.\\
-We made this mapping for every resource types. Hence, we had mapping between successful file creation and failed file deletion and mapping between successful file creation and failed file access.
-Same mapping was done for resource types registry, sync, section, mutex, job, and driver. The resource name was always the common key for the mapping between the malware.\\
+Getting all the resource activities related to all the resource types \emph{file, registry, section, driver, sync,service, process, and job} was also time expensive.
+It took almost 5 days for us to get the reverse index of resource name to the malware ids with respective modify, access or delete operation.
+While creating the resource mapping this time, we took into account those activity that had successful creation with those activities with failed access and another mapping between successful creation and delete activity.
+\\
+We made this mapping for every resource types. We made a mapping between successful file creation and failed file deletion and mapping between successful file creation and failed file access.
+Same mapping was done for resource types registry, sync, section,service, job, and driver. The resource name was always the common key for the mapping between the malware.\\
 Once we had a mapping of resource activity with respect to resource name, we started to run the candidate pairs to test the behavioral interaction between those pairs. But, since the number of pairs were too many we hit the \emph{n-combination} problem.
 A single resource \texttt{`r'} would have been created by more than thousands of malware and also same resource \texttt{`r'} would have been tried to access or delete with a failed attempt by another thousands of malware. If we made a pair out of every malware as possible candidate there would be too many candidates for us to run and analyze result.\\
 We looked into clustering of the malware behavior to address this problem so that we could cluster malware on different topic and only choose one sample from one topic among the list of topics.
@@ -196,13 +219,24 @@ We looked into clustering of the malware behavior to address this problem so tha
 \label{sec:Clustering}
 We researched on many types of clustering algorithm that we could use to cluster our malware. Our idea of clustering was based on malware resource activities.
 We had all the resource activities such as modification, access and deletion related to different resource types as discussed above.
-We represented each resource type and activities as numeric value. And each resource name woul be represented by it's unique resource name id on our database system.
+We represented each resource type and activities as numeric value. And each resource name would be represented by it's unique resource name id on our database system.
 \begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
   RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
   OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
 \end{lstlisting}
 So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with \textit{file\_name\_id}, ``4986'' in our database, by some malware ``A'', would be represented as single word \emph{``1\_2\_4986''}. Each such resource activities related to one single malware would be a bag of words representing  a single document representing that particular malware.\\
-We needed to convert all the resource activities of the binary into the corpus. After 6 days of running the script, we could gather all the resource activity of {\gettotalmalwareii} malware as the corpus for algorithm. This was about 81 Gigabytes of data.\\
+We needed to convert all the resource activities related to modify, access and delete of the our test binaries into the corpora text.
+After 6 days of running the script, we could gather all the resource activity of {\gettotalmalwareii} malware as the corpus for algorithm.
+The profiling of the program is shown in Figure~\ref{fig:actcreation}.
+This was about 81 Gigabytes of data.
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.3]{figures/activities_creation.png}
+\end{center}
+\caption{profiling for creation of resource activities of malware}
+\label{fig:actcreation}
+\end{figure}
+\\
 We used python module Gensim~\cite[Gensim]{gensim}  for the topic clustering and used the LDA model as described in Methodology section. We filtered our corpora by discarding any resource activity that occurred in less than 1000 or more than 1 million for clustering. This was based on heuristic after studying the cdf graph of activities to number of malware.
 %TODO: add cdf of reverse index
 The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
@@ -232,7 +266,7 @@ For the next clustering run, we wanted to decrease the number of malware (docume
 To do this we tried the manual approach. We sorted the reverse index of resource name to malware with respect to the number of malware associated with the resource name.
 Once we had it sorted in descending order, we got most commonly modified/accessed/created resource at the top of the list, and went through all the mapping line by line until we found some interesting resource name.
 Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.\\
-We did not had any resource activity mapping for resource type Mutex, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.\\
+We did not had any resource activity mapping for resource type Service, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.\\
 For instance, resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.\\
 We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.\\
 We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.\\

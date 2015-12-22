@@ -33,8 +33,73 @@ As OS Object refers to resource type such as file, registry or section, that cou
 System calls consisted of Windows NT, native API and the Windows API functions.\\
 They created a behavioral profile based on the execution traces of programs irrespective of order execution.
 It consisted of a list of different operations operated on the different OS objects during the execution of binary.
-The system calls that had same purpose as resultant output but different calling API name were generalize under single name.
-We had these behavioral profiles saved as python pickle~\cite[]{pythonpickle} file in our system and we used this to recreate new database that had the record of failed attempts of delete or read.\\
+The system calls that had same purpose as resultant output but different calling API name were generalized under single name.
+We had these behavioral profiles saved as python pickle~\cite[]{pythonpickle} file in our system and we used this to recreate new database that had the record of failed attempts of delete or read.
+\\
+Our primarily concern was list of \emph{OS Objects} and \emph{Operations} associated with the behavioral profile of the malware.
+We needed those to recreate the database with the system calls as malware activities 
+Lets describe these two in a brief.
+\subsection{OS Objects}
+\label{sub:OS Objects}
+OS Object were primarily the resource that were created, delete, modified during the program execution.
+\citeauthor{bayer} define \emph{OS Objects} as:
+\begin{lstlisting}
+OS Object ::= (type, object-name)
+type ::= file|registry|process|job|
+       network|thread|section|
+       driver|sync|service|random|
+       time|info
+\end{lstlisting}
+\subsection{OS Operations}
+\label{sub:OS Operations}
+Broadly, OS Operation is the generalization of a system call.
+\citeauthor{bayer} define \emph{OS Operations} as:
+\begin{lstlisting}
+OS operation ::= (operation-name,
+                opeartion-attributes?,
+                successful?)
+\end{lstlisting}
+The sample of behavioral profile is shown in~\autoref{lst:bpsample} in~\autoref{chapter:implementation} where we also describe how we used it for generating resource activities and text corpora for clustering.
+\section{Resource Types}
+\label{sec:Resource Types}
+As discussed before in~\autoref{sub:OS Objects}, an OS Object, are representation of resource types.
+For our research, we took into consideration following 8 resource types among those list.
+We will give a short description of each resource type according to Microsoft Developers Network documentation.
+All the definition are taken into account from Microsoft Developers Network Official documentation website.\cite[MSDN]{msdn}.
+\subsection{File}
+\label{sub:File}
+File objects function as the logical interface between kernel and user-mode processes and the file data that resides on the physical disk.
+A file object contains both the data written to the file and a set of kernel-maintained attributes such as \emph{File name, Current byte offset, Share mode, I/O mode} etc.
+\subsection{Registry}
+\label{sub:Registry}
+The registry is a system-defined database in which applications and system components store and retrieve configuration data.
+The data stored in the registry varies according to the version of Microsoft Windows.
+Applications use the registry API to retrieve, modify, or delete registry data.
+\subsection{Service}
+\label{sub:Service}
+A service application conforms to the interface rules of the Service Control Manager (SCM).
+It can be started automatically at system boot, by a user through the Services control panel applet, or by an application that uses the service functions such as \emph{StartService, OpenService, DeleteService} etc.
+\subsection{Section Objects}
+\label{sub:Section Objects}
+A section object represents a section of memory that can be shared.
+A process can use a section object to share parts of its memory address space (memory sections) with other processes.
+Section objects also provide the mechanism by which a process can map a file into its memory address space.
+\subsection{Process}
+\label{sub:Process}
+An application consists of one or more processes.
+A process, in the simplest terms, is an executing program.
+One or more threads run in the context of the process.
+\subsection{Job}
+\label{sub:Job}
+A job object allows groups of processes to be managed as a unit.
+Job objects are namable, securable, sharable objects that control attributes of the processes associated with them.
+Operations performed on a job object affect all processes associated with the job object.
+\subsection{Sync Object}
+\label{sub:Sync Object}
+A synchronization object is an object whose handle can be specified in one of the wait functions to coordinate the execution of multiple threads.
+More than one process can have a handle to the same synchronization object, making interprocess synchronization possible.
+
+
 \section{Topic modeling}
 \label{sec:Topic model}
 We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
