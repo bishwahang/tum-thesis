@@ -68,38 +68,44 @@ We will give a short description of each resource type according to Microsoft De
 All the definition are taken into account from Microsoft Developers Network Official documentation website.\cite[MSDN]{msdn}.
 \subsection{File}
 \label{sub:File}
+A \emph{file} is a means of storing resourceful information which can be retrieved or modified in future.
 File objects function as the logical interface between kernel and user-mode processes and the file data that resides on the physical disk.
-A file object contains both the data written to the file and a set of kernel-maintained attributes such as \emph{File name, Current byte offset, Share mode, I/O mode} etc.
+It not only holds the data written on the file but also a set of attributes maintained by the kernel for system purposes such as \emph{File name, Current byte offset, Share mode, I/O mode}~\cite[]{msfile}.\\
+File type in the behavioral profile encompasses not only general file, but named pipe and mailslot resources. File is an important resource type for us to focus as our hypothesis for research is that malware of certain family creates or deletes a certain file to infect a system and this also could be used by malware of another family to remove its nemesis from system.
 \subsection{Registry}
 \label{sub:Registry}
-The registry is a system-defined database in which applications and system components store and retrieve configuration data.
+\emph{Registry} is a database defined by a system where different applications and system components store and retrieve data such as configurations settings for its use.
 The data stored in the registry varies according to the version of Microsoft Windows.
-Applications use the registry API to retrieve, modify, or delete registry data.
+Application performs the basic add, modify, retrieve, or delete operation in the registry through the registry API~\cite[]{msregistry}.\\
+We take the registry keys associated with the malware into consideration for experiment as it provides vital information on the behavior of a malware. Malware with same family might have similar registry key activity and also malware from different family might look for the particular registry key in the system in order to detect the presence of its anti family.
 \subsection{Service}
 \label{sub:Service}
-A service application conforms to the interface rules of the Service Control Manager (SCM).
-It can be started automatically at system boot, by a user through the Services control panel applet, or by an application that uses the service functions such as \emph{StartService, OpenService, DeleteService} etc.
-\subsection{Section Objects}
-\label{sub:Section Objects}
-A section object represents a section of memory that can be shared.
-A process can use a section object to share parts of its memory address space (memory sections) with other processes.
-Section objects also provide the mechanism by which a process can map a file into its memory address space.
+A user can start a \emph{service} automatically at system boot through the Service Control Panel, or an application can also use service functions such as \emph{StartService, OpenService, DeleteService} to configure services.
+However, it must conform to the interface rules of Service Control Manater (SCM)~\cite[]{msservice}.
+\subsection{Section}
+\label{sub:Section}
+A \emph{section} object is sharable memory which is used by process to share its memory address space (memory sections) with other processes.
+It is also used by process to map a file into its memory address space~\cite[]{mssection}.\\
+In case of behavioral profile, it broadly represents memory mapped files.
 \subsection{Process}
 \label{sub:Process}
-An application consists of one or more processes.
-A process, in the simplest terms, is an executing program.
-One or more threads run in the context of the process.
+A binary can spawn one or more \emph{processes}
+A process is simply an instance of a computer program being executed that consists of instructions and current activity of program.
+One or more threads can be run in the context of the process~\cite[]{msprocess} 
 \subsection{Job}
 \label{sub:Job}
-A job object allows groups of processes to be managed as a unit.
-Job objects are namable, securable, sharable objects that control attributes of the processes associated with them.
-Operations performed on a job object affect all processes associated with the job object.
-\subsection{Sync Object}
-\label{sub:Sync Object}
-A synchronization object is an object whose handle can be specified in one of the wait functions to coordinate the execution of multiple threads.
-More than one process can have a handle to the same synchronization object, making interprocess synchronization possible.
-
-
+\emph{Job} object makes grouping of process as single unit  to manage possible.
+It can be named and shared securely to control attributes of processes grouped together and operation on a job makes the affect on all the process in its group~\cite[]{msjob}.
+\subsection{Sync}
+\label{sub:Sync}
+A \emph{sync object} is used to coordinate the execution of multiple threads as more than one process could share the handle of single synchronization object which helps for the interprocess synchronization between these processes~\cite[]{mssync}.\\
+The sync object type covers all the synchronization activities.
+\cite[]{mssync}.
+\subsection{Driver}
+\label{sub:Driver}
+A \emph{device driver } is a program that is associated with certain device for its operation and control. It is used as an software interface to communicate between the hardware device and the operating system and other software~\cite[Device Driver]{devicedriver} \\
+Windows represent devices with device objects, and one device could be represented by more than one device objects. All operation on device is conducted via device object~\cite[]{msdevice}.\\
+We capture those loading and unloading of Windows Device Driver recorded in the behavioral profile.
 \section{Topic modeling}
 \label{sec:Topic model}
 We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
