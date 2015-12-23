@@ -64,9 +64,12 @@ This was another war between the two \emph{Trojan} malware families \emph{Spy Ey
 It infected roughly 1.4 million computers, mainly located in U.S, and got the personal identification informations and financial informations of victim in order to transfer money out of victim bank accounts~\cite[]{fbispyeye} \\
 \textbf{SpyEye} came with the feature called \emph{Kill Zeus} that was successful in removing large varieties of \emph{Zeus} family.
 The battle between these two family was pretty much dynamic and many releases of the Trojan toolkit were made from both the family in order to negate each others affect~\cite[]{sanszeus}.
-
-
-
-
-
-
+\subsection{Shifu}
+\label{sub:Shifu}
+This highly evasive malware family, \textbf{Shifu}, targeting mainly Japanese (82\%), Austria-Germany (12\%), and mix Europe (6\%) banks for sensitive data, was detected recently in the year 2015~\cite[]{secintelshifu}.
+It uses \emph{Domain Name Generation} to generated random domain names for covert botnet communication.
+It terminates itself it it finds that it is being run inside a virtual machine or is being debugged, which it finds out by checking system files such as \emph{pos.exe, vmmouse.sys, sanboxstarter.exe} or \emph{IsDebuggerPresent} API~\cite[]{mccafeshifu}.\\
+\emph{Shifu} had antivirus kind of feature that prevented any other malware from infecting its victim by stopping the installation or making the file look suspicious.
+It kept the track of all the files being downloaded by hooking \textit{URLDownloadToFile}\footnote{Downloads bit from Internet.\ \url{https://msdn.microsoft.com/en-us/library/ms775123\%28v=vs.85\%29.aspx}} function.
+For any unsigned executables coming from unsecure network it renamed the file to \emph{infected.exx} and also send the copy of file to its \emph{C\&C} server, probably for further analysis.
+\emph{Shifu} did not find or delete if the system is prior affected by other malware, but once it had the control of victim's, it managed to stop infection from further malware or any updates to the existing malware by disconnecting it with its botmaster~\cite[]{secintelshifu} 
