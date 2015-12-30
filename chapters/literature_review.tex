@@ -73,3 +73,28 @@ It terminates itself it it finds that it is being run inside a virtual machine o
 It kept the track of all the files being downloaded by hooking \textit{URLDownloadToFile}\footnote{Downloads bit from Internet.\ \url{https://msdn.microsoft.com/en-us/library/ms775123\%28v=vs.85\%29.aspx}} function.
 For any unsigned executables coming from unsecure network it renamed the file to \emph{infected.exx} and also send the copy of file to its \emph{C\&C} server, probably for further analysis.
 \emph{Shifu} did not find or delete if the system is prior affected by other malware, but once it had the control of victim's, it managed to stop infection from further malware or any updates to the existing malware by disconnecting it with its botmaster~\cite[]{secintelshifu} 
+\section{Malware Analysis}
+\label{sec:Malware Analysis}
+There are usually two types of malware analysis system, \emph{Static} and \emph{Dynamic}.\\
+\textbf{Static Anaylsis} studies the binary by disassembling it with use of disassembler, decompilers, source code analyzers to find the control flow graph of all the code segment and path that the program might take under different given conditions.
+The analysis is done without running the program, but studying the assembly code of binary to detect the benign or malicious nature of program.
+\emph{Static analysis} gives all the possible behavior of program but for large number of huge programs it is hard and time consuming.
+\textbf{Dynamic Analysis} is done by running the binary in a closed controlled system such as \emph{Virtual Box} or \emph{Sandbox} and logging all the activities of the malware while it runs in host.
+\emph{Dynamic analysis} is faster than static analysis and gives clear insight of the program behavior and nature.
+However it might not be feasible to traverse all the execution path that a program might take.
+\\
+With the increase in the rate of new malware with polymorphic and metamorphic nature, it has become much difficult to detect a new malware from \emph{static analysis}.
+The syntactic signatures are ignorant of the semantics of the instruction and can be easily evaded with code obfuscation and making program control flow obscure~\cite[]{staticlimit}.\\
+Also, many environment sensitive malware evade the \emph{dynamic analysis} by changing their behavior, and not performing any malicious activities, once they find out they are being run inside analysis environment.
+This makes detection of evasive malware much more manual process~\cite[]{barecloud}.
+
+\section{Malware Clustering}
+\label{sec:Malware Clustering}
+With the advent of dynamic analysis of malware, there has also been rise in malware clustering research and work.
+Many variants of same malware family are on the rise because of polymorphic behavior of malware in order to evade the traditional signature based detection system.
+A good clustering system would be able to detect the similarity between malware to find if the new binary is a variant of previous malware and detect the malware.
+There are some previous work on clustering the malware based on different parameters.
+Different AV company give their own different label to the malware.
+A binary which might be labeled as malware may be labeled benign by another AV, or might be labeled as belonging to different family.
+There is not consistency between the labeling of malware and also because of this Virus Total labeling is not considered a good parameter.
+But, that is only one parameter available for now, which we can use for reference.
