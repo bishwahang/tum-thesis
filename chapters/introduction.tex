@@ -1,8 +1,35 @@
 %!TEX root = ../main.tex
 \chapter{Introduction}\label{chapter:introduction}
-	Malware
-	Dynamic Analysis and Static Analysis
-	Anubis~\cite{anubis}
-	Malware Family
-	some blogs on battlefield
-	our intension on finding one
+% Malware
+% Dynamic Analysis and Static Analysis
+% Anubis~\cite{anubis}
+% Malware Family
+% some blogs on battlefield
+% our intension on finding one
+Malware, short for malicious software, is a generic term referring to all kinds of software that poses threat of causing damage, disrupt, or steal data on computer, server, or computer network.
+Malware can be broadly classified into self-replicating and non-replicating categories.
+Viruses and Worms, which are the two most common types of malware, fall under the self-replicating, where as Trojans and Bots are categorized under non-replicating.\\
+\textbf{Virus} is a piece of malicious code attached to some other executables, and gets executed when the user runs the infected executable.
+It can replicate itself to multiple copies but needs a medium to propagate from one host to another.
+It spreads to another host when there is transfer of infected files via the network, file share or email attachment by the user.\\
+\textbf{Worm} are also able to replicate itself like Virus.
+But, unlike virus, it is capable to run independently and is self-propagating.
+It propagates by exploiting some vulnerability in the machine or taking the advantage of file-transfer features such as email or network share.\\
+\textbf{Trojan} are non-replicating malware which gets its name from ancient Greek story \textit{Trojan Horse}.
+It is usually a software that looks legitimate, but is harmful in disguise, which usually spreads through user interaction such as Internet downloads and email attachments.\\
+\textbf{Bot}, are program with automated tasks that can be remotely controlled by its author or \emph{bot master}.
+It is capable of interacting with other bots in its network to exchange information and commands.
+A network of such bots is called \textbf{Botnet}.
+A bot is capable of logging keystroke, gather passwords and financial information, and launch DoS attacks, which can be triggered remotely by its bot master by controlling the bot from the Command and Control (C\&C) center.\\
+As the Internet increased its penetration over the last two decade, more and more devices are being connected via Internet.
+Many of our social life activities are now more depended on its usage, from Email, Banking, Bill Pay to getting connected with friends in Social Networks.
+Along with this, the underground Internet economy is also on the rise.
+Malware authors now do not write malware just for fun, to create annoyance or break into some system as bragging rights, but for profit generation.
+Because of these reasons there has been rapid increase in the number of new malware being introduced each day~\cite[]{tian}.\\
+According to \emph{AV-Test}, an independent IT-Security Institute based on Germany, about 140 million new malware were introduced in year 2015 alone, making the total number of malware recorded so far to almost half a billion~\cite[]{avtest}.\\
+%TODO: add graph
+Malware authors belonging to different group create different malware which can be grouped into different families.
+As these groups are vying for the maximum profit that they can generate from the infected victims, they usually do not like to share it with others.
+In order to do that, they might try to uninstall/delete each other before infecting the victim's system, if they find the presence of malware from another family.
+There has been some such cases in the past which we present in detail in \autoref{sec:Battle between Malware Families}.
+Even though there are some anecdotal evidence about these, there hasn't been any research addressing this phenomena in a systematic way.
