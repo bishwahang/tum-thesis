@@ -1,11 +1,18 @@
 %!TEX root = ../main.tex
 \chapter{Literature Review}\label{chapter:literature_review}
-To the best of our knowledge there has not been any research on finding the behavioral interaction between the malware families.
-There are some anecdotal evidence with some blogs but not any systematic research proving that the change in behavior of a malware on the presence of another do exist.
-However, there has been some work on clustering the malware with regard to its behavior. We will discuss in detail about it later.\\
+% To the best of our knowledge there has not been any research on finding the behavioral interaction between the malware families.
+% There are some anecdotal evidence with some blogs but not any systematic research proving that the change in behavior of a malware on the presence of another do exist.
+% However, there has been some work on clustering the malware with regard to its behavior. We will discuss in detail about it later.\\
+In this chapter we present summary of evidences related to botnet battle and previous works done, based on malware clustering.\\
+We start with brief summary of different malware families in~\autoref{sec:Malware Families} and different incident of battle between these families in the past in~\autoref{sec:Battle between Malware Families}.
+We discuss about malware analysis techniques in~\autoref{sec:Malware Analysis}, their shortcomings and recent developments.
+We then discuss why Anti Virus (AV) label are not reliable for malware family determination, and how behavioral clustering has been used so far in different research work to cluster malware in~\autoref{sec:Behavioral Clustering}.\\
+We end the chapter with summary of existing knowledge and motivation for new research.
 \section{Malware Families}
 \label{sec:Malware Families}
-We have already discussed about Malware and its types in previous Chapter. Let us look at some of the famous widely spread malware families.\\
+We discussed briefly about Malware and its types in~\autoref{chapter:introduction}.
+Malware are categorized to different families in accordance to the malware author, similar behavior and new variants.
+In this section, we briefly describe three most common malware families; their behaviors, capabilities, and mode of operation.\\
 \subsection{Conficker}
 \label{sub:Conficker}
 \textbf{Conficker} is a computer \emph{worm} that targets the \emph{Microsfot Windows} Operating system which was first found in November 2008.
@@ -36,7 +43,7 @@ With data: "<system folder>\userinit.exe,<system folder>\<malwar"
 \subsection{Sality}
 \label{sub:Sality}
 \textbf{Sality} is a family of polymorphic malware that infects files on \emph{Microsfot Windows} system with extensions \emph{.EXE} or \emph{.SCR}.
-It spreads by infecting executatble files and replicating itself across network shares.
+It spreads by infecting executable files and replicating itself across network shares.
 Each infected host becomes the part of peer to peer network used to propagate the malware~\cite[Sality]{salitysym} \\
 \emph{Sality} targets all files in \emph{C:}, and tries to delete files related to anti-virus, stops security related process, and steals sensitive information like cached password and logged keystrokes.
 It also changes Windows registry keys in order to lower the computer security.
@@ -47,15 +54,17 @@ One of the symptoms to find out if a machine is infected by \emph{Sality} family
 \end{lstlisting}
 \section{Battle between Malware Families}
 \label{sec:Battle between Malware Families}
-There has been some evidence of battle between the malware families. We will look upon some of those references in past.
+We have some of the evidences of battle between the malware families, recorded early in year 2004 to latest in year 2015.
+This reason behind the battle are fun, bragging rights, and get hold on larger economic share.
+We will shortly describe those evidences.
 \subsection{Bagle, Netsky, and Mydoom feud}
 \label{sub:Bagle, Netsky, and Mydoom feud}
 This feud between the malware family dates back to 2004, where there was exchange of words between the creators of \emph{Bagle, Netsky} and \emph{Mydoom}.
 The creators inserted their message inside the malware itself, making it visible for the victims too. This also gained much media attention and even appeared in~\cite[BBC]{bbccover}.
-Messages like \emph{``dont'r ruine (sic) our business, wanna start a war?''} was seen inside the \emph{Bagle.J}, where as the response message inside \emph{Netsky.F} was \emph{``Bagle \- you are a looser!!!! (sic)''}.
-Similar messages with profanity was also seen in variants of \emph{Mydoom.G} families.\\
+Message \emph{``dont'r ruine (sic) our business, wanna start a war?''} was seen inside the \emph{Bagle.J}, where as \emph{NetSky.F} responded with message \emph{``Bagle \- you are a looser!!!! (sic)''}.
+Similar messages with profanity were seen in variants of \emph{Mydoom.G} families.\\
 The reason for the war between these malware families was \emph{Netsky} trying to remove the other two malware \emph{Bagle} and \emph{MyDoom} from the victim's machine.
-The creator of \emph{Netsky}, \emph{Sven Jaschan}, also seems to admit that he had written the malware in order to remove infection with \emph{Mydoom} and \emph{Bagle} worms from victim's computer~\cite[]{wikinetsky}.\\
+The creator of \emph{Netsky}, \emph{Sven Jaschan}, admitted that he had written the malware in order to remove infection with \emph{Mydoom} and \emph{Bagle} worms from victim's computer~\cite[]{wikinetsky}.\\
 All three malware family were computer worms spreading through email as an attachment and making victim curious enough to download and open it.
 \subsection{Kill Zeus}
 \label{sub:Kill Zeus}
@@ -68,7 +77,7 @@ The battle between these two family was pretty much dynamic and many releases of
 \label{sub:Shifu}
 This highly evasive malware family, \textbf{Shifu}, targeting mainly Japanese (82\%), Austria-Germany (12\%), and mix Europe (6\%) banks for sensitive data, was detected recently in the year 2015~\cite[]{secintelshifu}.
 It uses \emph{Domain Name Generation} to generated random domain names for covert botnet communication.
-It terminates itself it it finds that it is being run inside a virtual machine or is being debugged, which it finds out by checking system files such as \emph{pos.exe, vmmouse.sys, sanboxstarter.exe} or \emph{IsDebuggerPresent} API~\cite[]{mccafeshifu}.\\
+It terminates itself if it finds that it is being run inside a virtual machine or is being debugged, which it finds out by checking system files such as \emph{pos.exe, vmmouse.sys, sanboxstarter.exe} or \emph{IsDebuggerPresent} API~\cite[]{mccafeshifu}.\\
 \emph{Shifu} had antivirus kind of feature that prevented any other malware from infecting its victim by stopping the installation or making the file look suspicious.
 It kept the track of all the files being downloaded by hooking \textit{URLDownloadToFile}\footnote{Downloads bit from Internet.\ \url{https://msdn.microsoft.com/en-us/library/ms775123\%28v=vs.85\%29.aspx}} function.
 For any unsigned executables coming from unsecure network it renamed the file to \emph{infected.exx} and also send the copy of file to its \emph{C\&C} server, probably for further analysis.
@@ -89,40 +98,72 @@ The syntactic signatures are ignorant of the semantics of the instruction and ca
 Also, many environment sensitive malware evade the \emph{dynamic analysis} by changing their behavior, and not performing any malicious activities, once they find out they are being run inside analysis environment.
 This makes detection of evasive malware much more manual process~\cite[]{barecloud}.
 
-\section{Malware Clustering}
-\label{sec:Malware Clustering}
+\section{Behavioral Clustering}
+\label{sec:Behavioral Clustering}
 With the advent of dynamic analysis of malware, there has also been rise in different approach to build a system that could analyze the malware in large numbers.
 New malware are on the rise at an exponential rate with millions of them being introduced each day.
 Malware authors use polymorphic and metamorphic techniques to make malware more complex and change it's form so as to make traditional signature based detection hard to detect them.
 Even dynamic analysis required manual inspection because of diversity in malware variants and its rapid increase.
 A good clustering system would be able to detect the similarity between malware to find if the new binary is a variant of previous malware and classify them accordingly.
+\subsection{Limitation of Anti Virus System Labels}
+\label{sub:Limitation of Anti Virus System Labels}
+The need for clustering of malware arises as labels provided by AV companies, such as in \emph{VirusTotal}~\cite[]{virustotal}, are not reliable.
+According to~\citeauthor{bailey}, they do not fulfill the criteria consistency, completeness, and conciseness~\cite[]{bailey}.
+\begin{itemize}
+\item \textbf{Consistency.} Different AV system place the malware into different categories, and these categories also do not hold same meaning across the system.
+This leads to inconsistency in the AV system labels.
+\item \textbf{Completeness.} Not every malware has been labeled by the AV system, and many malware go undetected because of this.
+Many binaries that were months old, were still without any labeled, which makes the AV system labeling incomplete.
+\item \textbf{Conciseness.} The label provided by AV system were either too little or too much with not much substantial meaning.
+They usually gave general idea of broad term as ``trojan'' and ``worm'' and not concise description to the specific malware or its family.
+\end{itemize}
+\subsection{Previous Works}
+\label{sub:Previous Works}
 There have been many approaches to use automated malware clustering in order to classify binaries based on their behavioral similarity.
-This can be used to analyze any new binary to find out if it's novel or similar to previously known malware.\\
-Let us discuss about some previous works done with classification of malware based on the behavioral activities of malware.\\
-\citeauthor{bayer} used execution traces of malware in order to create a behavioral profile which they later used as an input to their clustering algorithm.
+The result then is used to analyze any new binary to find out if it's novel or similar based on the comparison to previously known malware clusters.\\
+Here we discuss about some previous works done on classification of malware based on the behavioral activities of malware.\\
+\textbf{\citeauthor{bayer}} used execution traces of malware in order to create a behavioral profile which they later used as an input to their clustering algorithm.
 This was the first approach to use clustering of malware on a large scale.
-Their system was able to recognize and group similar malware with better precision and scalable manner.
-About 75 thousands malware were clustered within three hours.\\
-\citeauthor{autoana} also used clustering and classification using \emph{machine learning} to analyze behavior of malware.
+Their system was able to recognize and group similar malware with better precision and scalable manner with the clustering speed of 75 thousands malware in three hours.
+\textbf{\citeauthor{autoana}} also used clustering and classification using \emph{machine learning} to analyze behavior of malware.
 Their work was inspired by~\cite[]{bayer} and used incremental approach to decrease the runtime overhead, as malware were processed in a daily basis with batch of 1000~\cite[]{autoana}.\\
-\citeauthor{firma} developed \emph{FIRMA}, a tool that clusters the malware binary into families, based on the network traffic of unlabeled malware binaries.
+\textbf{\citeauthor{firma}} developed \emph{FIRMA}, a tool that clusters the malware binary into families, based on the network traffic of unlabeled malware binaries.
 It also produces network signature for each of the network behavior of family.
-The tool was evaluated against the datasets of \emph{16,000} unique malware binaries~\cite[]{firma}.
-\citeauthor{pirscoveanu} also presented a system to analyze and classify high amount of malware in a scalable and automatized manner, which could be used pre-filter novel from known malware.
+The tool was evaluated against the datasets of \emph{16,000} unique malware binaries~\cite[]{firma}.\\
+\textbf{\citeauthor{pirscoveanu}} also presented a system to analyze and classify high amount of malware in a scalable and automatized manner, which could be used pre-filter novel from known malware.
 They used~\cite[Cuckoo]{cuckoo} to generate behavioral profile of a malware and \emph{Random Forest} for \emph{supevised} machine learning.
 The total number of samples used for experiment were \emph{42,068}, out of which $67\%$ were used for training and remaining $33\%$ were used as testing set~\cite[]{pirscoveanu}.\\
-\citeauthor{yavvari} uses behavioral mapping approach to find the commonalities between malware behavior grouped component wise.
+\textbf{\citeauthor{yavvari}} uses behavioral mapping approach to find the commonalities between malware behavior grouped component wise.
 They define the term ``soft cluster'' which represents malware relationship with respect to all behavioral similarities, however small.
 Using soft clustering approach they revealed component sharing that belonged to different families according to traditional grouping.
 The system was evaluated on the set of \emph{1,727} unique malware samples~\cite[]{yavvari}.
-\citeauthor{firdausi} in their paper performed different classification using different classifiers, \emph{k-Nearest Neighbor, Naive Bayer, J48 decision trees, Support Vector Machine, and Multilayer Perception Neural Network}, to classify the malware based on behavioral data.
+\textbf{\citeauthor{firdausi}} in their paper performed different classification using different classifiers, \emph{k-Nearest Neighbor, Naive Bayer, J48 decision trees, Support Vector Machine, and Multilayer Perception Neural Network}, to classify the malware based on behavioral data.
 They conclude that machine learning techniques based on behavioral profile could detect malware quite efficiently and effectively~\cite[]{firdausi}.\\
+\section{Motivation}
+\label{sec:Motivation}
+With the increase of online banking activities, there has been increase in number of new malware, and fighting between them to control the larger share of the underground economy.
+In order to do that, they try to negate the existence or influence of another malware once they detect them.
+We showed some evidences of battle between the malware families where they removed other malware, added a feature to remove other malware, or blocked other malware from infecting its victim.\\
+Our research will provide a systematic way to find such behavior of malware on a large scale data.
 \\
-We too will also be using machine learning techniques in our research to cluster the malware, based on the behavioral profiles generated from dynamic analysis, to classify malware into different probable families.
-We believe in the notion that malware belonging to same families will have similar behavioral activities, thus more common resource activity.
-The work done on clustering so far has been done on smaller set of thousands of malware as described above.
-We use unsupervised machine learning algorithm to perform the clustering of those malware on very large data set of millions of malware.
-We will discuss in details what we chose for clustering and we perform it in \autoref{sec:Topic model}.
+Many research work has been based on clustering of malware based on the behavioral profiles generated by dynamic analysis.
+All of them used some machine learning algorithm on the corpus of behavioral profile to cluster the malware, in order to improve the malware detection rate of a system.\\
+However, the clustering of malware performed so far are on a small corpus, consisting of tens of thousands of malware samples.
+Our clustering is based on much larger samples, {\gettotalmalwarei{}} to be precise.
+We present a different approach to malware clustering, for large scale malware samples, which has been discussed in details in~\autoref{sec:Topic model}.\\
+We know that different malware family have different techniques to inject themselves and staying alive in the host.
+As described in~\autoref{sec:Malware Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
+The names of different resources created by malware may  be random or peculiar.
+To select the sample candidate pair from different family, we look for those malware that tried to access or delete certain resource which was created by malware from another family.
+We believe such behavior is suspicious and interesting case of battle between two malware family.
+% and run them together to detect the battle behavior between them (such as deletion of file created by another malware) and deviation in their behavior (number of files created activities).
+The detailed approach of selection of pair is described in~\autoref{sec:Running Experiment}.\\
+To our best knowledge, the study of behavioral interference between the malware families has not been done before.
+Our work will provide a cornerstone in that topic.
+It will help to understand dynamic behavior of environment sensitive malware and working with large malware data samples.
+% We believe in the notion that malware belonging to same families will have similar behavioral activities, thus more common resource activity.
+% We use unsupervised machine learning algorithm to perform the clustering of those malware on very large data set of millions of malware.
+% We will discuss in details about the algorithm we chose for clustering and how we perform it in
 % Different AV companies have been trying to label the malware with their own labeling system.
 % But, there has not been a common standard for this leading to inconsistency as they use different approach for classification.
 % A binary which might be labeled as malware may be labeled benign by another AV, or might be labeled as belonging to different family.

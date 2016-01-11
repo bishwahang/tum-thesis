@@ -110,7 +110,7 @@ We capture those loading and unloading of Windows Device Driver recorded in the 
 \label{sec:Topic model}
 We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
 To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\cite[Bayer]{bayer}.
-The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to (16M) millions of samples.
+The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to millions of samples.
 The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75K samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.

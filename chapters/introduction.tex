@@ -22,14 +22,29 @@ It is capable of interacting with other bots in its network to exchange informat
 A network of such bots is called \textbf{Botnet}.
 A bot is capable of logging keystroke, gather passwords and financial information, and launch DoS attacks, which can be triggered remotely by its bot master by controlling the bot from the Command and Control (C\&C) center.\\
 As the Internet increased its penetration over the last two decade, more and more devices are being connected via Internet.
-Many of our social life activities are now more depended on its usage, from Email, Banking, Bill Pay to getting connected with friends in Social Networks.
-Along with this, the underground Internet economy is also on the rise.
-Malware authors now do not write malware just for fun, to create annoyance or break into some system as bragging rights, but for profit generation.
-Because of these reasons there has been rapid increase in the number of new malware being introduced each day~\cite[]{tian}.\\
+Many of our daily life activities are now depended on its usage, such as email, banking, bill payment and social network.
+Along with this, the underground Internet economy has also been on the rise.
+Malware authors now do not write malware just for fun, to create annoyance or break into some system as bragging rights, but also for profit generation.
+Malware authors now look and gather for banking details, personal informations and identifications, that they can sell in underground market.
+Because of these reasons and easily available tools to create polymorphic and metamorphic malware, there has been rapid increase in the number of new malware being introduced each day~\cite[]{tian}.\\
 According to \emph{AV-Test}, an independent IT-Security Institute based on Germany, about 140 million new malware were introduced in year 2015 alone, making the total number of malware recorded so far to almost half a billion~\cite[]{avtest}.\\
 %TODO: add graph
-Malware authors belonging to different group create different malware which can be grouped into different families.
+Malware authors belonging to different group create malware variants which can be grouped into different families.
 As these groups are vying for the maximum profit that they can generate from the infected victims, they usually do not like to share it with others.
-In order to do that, they might try to uninstall/delete each other before infecting the victim's system, if they find the presence of malware from another family.
-There has been some such cases in the past which we present in detail in \autoref{sec:Battle between Malware Families}.
-Even though there are some anecdotal evidence about these, there hasn't been any research addressing this phenomena in a systematic way.
+In order to do that, they try to uninstall/delete each other before infecting the victim's system, if they find the presence of malware from another family.
+Further, once they have infected the victim, they stop the host from being infected by other malware.\\
+Many such cases has been found in the past and recent.
+In 2010, \emph{SpyEye} was found to have a feature \emph{KillZeus} that would remove \emph{Zeus} malware from the host.
+In 2015, banking malware, \emph{Shifu} was found to have behavior of preventing the host from further infection from other malware, once it had control over the victim's machine.
+We have discussed in details, about such anecdotal findings of battle between malware families, in \autoref{sec:Battle between Malware Families}.\\
+Even though there are some evidence about these battle, there hasn't been any research addressing this phenomena in a systematic way in the wild on large data.
+In this research we explored the behavior of malware from one family in presence of another family and find out the cases of such deletion and change in behavior of malware.
+We 
+\section{Contributions}
+\label{sec:Contributions}
+\begin{itemize}
+  \item An automated system that detects competing malware sample/families in large scale. We worked on {\gettotalmalwareii{}} million malware samples.
+  % TODO: number of pairs
+  \item Pairs of malware with conflict of interest. We found pairs of malware which looks for the resources such as file or registry created by another malware, and if found deletes it.
+  \item Novel understanding of dynamic behavior of malware. Malware behave differently when they find out about the presence of another malware.
+\end{itemize}
