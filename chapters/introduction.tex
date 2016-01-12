@@ -6,37 +6,52 @@
 % Malware Family
 % some blogs on battlefield
 % our intension on finding one
-Malware, short for malicious software, is a generic term referring to all kinds of software that poses threat of causing damage, disrupt, or steal data on computer, server, or computer network.
-Malware can be broadly classified into self-replicating and non-replicating categories.
-Viruses and Worms, which are the two most common types of malware, fall under the self-replicating, where as Trojans and Bots are categorized under non-replicating.\\
-\textbf{Virus} is a piece of malicious code attached to some other executables, and gets executed when the user runs the infected executable.
-It can replicate itself to multiple copies but needs a medium to propagate from one host to another.
-It spreads to another host when there is transfer of infected files via the network, file share or email attachment by the user.\\
-\textbf{Worm} are also able to replicate itself like Virus.
-But, unlike virus, it is capable to run independently and is self-propagating.
-It propagates by exploiting some vulnerability in the machine or taking the advantage of file-transfer features such as email or network share.\\
+Malware, short for malicious software, is a generic term referring to all kinds of software that poses threat of causing damage, disrupt, steal or some other illegitimate action, on computer, server, or computer network.
+Malware can infect the system by being bundled with some other program or being attached as macros in the file.
+When the user runs or opens such program or file, the malware gets installed into the user's machine.
+They can also install themselves by exploiting some common vulnerabilities in Operating System (OS), network devices, or other common software.
+The vast majority is installed by some action from user, such as clicking an e-mail attachment or downloading a file from Internet~\cite[]{ciscodif}.\\
+% Malware can be classified into self-replicating and non-replicating categories.
+% Viruses and Worms, which are the two most common types of malware, fall under the self-replicating, where as Trojans and Bots are categorized under non-replicating.\\
+Some of the commonly known malware types are viruses, worms, Trojans, and bots.
+\textbf{Virus} is a piece of malicious code attached to some other executable host program or file, which gets executed when the user runs the host program.
+It can replicate itself to form multiple copies but cannot propagate on its own.
+It spreads when it is transferred or copied, by the user, to another computer via the network, file sharing or as an email attachment.\\
+\textbf{Worm}, unlike virus, is capable to run independently and is self-propagating.
+It propagates by exploiting some vulnerability in machine OS, device drivers or taking the advantage of file-transfer features, such as email or network share.\\
 \textbf{Trojan} are non-replicating malware which gets its name from ancient Greek story \textit{Trojan Horse}.
-It is usually a software that looks legitimate, but is harmful in disguise, which usually spreads through user interaction such as Internet downloads and email attachments.\\
-\textbf{Bot}, are program with automated tasks that can be remotely controlled by its author or \emph{bot master}.
-It is capable of interacting with other bots in its network to exchange information and commands.
-A network of such bots is called \textbf{Botnet}.
-A bot is capable of logging keystroke, gather passwords and financial information, and launch DoS attacks, which can be triggered remotely by its bot master by controlling the bot from the Command and Control (C\&C) center.\\
+It is a software that looks legitimate, but is harmful in disguise, which usually spreads through user interaction such as Internet downloads and email attachments.\\
+\textbf{Bot}, is a word derived from \emph{``robot''}, which is capable of performing automated tasks.
+The host machine infected by a bot can be accessed remotely by its author,also called \emph{``botmaster''}, and give any commands.
+The botmaster does this from a central server called the Command and Control (C\&C) server.
+A network of such many Internet-connected bot is called \textbf{Botnet}.
+A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
+Bot can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
+Some malware are able to change its structure and create a new variant of itself each time it infects new victim.
+On the basis of how the malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
+\textbf{Polymorphic} malware divides its program into two section of code, decryptor and encryptor.
+The first code section, decrypts the second part of the code and hands the execution control to the decrypted code section.
+When the second code section executes, it creates a new decryptor to encrypt itself, and links the new encrypted code section (encryptor) and decryptor to construct a new variant of malware.
+Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the decryptor to build the new one for new infected victim~\cite[]{rad2011evolution}.
+\textbf{Metamorphic} malware are body-polymorphic malware, i.e., instead of generating new decryptor, a new instance is created using same techniques as used in polymorphic malware.
+Unlike Polymorphic malware it has no encrypted part~\cite[]{rad2012camouflage}.
+In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
+
 As the Internet increased its penetration over the last two decade, more and more devices are being connected via Internet.
 Many of our daily life activities are now depended on its usage, such as email, banking, bill payment and social network.
 Along with this, the underground Internet economy has also been on the rise.
 Malware authors now do not write malware just for fun, to create annoyance or break into some system as bragging rights, but also for profit generation.
-Malware authors now look and gather for banking details, personal informations and identifications, that they can sell in underground market.
+Malware authors look for gathering banking details, personal informations and identifications that they can gather and sell in underground market.
 Because of these reasons and easily available tools to create polymorphic and metamorphic malware, there has been rapid increase in the number of new malware being introduced each day~\cite[]{tian}.\\
 According to \emph{AV-Test}, an independent IT-Security Institute based on Germany, about 140 million new malware were introduced in year 2015 alone, making the total number of malware recorded so far to almost half a billion~\cite[]{avtest}.\\
 %TODO: add graph
-Malware authors belonging to different group create malware variants which can be grouped into different families.
-As these groups are vying for the maximum profit that they can generate from the infected victims, they usually do not like to share it with others.
-In order to do that, they try to uninstall/delete each other before infecting the victim's system, if they find the presence of malware from another family.
-Further, once they have infected the victim, they stop the host from being infected by other malware.\\
+We can say that malware authors are vying for the maximum profit that they can generate from the victims, and would not like to share it with others.
 Many such cases has been found in the past and recent.
+They try to delete other malware from the victim's machine if they detect it.
+Further, once they have infected the victim, they stop the host from being infected by other malware.
 In 2010, \emph{SpyEye} was found to have a feature \emph{KillZeus} that would remove \emph{Zeus} malware from the host.
 In 2015, banking malware, \emph{Shifu} was found to have behavior of preventing the host from further infection from other malware, once it had control over the victim's machine.
-We have discussed in details, about such anecdotal findings of battle between malware families, in \autoref{sec:Battle between Malware Families}.\\
+We have discussed in details, about such anecdotal findings of interaction between malware families, in \autoref{sec:Battle between Malware Families}.\\
 Even though there are some evidence about these battle, there hasn't been any research addressing this phenomena in a systematic way in the wild on large data.
 In this research we explored the behavior of malware from one family in presence of another family and find out the cases of such deletion and change in behavior of malware.
 We 
