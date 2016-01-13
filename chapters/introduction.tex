@@ -1,9 +1,4 @@
 \chapter{Introduction}\label{chapter:introduction}
-% Malware
-% Dynamic Analysis and Static Analysis
-% Anubis~\cite{anubis}
-% Malware Family
-% our intension on finding one
 Malware, short for malicious software, is a generic term referring to all kinds of software that poses threat of causing damage, disrupt, steal or some other illegitimate action, on computer, server, or computer network.
 Malware can infect the system by being bundled with some other program or being attached as macros in the file.
 When the user runs or opens such program or file, the malware gets installed into the user's machine.
@@ -32,7 +27,7 @@ The first code section, decryptor, decrypts the second section of the code and h
 When the second section of code (encryptor) executes, it creates a new decryptor to encrypt itself, and links the new encrypted code section (encryptor) and decryptor to construct a new variant of malware.
 Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the decryptor to build the new one for new infected victim~\cite[]{rad2011evolution}.
 \textbf{Metamorphic} malware are body-polymorphic malware, i.e., instead of generating new decryptor, a new instance is created using same techniques as used in polymorphic malware.
-Unlike Polymorphic malware it has no encrypted part~\cite[]{rad2012camouflage}.
+Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
 In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
 
 As the Internet increased its penetration over the last two decade, more and more devices are being connected via Internet.
