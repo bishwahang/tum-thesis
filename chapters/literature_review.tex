@@ -3,10 +3,10 @@
 % To the best of our knowledge there has not been any research on finding the behavioral interaction between the malware families.
 % There are some anecdotal evidence with some blogs but not any systematic research proving that the change in behavior of a malware on the presence of another do exist.
 % However, there has been some work on clustering the malware with regard to its behavior. We will discuss in detail about it later.\\
-In this chapter we present summary of evidences related to botnet battle and previous works done, based on malware clustering.\\
-We start with brief summary of different malware families in~\autoref{sec:Malware Families} and different incident of battle between these families in the past in~\autoref{sec:Battle between Malware Families}.
+We start this chapter with brief summary of different popular malware families in~\autoref{sec:Malware Families} and different incident of interferences between malware families in the past in~\autoref{sec:Interference between Malware Families}.
 We discuss about malware analysis techniques in~\autoref{sec:Malware Analysis}, their shortcomings and recent developments.
-We then discuss why Anti Virus (AV) label are not reliable for malware family determination, and how behavioral clustering has been used so far in different research work to cluster malware in~\autoref{sec:Behavioral Clustering}.\\
+We also describe shortly about Anubis.
+We then discuss why AV label are not reliable for malware family determination, and how behavioral clustering has been used so far in different research work to cluster malware in~\autoref{sec:Behavioral Clustering}.\\
 We end the chapter with summary of existing knowledge and motivation for new research.
 \section{Malware Families}
 \label{sec:Malware Families}
@@ -52,10 +52,10 @@ One of the symptoms to find out if a machine is infected by \emph{Sality} family
 <system folder>\wmdrtc32.dll
 <system folder>\wmdrtc32.dl_
 \end{lstlisting}
-\section{Battle between Malware Families}
-\label{sec:Battle between Malware Families}
-We have some of the evidences of battle between the malware families, recorded early in year 2004 to latest in year 2015.
-This reason behind the battle are fun, bragging rights, and get hold on larger economic share.
+\section{Interference between Malware Families}
+\label{sec:Interference between Malware Families}
+We have some of the evidences of interference between the malware families, recorded early in year 2004 to latest in year 2015.
+This reason behind these interferences were fun, bragging rights, and get hold on larger economic share.
 We will shortly describe those evidences.
 \subsection{Bagle, Netsky, and Mydoom feud}
 \label{sub:Bagle, Netsky, and Mydoom feud}
@@ -75,7 +75,7 @@ It infected roughly 1.4 million computers, mainly located in U.S, and got the pe
 The battle between these two family was pretty much dynamic and many releases of the Trojan toolkit were made from both the family in order to negate each others affect~\cite[]{sanszeus}.
 \subsection{Shifu}
 \label{sub:Shifu}
-This highly evasive malware family, \textbf{Shifu}, targeting mainly Japanese (82\%), Austria-Germany (12\%), and mix Europe (6\%) banks for sensitive data, was detected recently in the year 2015~\cite[]{secintelshifu}.
+This highly evasive malware family, \textbf{Shifu}, targeting mainly Japanese (82\%), Austria-Germany (12\%), and other parts of Europe (6\%) banks for sensitive data, was detected recently in the year 2015~\cite[]{secintelshifu}.
 It uses \emph{Domain Name Generation} to generated random domain names for covert botnet communication.
 It terminates itself if it finds that it is being run inside a virtual machine or is being debugged, which it finds out by checking system files such as \emph{pos.exe, vmmouse.sys, sanboxstarter.exe} or \emph{IsDebuggerPresent} API~\cite[]{mccafeshifu}.\\
 \emph{Shifu} had antivirus kind of feature that prevented any other malware from infecting its victim by stopping the installation or making the file look suspicious.
@@ -143,7 +143,7 @@ They conclude that machine learning techniques based on behavioral profile could
 \label{sec:Motivation}
 With the increase of online banking activities, there has been increase in number of new malware, and fighting between them to control the larger share of the underground economy.
 In order to do that, they try to negate the existence or influence of another malware once they detect them.
-We showed some evidences of battle between the malware families where they removed other malware, added a feature to remove other malware, or blocked other malware from infecting its victim.\\
+We showed some evidences of interferences between the malware families where they removed other malware, added a feature to remove other malware, or blocked other malware from infecting its victim.\\
 Our research will provide a systematic way to find such behavior of malware on a large scale data.
 \\
 Many research work has been based on clustering of malware based on the behavioral profiles generated by dynamic analysis.
@@ -155,7 +155,7 @@ We know that different malware family have different techniques to inject themse
 As described in~\autoref{sec:Malware Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware may  be random or peculiar.
 To select the sample candidate pair from different family, we look for those malware that tried to access or delete certain resource which was created by malware from another family.
-We believe such behavior is suspicious and interesting case of battle between two malware family.
+We believe such behavior is suspicious and interesting case of interference between two malware family.
 % and run them together to detect the battle behavior between them (such as deletion of file created by another malware) and deviation in their behavior (number of files created activities).
 The detailed approach of selection of pair is described in~\autoref{sec:Running Experiment}.\\
 To our best knowledge, the study of behavioral interference between the malware families has not been done before.
