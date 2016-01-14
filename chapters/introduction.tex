@@ -62,14 +62,19 @@ In \autoref{sec:Behavioral Profile} and \autoref{sec:Resource Types} we define b
 If a malware makes a failed attempt to access or delete resource created by another malware, there should be some interaction between those malware.
 It is trying to detect the presence of other files or registry in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
-The simple heuristic of finding candidate based on common resource did not give us good result, as the number of malware were still too many to select candidate pairs.
-In order to further filter the dataset, we used clustering of malware based on behavioral profile.
-Clustering of malware based on behavioral profile has been used extensively in previous works which we have listed in details in \autoref{sec:Behavioral Clustering}.
-With clustering of malware we grouped malware into different clusters; each cluster represented a malware family and similar behaving malware felled into same cluster.
-We choose final candidate pairs and run them together based on heuristics described in~\autoref{sec:Running Experiment}.
-An unpacker was build in order to run the candidate pairs in the \emph{Anubis} system for analysis.
-\textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware, one after another, with a time interval in between two execution.
+The simple heuristic of finding candidate based on common resource gave us concrete candidate pairs.
+The candidate pairs were still large to run them in scalable manner and find substantial result.
+In order to further study the dataset, we used clustering of malware based on behavioral profile, on those filtered candidates (\gettotalmalwareiii{} in numbers).
+\textbf{Malware Clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on behavioral profile in our case, to each other than to those in other group.
+Such groups are called \textbf{clusters}.
+Clustering of malware based on behavioral profile has been used extensively in previous research works, which we have listed in details in \autoref{sec:Behavioral Clustering}.
+We treated each cluster as a family, and malware falling in those cluster as variant of that family.
+Candidate pairs were chosen in such a way that two malware representing a pair, did not belong to same family.
+The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sec:Running Experiment}.
+An \emph{unpacker} was designed in order to run a candidate pair inside the \emph{Anubis} system for analysis.
+\textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware with a set time interval in between two execution [see~\autoref{sec:packerunpacker}].
 We were able to successfully find X pair of malware with interfering behavior with a true positive rate of X.\\
+
 Our research will provide following contributions:
 \begin{itemize}
   \item A better understanding of dynamic behavior of malware.
