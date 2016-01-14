@@ -40,40 +40,40 @@ Driven by the high profit and rise in easily available tools to create polymorph
 According to \emph{AV-Test}, an independent IT-Security Institute based on Germany, about 140 million new malware were introduced in year 2015 alone, making the total number of malware recorded so far to almost half a billion~\cite[]{avtest}.
 \\
 %TODO: add graph
-With the increase in numbers of malware as it has become a lucrative business, malware authors are vying with each other to take sole control of the their victim for larger profit.
+With the increase in numbers of malware as it has become a lucrative business, malware authors are vying with each other to take sole control of their victim for larger profit.
 Many cases have been found in the past, where one malware try to delete another malware from the victim's machine.
 Further, once they have infected the victim, they prevent the host from being infected by other malware.
 In 2010, \emph{SpyEye}, a Trojan, was found to have a feature \emph{KillZeus} that would remove \emph{Zeus}, which is also another Trojan, making \emph{SpyEye} the only malware to run in the compromised system.
 In 2015, \emph{Shifu}, a banking Trojan, was found to have behavior similar to Anti Virus (AV), i.e., preventing the host from further infection by other malware, once it had taken control over the victim's machine.
 We have discussed in details, about such anecdotal findings of interaction between malware families, in \autoref{sec:Interference between Malware Families}.\\
 The study of aforementioned behavioral interference between the malware family will provide a novel knowledge to understand dynamic aspect of modern malware and the inter family relations.
-This behavior is also a case for environment-sensitive malware, where malware change its behavior dependent on different factors in the environment it is running.
-To our best knowledge, there hasn't been such study so far.
+This behavior is also a case for environment-sensitive malware, where malware change its behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
+To the best of our knowledge, there hasn't been study of interference between two malware families so far.
 We present a systematic way to find out such interferences from large number of malware samples.\\
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, over time from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable too.
 We needed to decrease our data set in a way such that we do not loose possible candidates exhibiting behavioral interference.
-In order to minimize our search space for candidate selection, and maximize the probability for finding pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with failure.
-\textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queries by malware using system calls.
+In order to minimize our search space for candidate selection, and maximize the probability for finding pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
+\textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since, \emph{Anubis}, emulates Windows OS, \textbf{system calls} refers to Windows Application Programming Interface (API) functions.
 The trace of all the resource modified or queried by a malware during its execution is called \textbf{Behavioral Profile} of that malware.
 In \autoref{sec:Behavioral Profile} and \autoref{sec:Resource Types} we define behavioral profiles and different resource types in details.
 If a malware makes a failed attempt to access or delete resource created by another malware, there should be some interaction between those malware.
-It is trying to detect the presence of other files or registry in the environment it is currently running, and its behavior is affected by the positive or negative result.
+It is trying to detect the presence of other files or registry in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
 The simple heuristic of finding candidate based on common resource did not give us good result, as the number of malware were still too many to select candidate pairs.
 In order to further filter the dataset, we used clustering of malware based on behavioral profile.
 Clustering of malware based on behavioral profile has been used extensively in previous works which we have listed in details in \autoref{sec:Behavioral Clustering}.
-With clustering we grouped malware into different clusters, each cluster represented as family and similar behaving malware into falling into same cluster.
+With clustering of malware we grouped malware into different clusters; each cluster represented a malware family and similar behaving malware felled into same cluster.
 We choose final candidate pairs and run them together based on heuristics described in~\autoref{sec:Running Experiment}.
 An unpacker was build in order to run the candidate pairs in the \emph{Anubis} system for analysis.
-\textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware, one after another, with a time interval between.
+\textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware, one after another, with a time interval in between two execution.
 We were able to successfully find X pair of malware with interfering behavior with a true positive rate of X.\\
 Our research will provide following contributions:
 \begin{itemize}
   \item A better understanding of dynamic behavior of malware.
-  \item An automated system that detects competing malware samples in large scale.
+  \item An automated system that detects interfering malware samples in large scale.
   \item A novel approach to clustering large number of malware with respect to their behavior profiles.
   % TODO: number of pairs
 \end{itemize}
