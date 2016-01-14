@@ -45,7 +45,7 @@ Many cases have been found in the past, where one malware try to delete another 
 Further, once they have infected the victim, they prevent the host from being infected by other malware.
 In 2010, \emph{SpyEye}, a Trojan, was found to have a feature \emph{KillZeus} that would remove \emph{Zeus}, which is also another Trojan, making \emph{SpyEye} the only malware to run in the compromised system.
 In 2015, \emph{Shifu}, a banking Trojan, was found to have behavior similar to Anti Virus (AV), i.e., preventing the host from further infection by other malware, once it had taken control over the victim's machine.
-We have discussed in details, about such anecdotal findings of interaction between malware families, in \autoref{sec:Interference between Malware Families}.\\
+We have discussed in details, about such anecdotal evidence of interaction between malware families, in \autoref{sec:Interference between Malware Families}.\\
 The study of aforementioned behavioral interference between the malware family will provide a novel knowledge to understand dynamic aspect of modern malware and the inter family relations.
 This behavior is also a case for environment-sensitive malware, where malware change its behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
 To the best of our knowledge, there hasn't been study of interference between two malware families so far.
@@ -77,13 +77,17 @@ We were able to successfully find X pair of malware with interfering behavior wi
 
 Our research will provide following contributions:
 \begin{itemize}
-  \item A better understanding of dynamic behavior of malware.
+  \item To the best of our knowledge, we are the first to perform a systematic study of interferences between malware families.
+    This research will help better understand novel aspect of malware behavior.
+  \item Our work is based on wide variety of large malware dataset collected over time in wild.
+  \item A novel approach to malware clustering based on their behavior profiles.
+    We show our clustering approach is pretty good in grouping similar behaving malware in same cluster.
   \item An automated system that detects interfering malware samples in large scale.
-  \item A novel approach to clustering large number of malware with respect to their behavior profiles.
+  Our system was able to find malware pairs with interfering behavior with good accuracy.
   % TODO: number of pairs
 \end{itemize}
-We discuss about malware families, evidences of interaction between malware families, previous works on the use of clustering of malware based on malware behavior generated from dynamic malware analysis, and motivation for our research work in \autoref{chapter:literature_review}.
-Following the motivation, we will give overview, design rationale and technical description of our process and system in \autoref{chapter:methodology}.
-In \autoref{chapter:implementation}, we show how we implemented the system, problems faced during the implementation, and how we solved them.
+We discuss about malware families, evidences of interaction between malware families, previous works on the use of malware clustering based on malware behavior generated from dynamic malware analysis, and motivation for our research in \autoref{chapter:literature_review}.
+Following the motivation, we give an overview, design rationale, and technical description of our work flow and system in \autoref{chapter:methodology}.
+In \autoref{chapter:implementation}, we explain how we implemented the system, problems faced during the implementation, and how we solved them.
 We present the findings of our work in \autoref{chapter:results}.
 Finally, we conclude with a discussion of our work, and possible improvement in future in \autoref{chapter:conclusion_and_future_work}
