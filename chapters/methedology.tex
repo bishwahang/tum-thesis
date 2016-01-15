@@ -106,27 +106,30 @@ The sync object type covers all the synchronization activities.
 A \emph{device driver } is a program that is associated with certain device for its operation and control. It is used as an software interface to communicate between the hardware device and the operating system and other software~\cite[Device Driver]{devicedriver} \\
 Windows represent devices with device objects, and one device could be represented by more than one device objects. All operation on device is conducted via device object~\cite[]{msdevice}.\\
 We capture those loading and unloading of Windows Device Driver recorded in the behavioral profile.
-\section{Topic modeling}
-\label{sec:Topic model}
-We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
-To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\cite[Bayer]{bayer}.
-The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to millions of samples.
-The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
-The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75K samples).
-This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
-Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
-\\
-Another alternative was VirusTotal labels, but unfortunately are not very accurate.
-\\
-A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
-We decided to map the problem to document clustering (considering each malware as a document, and the its resource activities as its words).
-As {tf-idf} approaches have a large memory footprint $(O(\#docs \times \#words))$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents.
-\\
-\subsection{Latent Dirichlet Allocation}
-\label{sub:LDA}
-\textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
-\textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $(O(\#words\times \#clusters))$.
-This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
+% \section{Topic modeling}
+% \label{sec:Topic model}
+% We started to explore different clustering approach of malware samples based on their activities, into different Topics/families.
+% To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\cite[Bayer]{bayer}.
+% The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to millions of samples.
+% The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
+% The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75K samples).
+% This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
+% Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
+% \\
+% Another alternative was VirusTotal labels, but unfortunately are not very accurate.
+% \\
+% A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
+% We decided to map the problem to document clustering (considering each malware as a document, and the its resource activities as its words).
+% As {tf-idf} approaches have a large memory footprint $(O(\#docs \times \#words))$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents.
+% \\
+% \subsection{Latent Dirichlet Allocation}
+% \label{sub:LDA}
+% \textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
+% \textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $(O(\#words\times \#clusters))$.
+% This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
+\section{Document Clustering}
+\label{sec:Document Clustering}
+
 \subsection{Gensim}
 \label{sub:Gensim}
 Gensim (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}. We used it to perform the LDA on our resource activities data. We chose it because of its simplicity, well documented API, and ability to work on large corpus.\\
