@@ -127,17 +127,6 @@ We capture those loading and unloading of Windows Device Driver recorded in the 
 % \textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
 % \textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $(O(\#words\times \#clusters))$.
 % This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
-\section{Document Clustering}
-\label{sec:Document Clustering}
-
-\subsection{Gensim}
-\label{sub:Gensim}
-Gensim (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}. We used it to perform the LDA on our resource activities data. We chose it because of its simplicity, well documented API, and ability to work on large corpus.\\
-We used the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
-Some of the benefits of using the \emph{ldamulticore} model were, the model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
-The training algorithm is streamed and we could feed the input documents sequentially even for large data.
-Also the training algorithm ran in constant memory with respect to number of documents. This made possible for us to process corpora that was larger than the memory size of machine, as size of training corpus did not affect the memory footprint. Our corpora data had maximum size of 81 Gigabytes.
-
 \section{Running Experiment}
 \label{sec:Running Experiment}
 \begin{itemize}

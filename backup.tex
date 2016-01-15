@@ -1,0 +1,27 @@
+####################
+LITERATURE REVIEW
+% We believe in the notion that malware belonging to same families will have similar behavioral activities, thus more common resource activity.
+% We use unsupervised machine learning algorithm to perform the clustering of those malware on very large data set of millions of malware.
+% We will discuss in details about the algorithm we chose for clustering and how we perform it in
+% Different AV companies have been trying to label the malware with their own labeling system.
+% But, there has not been a common standard for this leading to inconsistency as they use different approach for classification.
+% A binary which might be labeled as malware may be labeled benign by another AV, or might be labeled as belonging to different family.
+% There is not consistency between the labeling of malware and also because of this Virus Total labeling is not considered a good parameter.
+
+% As malware variant belonging to same family should have similar behavior, we believe clustering based on behavioral profile will give use clusters of malware belonging to same family.
+% \textbf{\citeauthor{mosko}} in their work showed how they used different classification algorithm (\emph{Decision Trees, Naive Bayes, Bayesian Networks, and Artificial Neural Networks}) based on behavior or malware to detect malware with mean detection accuracy of over 90\%~\cite[]{mosko} 
+% This was the first approach to use clustering of malware on a large scale.
+% Their system was able to recognize and group similar malware with better precision and scalable manner with the clustering speed of 75 thousands malware in three hours.
+% \textbf{\citeauthor{autoana}} also used clustering and classification using \emph{machine learning} to analyze behavior of malware.
+% Their work was inspired by~\cite[]{bayer} and used incremental approach, processing about thousands malware on daily basis, to decrease the runtime overhead and increase the overall capacity of system.~\cite[]{autoana}.\\
+% \textbf{\citeauthor{firma}} developed \emph{FIRMA}, a tool that clusters the malware binary into families, based on the network traffic of unlabeled malware binaries.
+% It also produces network signature for each of the network behavior of family.
+% The tool was evaluated against the datasets of \emph{16,000} unique malware binaries~\cite[]{firma}.\\
+% \textbf{\citeauthor{pirscoveanu}} presented a system to analyze and classify high amount of malware in a scalable and automatized manner, which could be used pre-filter novel from known malware.
+% They used~\cite[Cuckoo]{cuckoo} to generate behavioral profile of a malware and \emph{Random Forest} for \emph{supevised} machine learning.
+% The total number of samples used for experiment were \emph{42,068}, out of which $67\%$ were used for training and remaining $33\%$ were used as testing set~\cite[]{pirscoveanu}.\\
+% \textbf{\citeauthor{yavvari}} uses behavioral mapping approach to find the commonalities between malware behavior grouped component wise.
+% They define the term ``soft cluster'' which represents malware relationship with respect to all behavioral similarities, however small.
+% Using soft clustering approach they revealed component sharing that belonged to different families according to traditional grouping.
+% The system was evaluated on the set of \emph{1,727} unique malware samples~\cite[]{yavvari}.
+##########################

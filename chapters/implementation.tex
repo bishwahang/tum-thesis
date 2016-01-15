@@ -215,8 +215,8 @@ Same mapping was done for resource types registry, sync, section,service, job, a
 Once we had a mapping of resource activity with respect to resource name, we started to run the candidate pairs to test the behavioral interaction between those pairs. But, since the number of pairs were too many we hit the \emph{n-combination} problem.
 A single resource \texttt{`r'} would have been created by more than thousands of malware and also same resource \texttt{`r'} would have been tried to access or delete with a failed attempt by another thousands of malware. If we made a pair out of every malware as possible candidate there would be too many candidates for us to run and analyze result.\\
 We looked into clustering of the malware behavior to address this problem so that we could cluster malware on different topic and only choose one sample from one topic among the list of topics.
-\section{Clustering}
-\label{sec:Clustering}
+\section{Document Clustering}
+\label{sec:Document Clustering}
 We researched on many types of clustering algorithm that we could use to cluster our malware. Our idea of clustering was based on malware resource activities.
 We had all the resource activities such as modification, access and deletion related to different resource types as discussed above.
 We represented each resource type and activities as numeric value. And each resource name would be represented by it's unique resource name id on our database system.

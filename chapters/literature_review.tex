@@ -158,8 +158,8 @@ Let us discuss about works done so far on clustering and classification of malwa
 \textbf{\citeauthor{yavvari}} used behavioral mapping approach to cluster \emph{1,727} unique malware pair samples~\cite[]{yavvari}.
 \textbf{\citeauthor{bayer}} used behavior clustering to cluster 75 thousand sample claiming to achieve better precision than the previous approaches~\cite[]{bayer}.
 \textbf{\citeauthor{firdausi}} in their paper did the measurement of five different classifiers, \emph{k-Nearest Neighbor, Naive Bayer, J48 decision trees, Support Vector Machine, and Multilayer Perception Neural Network}, to classify the malware based on behavioral data.
-They conclude that machine learning techniques based on behavioral profile could cluster malware quite efficiently and effectively~\cite[]{firdausi}.\\
-Based on the previous research work and its result, we believe that machine learning techniques are good approach for malware clustering.
+With their result, they state that machine learning techniques based on behavioral profile could detect malware quite efficiently and effectively~\cite[]{firdausi}.\\
+Based on the previous research work and its result, we believe that machine learning techniques are good approach for malware clustering to cluster malware into different families.
 We studied the work of~\citeauthor{bayer} in detail to see if we could use their approach of behavioral clustering as their work were the only one to cluster malware in large scale, i.e. 75 thousands malware under three hours~\cite[]{bayer}.
 % Also, they too used \emph{Anubis} system as dynamic analysis platform for their work to create the behavioral profile and we had access to those behavioral profiles.\\
 % To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\citeauthor{bayer}.
@@ -175,12 +175,26 @@ Another alternative was VirusTotal labels, but unfortunately they are not very r
 % A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
 A third approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering (considering each malware as a document, and the behavioral profile of malware the words in document).
-As {tf-idf} approaches have a large memory footprint $(O(\#docs \times \#words))$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
+As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} is statistically measured weight to evaluate the importance of a word in document with respect to whole corpus) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
 \\
+\subsection{Latend Dirichlet Allocation}
+\label{sub:Latend Dirichlet Allocation}
 \textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora developed by~\citeauthor{Blei}~\cite[LDA]{Blei}.
-\textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $(O(\#words\times \#clusters))$.
+\textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $O(\#words\times \#clusters)$.
 This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
-We will discuss how we plan to implement LDA in~\autoref{sec:Document Clustering}
+We will show the implementation and result of LDA, using python library \emph{Gensim} for clustering malware in~\autoref{sec:Document Clustering}.\\
+\subsection{Gensim}
+\label{sub:Gensim}
+Gensim (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}.
+We used it to perform the LDA for clustering malware into families.
+We chose it because of its simplicity, well documented API, and ability to work on large corpus.\\
+We used the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
+Some of the benefits of using the \emph{ldamulticore} model were, the model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
+The training algorithm is streamed and we could feed the input documents sequentially even for large data.
+Also the training algorithm ran in constant memory with respect to number of documents.
+This made possible for us to process corpora that was larger than the memory size of machine, as size of training corpus did not affect the memory footprint.
+The maximum size of our corpus was 81 Gigabytes.
+
 \section{Summary and Motivation}
 \label{sec:Motivation}
 Motivated by the economic profit, there has been increase in number of new malware, and fighting between the malware families to control the larger share of the underground economy.
@@ -189,6 +203,7 @@ We showed some evidences of interferences between the malware families where the
 Such behavioral interference between the malware families is an interesting case to study and would provide a novel aspect of evolving dynamic behavior of malware.
 Our research provides a systematic way to find such behavioral interference of malware families on a large scale data.
 \\
+We gave an overview on two common malware analysis system and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.\\
 We see that different malware family have different techniques to inject themselves keeping them alive even after the system reboot.
 As described in~\autoref{sec:Malware Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware can be random or peculiar.
@@ -200,39 +215,10 @@ We believe such behavior of malware is suspicious and interesting case of interf
 We discussed why AV Vendors labeling of malware family are unreliable and how we will be using machine learning to achieve the clustering of malware to families.
 We discussed about use of machine learning techniques in the previous research work for clustering and classification of malware based on their behavioral profiles.
 The results of the work so for on classification and clustering of malware were pretty good in order to improve efficiency and detection of the malware analysis system.
-However, the clustering of malware performed so far are on a small corpus, consisting of tens of thousands of malware samples, and were not scalable.
-We present a different approach for large scale malware clustering, using LDA for document clustering.
-Our clustering of data will be on dataset of size {\gettotalmalwarei{}} malware samples.
+However, the clustering of malware performed so far are on a small number of sample, consisting of tens of thousands of malware samples, and were not scalable.
+We present a different approach for large scale malware clustering, using LDA for document clustering and python library \emph{Gemsim} for the implementation.\\
+Our working dataset is of size {\gettotalmalwarei{}} malware samples.
 % and run them together to detect the battle behavior between them (such as deletion of file created by another malware) and deviation in their behavior (number of files created activities).
-The study of behavioral interference between the malware families in large scale is a new research work in the field of malware study.
+The study of behavioral interference between the malware families in this large scale is a new research work in the field of malware study.
 Our work will be a cornerstone in that topic.
 It will help to understand dynamic behavior of environment sensitive malware.
-
-% We believe in the notion that malware belonging to same families will have similar behavioral activities, thus more common resource activity.
-% We use unsupervised machine learning algorithm to perform the clustering of those malware on very large data set of millions of malware.
-% We will discuss in details about the algorithm we chose for clustering and how we perform it in
-% Different AV companies have been trying to label the malware with their own labeling system.
-% But, there has not been a common standard for this leading to inconsistency as they use different approach for classification.
-% A binary which might be labeled as malware may be labeled benign by another AV, or might be labeled as belonging to different family.
-% There is not consistency between the labeling of malware and also because of this Virus Total labeling is not considered a good parameter.
-
-
-
-
-
-% As malware variant belonging to same family should have similar behavior, we believe clustering based on behavioral profile will give use clusters of malware belonging to same family.
-% \textbf{\citeauthor{mosko}} in their work showed how they used different classification algorithm (\emph{Decision Trees, Naive Bayes, Bayesian Networks, and Artificial Neural Networks}) based on behavior or malware to detect malware with mean detection accuracy of over 90\%~\cite[]{mosko} 
-% This was the first approach to use clustering of malware on a large scale.
-% Their system was able to recognize and group similar malware with better precision and scalable manner with the clustering speed of 75 thousands malware in three hours.
-% \textbf{\citeauthor{autoana}} also used clustering and classification using \emph{machine learning} to analyze behavior of malware.
-% Their work was inspired by~\cite[]{bayer} and used incremental approach, processing about thousands malware on daily basis, to decrease the runtime overhead and increase the overall capacity of system.~\cite[]{autoana}.\\
-% \textbf{\citeauthor{firma}} developed \emph{FIRMA}, a tool that clusters the malware binary into families, based on the network traffic of unlabeled malware binaries.
-% It also produces network signature for each of the network behavior of family.
-% The tool was evaluated against the datasets of \emph{16,000} unique malware binaries~\cite[]{firma}.\\
-% \textbf{\citeauthor{pirscoveanu}} presented a system to analyze and classify high amount of malware in a scalable and automatized manner, which could be used pre-filter novel from known malware.
-% They used~\cite[Cuckoo]{cuckoo} to generate behavioral profile of a malware and \emph{Random Forest} for \emph{supevised} machine learning.
-% The total number of samples used for experiment were \emph{42,068}, out of which $67\%$ were used for training and remaining $33\%$ were used as testing set~\cite[]{pirscoveanu}.\\
-% \textbf{\citeauthor{yavvari}} uses behavioral mapping approach to find the commonalities between malware behavior grouped component wise.
-% They define the term ``soft cluster'' which represents malware relationship with respect to all behavioral similarities, however small.
-% Using soft clustering approach they revealed component sharing that belonged to different families according to traditional grouping.
-% The system was evaluated on the set of \emph{1,727} unique malware samples~\cite[]{yavvari}.
