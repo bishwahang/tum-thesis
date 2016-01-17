@@ -15,18 +15,18 @@ It propagates by exploiting some vulnerability in machine OS, device drivers or 
 \textbf{Trojan} are non-replicating malware which gets its name from ancient Greek story \textit{Trojan Horse}.
 It is a software that looks legitimate, but is harmful in disguise, which usually spreads through user interaction such as Internet downloads and email attachments.\\
 \textbf{Bot}, is a word derived from \emph{``robot''}, which is capable of performing automated tasks.
-The host machine infected by a bot can be accessed remotely by its author,also called \emph{``botmaster''}, and give any commands.
+The host machine infected by a bot, can be accessed and controlled remotely by its author, also called \emph{``botmaster''}.
 The botmaster does this from a central server called the Command and Control (C\&C) server.
 A network of such many Internet-connected bot is called \textbf{Botnet}.
 A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
 Bot can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
 Some malware are able to change its structure and create a new variant of itself each time it infects new victim.
 On the basis of how the malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
-\textbf{Polymorphic} malware divides its program into two section of code, decryptor and encryptor.
-The first code section, decryptor, decrypts the second section of the code and hands the execution control to the decrypted section of code.
-When the second section of code (encryptor) executes, it creates a new decryptor to encrypt itself, and links the new encrypted code section (encryptor) and decryptor to construct a new variant of malware.
-Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the decryptor to build the new one for new infected victim~\cite[]{rad2011evolution}.
-\textbf{Metamorphic} malware are body-polymorphic malware, i.e., instead of generating new decryptor, a new instance is created using same techniques as used in polymorphic malware.
+\textbf{Polymorphic} malware divides its program into two section of code, ``decryptor'' and ``encryptor''.
+The first code section, ``decryptor'', decrypts the second section of the code and hands the execution control to the decrypted section of code.
+When the second section of code (encryptor) executes, it creates a new ``decryptor'' to encrypt itself, and links the new encrypted code section (encryptor) and new ``decryptor'' to construct a new variant of malware.
+Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the ``decryptor'' to build the new one for new infected victim~\cite[]{rad2011evolution}.
+\textbf{Metamorphic} malware are body-polymorphic malware, i.e., instead of generating new ``decryptor'', a new instance is created using similar code obfuscation techniques as used in polymorphic malware.
 Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
 In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
 
@@ -34,7 +34,7 @@ As the Internet increased its penetration over the last two decade, more and mor
 Many of our daily life activities are now depended on its usage, such as email, banking, bill payment, and social network.
 Along with this, the underground Internet economy has also been on the rise.
 Malware authors now do not write malware just for fun, to create annoyance or break into some system as bragging rights, but also for profit generation.
-Malware authors look for banking credentials, Credit cards, personal informations and identifications that they can gather and sell in underground market.
+Malware authors look for banking credentials, Credit cards, personal informations and identifications that they can gather and sell in the underground market.
 In 2006, annual losses caused by malware were estimated to be 2.8 billion dollars in United States and 9.3 billion euros in Europe~\cite[]{moore2009economics}.
 Driven by the high profit and rise in easily available tools to create polymorphic and metamorphic malware, there has been rapid increase in the number of new malware being introduced each day~\cite[]{tian}.
 According to \emph{AV-Test}, an independent IT-Security Institute based on Germany, about 140 million new malware were introduced in year 2015 alone, making the total number of malware recorded so far to almost half a billion~\cite[]{avtest}.
@@ -47,27 +47,27 @@ In 2010, \emph{SpyEye}, a Trojan, was found to have a feature \emph{KillZeus} th
 In 2015, \emph{Shifu}, a banking Trojan, was found to have behavior similar to Anti Virus (AV), i.e., preventing the host from further infection by other malware, once it had taken control over the victim's machine.
 We have discussed in details, about such anecdotal evidence of interaction between malware families, in \autoref{sec:Interference between Malware Families}.\\
 The study of aforementioned behavioral interference between the malware family will provide a novel knowledge to understand dynamic aspect of modern malware and the inter family relations.
-This behavior is also a case for environment-sensitive malware, where malware change its behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
-To the best of our knowledge, there hasn't been study of interference between two malware families so far.
+This behavior is also a case for environment-sensitive malware, where malware change their behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
+To the best of our knowledge, there hasn't been study of such interference between two malware families so far.
 We present a systematic way to find out such interferences from large number of malware samples.\\
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, over time from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
-Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable too.
-We needed to decrease our data set in a way such that we do not loose possible candidates exhibiting behavioral interference.
+Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable.
+We needed to filter our data set without losing possible candidates exhibiting behavioral interference.
 In order to minimize our search space for candidate selection, and maximize the probability for finding pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since, \emph{Anubis}, emulates Windows OS, \textbf{system calls} refers to Windows Application Programming Interface (API) functions.
-The trace of all the resource modified or queried by a malware during its execution is called \textbf{Behavioral Profile} of that malware.
+The trace of all the resource modified or queried by a malware during its execution is referred as \textbf{Behavioral Profile} of that malware.
 In \autoref{sec:Behavioral Profile} and \autoref{sec:Resource Types} we define behavioral profiles and different resource types in details.
-If a malware makes a failed attempt to access or delete resource created by another malware, there should be some interaction between those malware.
+If a malware makes a failed attempt to access or delete resource created by another malware, there should be some interaction between those malware, as these actions are suspicious.
 It is trying to detect the presence of other files or registry in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
 The simple heuristic of finding candidate based on common resource gave us concrete candidate pairs.
 The candidate pairs were still large to run them in scalable manner and find substantial result.
-In order to further study the dataset, we used clustering of malware based on behavioral profile, on those filtered candidates (\gettotalmalwareiii{} in numbers).
+In order to further study the dataset, we used clustering of malware (based on behavioral profile), on those filtered candidates (\gettotalmalwareiii{} in numbers).
 \textbf{Malware Clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on behavioral profile in our case, to each other than to those in other group.
 Such groups are called \textbf{clusters}.
-Clustering of malware based on behavioral profile has been used extensively in previous research works, which we have listed in details in \autoref{sec:Behavioral Clustering}.
+Clustering of malware based on behavioral profile has been used extensively in previous research works, which we have listed in details in \autoref{sec:Malware Clustering}.
 We treated each cluster as a family, and malware falling in those cluster as variant of that family.
 Candidate pairs were chosen in such a way that two malware representing a pair, did not belong to same family.
 The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sec:Running Experiment}.
@@ -78,7 +78,7 @@ We were able to successfully find X pair of malware with interfering behavior wi
 Our research will provide following contributions:
 \begin{itemize}
   \item To the best of our knowledge, we are the first to perform a systematic study of interferences between malware families.
-    This research will help better understand novel aspect of malware behavior.
+    This novel research will help better understand dynamic aspect of malware behavior.
   \item Our work is based on wide variety of large malware dataset collected over time in wild.
   \item A novel approach to malware clustering based on their behavior profiles.
     We show our clustering approach is pretty good in grouping similar behaving malware in same cluster.

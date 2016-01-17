@@ -170,11 +170,11 @@ The whole premise of faster execution lies within careful tuning of multiple par
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
 Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
 \\
-Another alternative was VirusTotal labels, but unfortunately they are not very reliable as we discussed early.
+% Another alternative was VirusTotal labels, but unfortunately they are not very reliable as we discussed early.
 \\
 % A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
-A third approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
-We decided to map the problem to document clustering (considering each malware as a document, and the behavioral profile of malware the words in document).
+Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
+We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
 As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} is statistically measured weight to evaluate the importance of a word in document with respect to whole corpus) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
 \\
 \subsection{Latend Dirichlet Allocation}
@@ -185,14 +185,14 @@ This gives us a more fine grained clustering compared to previously proposed LHS
 We will show the implementation and result of LDA, using python library \emph{Gensim} for clustering malware in~\autoref{sec:Document Clustering}.\\
 \subsection{Gensim}
 \label{sub:Gensim}
-Gensim (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}.
-We used it to perform the LDA for clustering malware into families.
-We chose it because of its simplicity, well documented API, and ability to work on large corpus.\\
-We used the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
+\emph{``Gensim''} (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}.
+We used \emph{``Gensim''}to perform the LDA for clustering malware into families.
+We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.\\
+We use the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
 Some of the benefits of using the \emph{ldamulticore} model were, the model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
 The training algorithm is streamed and we could feed the input documents sequentially even for large data.
-Also the training algorithm ran in constant memory with respect to number of documents.
-This made possible for us to process corpora that was larger than the memory size of machine, as size of training corpus did not affect the memory footprint.
+The training algorithm runs in constant memory with respect to number of documents.
+This made possible for us to process corpora that was larger than the memory size of our machine (32 Gigabytes), as size of training corpus did not affect the memory footprint.
 The maximum size of our corpus was 81 Gigabytes.
 
 \section{Summary and Motivation}
