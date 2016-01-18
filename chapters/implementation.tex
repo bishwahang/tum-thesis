@@ -9,7 +9,7 @@ The web analysis was the first entry of any sample malware submitted for analysi
 A new file\_task \emph{id} was created  and the analysis of the sample would be done for different behavioral activities related to resources such as File, Registry, Mutex activities.\\
 These activities were saved in db\_report database table.
 The resource activities of the malware in \textbf{db\_report} database was associated with the \textbf{web\_analysis} database by the constraint key \textit{result\_id} of \emph{result} table in web\_analysis database.
-\begin{lstlisting}[language=sql,caption={sql showing database structure to get file created activities of a malware},label={lst:resultidsql}]
+\begin{lstlisting}[language=sql,caption={sql showing database structure to get file created activities of a malware sample},label={lst:resultidsql}]
 SELECT result_id FROM web_analysis.task join web_analysis.file_task using (task_id) join web_analysis.file using (file_id) WHERE task_id=result_id;
 SELECT name from db_report.file_created join db_report.file_name using (file_name_id) where result_id ='12345';
 \end{lstlisting}
@@ -108,8 +108,8 @@ After finding such pairs, when we ran those malware pairs in the Anubis system u
 In our initial run, we found lots of dropper malware causing this interaction. Binary `a' was a dropper that would create many binaries including the binary `b', and binary `b' actually read itself upon execution, which was recorded as read activity by Anubis.
 After running many other candidate pairs with different level of interaction and analyzing the results manually, not only were we able to understand the Anubis report in depth but also found an logical error on our current approach.\\
 Our notion behind checking the malware interaction was finding candidate pairs such that one malware `a' creates some resource, `r', and another malware `b' tries to access or delete the same resource,`r'.
-But since Anubis ran each submitted binary in an isolated environment, there was no way that a malware `b' would find the resource that was supposed to be created by malware `a'.\\
-We should have been looking for failed attempt activities, where a malware unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
+But since Anubis ran each submitted binary in an isolated environment, there was no way that a malware sample `b' would find the resource that was supposed to be created by malware `a'.\\
+We should have been looking for failed attempt activities, where a malware sample unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
 This lead us to look for the alternatives were we could find log of such failed attempt activities during the execution of binary.\\
 We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile} to find such failed activities of deletion and access.
 A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
@@ -191,7 +191,7 @@ The basic CRUD operations were time expensive and made the overall operation slo
 We also hit the integer overflow for the primary index of registry access activities table.
 The total registry access activities were more than 4 billion of records.
 To solve this, we had to create another registry access table and start inserting the registry access records in new table.
-When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware.\\
+When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware sample.\\
 We had to spent much time then expected on database tuning to make the program run faster so that it would complete in reasonable time.
 Most part of the execution time was taken to read the profile gzip pickle and then normal sql CRUD operation as shown in Figure~\ref{fig:dbcreation}.\\
 These were for \gettotalmalwareii{} binary pickle profiles and their resource activities.
