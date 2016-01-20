@@ -112,10 +112,9 @@ Also, many evasive malware can evade detection by \emph{dynamic analysis} by ide
 \subsection{Anubis}
 \label{sub:Anubis}
 For our experiment we use \textbf{Anbuis}, a dynamic malware analysis platform for analyzing Windows PE-executatbles~\cite[]{anubis}.
-We needed a dynamic analysis system because we were working on large scale malware dataset to find interference between malware families.
-With dynamic analysis system, we could run the possible candidate malware pair and look for the interference between them in real action to give proof to our findings.
-It would be tedious work to perform the same task with static analysis for large number of malware.\\
-\emph{Anubis} generates a detailed report about modifications made to Windows registry or the file system, about interaction with the Windows Service Manager or other processes and logs of all generated network traffic~\cite[]{anubis}.anubis
+We chose dynamic analysis because we can run the candidate malware pair together, in the analysis system, to find behavioral interferences, in live action.
+% It would be tedious work to perform static analysis on candidate pair and correlate with another malware.
+\emph{Anubis} generates a detailed report about modifications made to Windows registry or the file system, about interaction with the Windows Service Manager or other processes and logs of all generated network traffic~\cite[]{anubis}.
 We chose \emph{Anbuis} because of the following reasons:
 \begin{itemize}
   \item We had direct access to Anubis and multiple instance of Anubis system to perform our malware analysis.
@@ -188,12 +187,15 @@ This gives us a more fine grained clustering compared to previously proposed LHS
 \emph{``Gensim''} (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}.
 We used \emph{``Gensim''}to perform the LDA for clustering malware into families.
 We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.\\
-We use the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\\
-Some of the benefits of using the \emph{ldamulticore} model were, the model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
-The training algorithm is streamed and we could feed the input documents sequentially even for large data.
-The training algorithm runs in constant memory with respect to number of documents.
-This made possible for us to process corpora that was larger than the memory size of our machine (32 Gigabytes), as size of training corpus did not affect the memory footprint.
+We use the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\@
+Some of the benefits of using the \emph{ldamulticore} model were~\cite[]{ldamulticore}:
+\begin{itemize}
+\item The model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
+\item The training algorithm is streamed and we could feed the input documents sequentially even for large data.
+\item The training algorithm runs in constant memory with respect to number of documents.
+This made possible for us to process corpora that was larger than the memory size of our machine (32 Gigabytes), as size of training corpus did not affect the memory footprint.\\
 The maximum size of our corpus was 81 Gigabytes.
+\end{itemize}
 
 \section{Summary and Motivation}
 \label{sec:Motivation}
@@ -210,7 +212,7 @@ The names of different resources created by malware can be random or peculiar.
 These pattern related to each families could be used to check the presence of particular family.
 We use this rationale in our heuristics to filter probable malware candidate with behavioral interference.
 To select the sample candidate pair from different family, we look for those malware that tried to access or delete certain resource which was created by malware from another family.
-The detailed approach of selection of pair is described in~\autoref{sec:Running Experiment}.\\
+The detailed approach of selection of pair is described in~\autoref{sec:Candidate Selection}.\\
 We believe such behavior of malware is suspicious and interesting case of interference between two malware family.\\
 We discussed why AV Vendors labeling of malware family are unreliable and how we will be using machine learning to achieve the clustering of malware to families.
 We discussed about use of machine learning techniques in the previous research work for clustering and classification of malware based on their behavioral profiles.

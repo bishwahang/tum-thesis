@@ -57,12 +57,13 @@ We present a systematic way to find out such interferences from large number of 
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable.
-We needed to filter our data set without losing possible candidates exhibiting behavioral interference.
-In order to minimize our search space for candidate selection, and maximize the probability for finding a pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
+We needed to filter our data set without losing malware sample exhibiting behavioral interference.
+We called those malware pairs as possible \emph{candidate pair}.
+In order to minimize our search space for candidate pair selection, and maximize the probability for finding a pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since, \emph{Anubis}, emulates Windows OS, \textbf{system calls} refers to Windows Application Programming Interface (API) functions.
 The trace of all the resource modified or queried by malware during its execution is referred as \textbf{Behavioral Profile} of that malware.
-In \autoref{sec:Behavioral Profile} and \autoref{sec:Resource Types} we define behavioral profiles and different resource types in details.
+In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Activities} we define behavioral profiles and different resource types in details respectively.
 If malware makes a failed attempt to access or delete resource created by another malware, there should be some interaction between those malware, as these actions are suspicious.
 It is trying to detect the presence of other files or registries in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
@@ -74,7 +75,7 @@ Such groups are called \textbf{clusters}.
 Clustering of malware based on behavioral profile has been used extensively in previous research works, which we have listed in details in \autoref{sec:Malware Clustering}.
 We treated each cluster as a family, and malware falling in those cluster as variant of that family.
 Candidate pairs were chosen in such a way that two malware representing a pair, did not belong to same family.
-The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sec:Running Experiment}.
+The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sec:Candidate Selection}.
 An \emph{unpacker} was designed in order to run a candidate pair inside the \emph{Anubis} system for analysis.
 The \textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware with a set time interval in between two execution [see~\autoref{sec:packerunpacker}].
 We were able to successfully find X pair of malware with interfering behavior with a true positive rate of X.\\

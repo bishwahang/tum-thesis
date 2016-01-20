@@ -112,33 +112,33 @@ But since Anubis ran each submitted binary in an isolated environment, there was
 We should have been looking for failed attempt activities, where a malware sample unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
 This lead us to look for the alternatives were we could find log of such failed attempt activities during the execution of binary.\\
 We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile} to find such failed activities of deletion and access.
-A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
-\begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
-  op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
-   create:1
-   open:1
-   query:1
-   query_file:1
-   query_information:1
-   write:1
+% A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
+% \begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
+%   op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
+%    create:1
+%    open:1
+%    query:1
+%    query_file:1
+%    query_information:1
+%    write:1
 
-  op|registry|'HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'
-   open:1
-   query:1
-   query_value(''):1
-   query_value('InprocServer32'):0
-   query_value('ThreadingModel'):1
+%   op|registry|'HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'
+%    open:1
+%    query:1
+%    query_value(''):1
+%    query_value('InprocServer32'):0
+%    query_value('ThreadingModel'):1
 
-  op|section|'BaseNamedObjects\\MSCTF.MarshalInterface.FileMap.ELE.B.FLKMG'
-   create:1
-   map:1
-   mem_read:1
-   mem_write:1
-\end{lstlisting}
-If we look at the listing of operation in~\autoref{lst:bpsample}, we can see it records all the OS operation executed on a OS Object such as file, registry, section.
-If the operation was successful the result value is \emph{1}, else it is \emph{0}.
-We discussed the structure of \emph{OS Object} and \emph{OS Operations} in~\autoref{sub:OS Objects} and~\autoref{sub:OS Operations}  respectively.\\
-For an instance, \textit{`create'} operation for file \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful, where as \textit{`query\_value'} operation with argument value \emph{'InprocServer32'} for registry \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'} failed. % chktex-file 8
+%   op|section|'BaseNamedObjects\\MSCTF.MarshalInterface.FileMap.ELE.B.FLKMG'
+%    create:1
+%    map:1
+%    mem_read:1
+%    mem_write:1
+% \end{lstlisting}
+% If we look at the listing of operation in~\autoref{lst:bpsample}, we can see it records all the OS operation executed on a OS Object such as file, registry or section.
+% If the operation was successful the result value is \emph{1}, else it is \emph{0}.
+% We discussed the structure of \emph{OS Object} and \emph{OS Operations} in~\autoref{sub:OS Objects} and~\autoref{sub:OS Operations}  respectively.\\
+% For an instance, \textit{`create'} operation for file \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful, where as \textit{`query\_value'} operation with argument value \emph{'InprocServer32'} for registry \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'} failed. % chktex-file 8
 \section{Creation of Database}
 \label{sec:Creation of Database}
 Recreating the database was one of the bottleneck in our project and consumed much time.
@@ -358,7 +358,7 @@ In order to achieve that, we tried Heuristic approach.
 \label{sub:Heuristics Approach}
 % We see in the first approach, we are not covering all resource interactions that were meticulously carved from millions of data points. 
 The problem was to find the ``minimal set'' of md5 pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource \emph{`r'} from resources \emph{`R'}, at least one md5\_pair from the final set should correspond the resource \emph{r}.\\
-The relations has been represented in the graph below, where, \emph{I} is a set of input clusters from set \emph{`A'} and \emph{`O'} is the output clusters from set \emph{`B'}. Set \emph{`A', `B'} and \emph{`R'} has usual meanings as described in the\textit{~\autoref{sec:Running Experiment}}.
+The relations has been represented in the graph below, where, \emph{I} is a set of input clusters from set \emph{`A'} and \emph{`O'} is the output clusters from set \emph{`B'}. Set \emph{`A', `B'} and \emph{`R'} has usual meanings as described in the\textit{~\autoref{sec:Candidate Selection}}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.45]{figures/dhkheuristics.png}
