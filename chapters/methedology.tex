@@ -1,15 +1,14 @@
 %!TEX root = ../main.tex
 \chapter{Methodology}\label{chapter:methodology}
 In this chapter we will give overview of our system design and work flow.
-First, we will give short technical descriptions of terms we will be using to describe our work flow in~\autoref{sec:Terminology}
-We will look upon the overall procedure and also discuss on why we chose certain approach in~\autoref{sec:Work Flow}.
-Let us start with the overview of our experiment.
+First, in~\autoref{sec:Terminology}, we will give technical descriptions of terms we will be using to describe our work flow.
+Then, we will look upon the overall procedure and discuss why we chose certain approach in~\autoref{sec:Work Flow}.
 \section{Terminology}
 \label{sec:Terminology}
 In this section we give a detailed description of different terms we will be using through out the report.
 \subsection{Behavioral Profile}
 \label{sub:Behavioral Profile}
-According to the authors,~\citeauthor{bayer}, ``\textbf{behavioral profile}'', is defined as, ``the abstraction of a program's execution trace that provides information on the OS objects that the program operated on, along with the operations''.
+\citeauthor{bayer} define \textbf{behavioral profile} as, ``the abstraction of a program's execution trace that provides information on the OS objects that the program operated on, along with the operations''.
 OS Object refers to resource type such as file, registry or section, that could be modified or queried with the system calls.
 System calls consisted of Windows NT, native API and the Windows API functions.\\
 The behavioral profile was based on the execution traces of programs irrespective of order execution as reordering system calls could be done without changing the semantics of program~\cite[]{bayer}.
@@ -49,11 +48,11 @@ A snippet of behavioral profile is shown in~\autoref{lst:bpsample} with sample o
    query:1
    write:1
 
-  op|registry|`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'
+  op|registry|`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-000000000046}'
    open:1
    query:1
    query_value(''):1
-   query_value('ThreadingModel'):1
+   query_value('InprocServer32'):0
 
   op|section|`BaseNamedObjects\\MSCTF.MarshalInterface.FileMap.ELE.B.FLKMG'
    create:1
@@ -61,16 +60,17 @@ A snippet of behavioral profile is shown in~\autoref{lst:bpsample} with sample o
    mem_read:1
    mem_write:1
 \end{lstlisting}
-To explain the behavioral profile in~\autoref{lst:bpsample}, \textit{`create'} operation for file OS object \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful with success value 1, whereas \textit{`query\_value'} operation with operation-attribute value \emph{'InprocServer32'} for registry OS Object \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-0000-0000-C000-000000000046}'} failed with success value 0. % chktex-file 8
+To explain the behavioral profile shown in~\autoref{lst:bpsample}, \textit{`create'} operation for file OS object \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful with success value 1, whereas \textit{`query\_value'} operation with operation-attribute value \emph{'InprocServer32'} for registry OS Object \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-000000000046}'} failed with success value 0. % chktex-file 8
 \\
 
-We used the behavioral profiles of the malware sample to recreate new database, as per our research need, which is described in~\autoref{sec:Creation of Database}.
-Our interest were list of \emph{OS Objects} and \emph{Operations} associated with the behavioral profile of the malware.
-We used those information to recreate the database of all the malware (program) samples and its resource activities (execution traces).
+We had the ``behavioral profiles'' of the malware samples that we used to create new database which is described in~\autoref{sec:Creation of Database}.
+Informations from \emph{OS Objects} and \emph{Operations} were used to extract resource activities (execution traces) of the malware (program).
+% recreate the database of all the malware (program) samples and its resource activities (execution traces).
+
 \subsection{Resource Type and Activities}
 \label{sub:Resource Types and Activities}
 As discussed before in~\autoref{ssub:OS Objects}, an OS Object, are representation of resource types.
-For our research, we took into consideration following 8 resource types among those list, that could best determine the behavioral interference between malware.
+For our research, we took following 8 resource types into consideration, that could best determine the behavioral interference between malware.
 We will give a short description of each resource type according to Microsoft Developers Network documentation~\cite[MSDN]{msdn}.
 \subsubsection{File}
 \label{ssub:File}
@@ -88,8 +88,8 @@ The data stored in the registry varies according to the version of Microsoft Win
 Application performs the basic add, modify, retrieve, or delete operation in the registry through the registry API~\cite[]{msregistry}.\\
 % We take the registry keys associated with the malware into consideration for experiment as it provides vital information on the behavior of a malware sample.
 % Malware with same family might have similar registry key activity and also malware from different family might look for the particular registry key in the system in order to detect the presence of another family.
-Registry keys provide vital information on malware type and behavior.
-We have seen in~\autoref{sec:Malware Families} that different malware families create different registry keys when they infect a system.
+Registry keys provide vital information on malware type and behavior as we have seen in~\autoref{sec:Malware Families} that different malware families create different registry keys when they infect a system.
+Malware from same family modify specific registry key, which is used to detect their presence.
 \subsubsection{Service}
 \label{ssub:Service}
 A \emph{Service} is a computer program that operates in system background, similar to UNIX daemon~\cite[]{servicedef}.
@@ -108,7 +108,7 @@ A binary can spawn one or more \emph{processes}.
 A process is simply an instance of a computer program being executed that consists of instructions and current activity of program.
 One or more threads can be run in the context of the process~\cite[]{msprocess}.\\
 Malware constantly look for creation of new process such as \emph{Task Manager} or \emph{Virus Removal Tools} and shuts it down before it starts.
-Similar behavior in case of process created by other malware will be a proof for behavioral interference between malware families.
+Similar behavior, to check for process created by other malware, will be a proof for behavioral interference between malware families.
 \subsubsection{Job}
 \label{ssub:Job}
 A \emph{Job} object makes grouping of process as single unit to manage possible.
@@ -132,8 +132,9 @@ Further, resource activities related to malware were represented as \emph{``word
 We describe the terms \emph{``words''}, \emph{``document''}, and \emph{``corpora''} in~\autoref{sub:Words, Document, Corpora}.
 \subsection{Words, Document, Corpora}
 \label{sub:Words, Document, Corpora}
-We have already discussed about using \emph{LDA} for clustering the malware in~\autoref{sec:Malware Clustering}, and what resource activities are in~\autoref{sub:Resource Types and Activities}.
+% We have already discussed about using \emph{LDA} for clustering the malware in~\autoref{sec:Malware Clustering}, and what resource activities are in~\autoref{sub:Resource Types and Activities}.
 In this section, we describe the terms \emph{``words''}, \emph{``document''}, and \emph{``corpora''} and how we associate, malware samples and resource activities, with those terms in our work.
+The terms will be used extensively when describing clustering [\autoref{ssub:Latent Dirichlet Allocation}] and its implementation [\autoref{sec:Document Clustering}].
 \subsubsection{Words}
 \label{ssub:Words}
 In their work,~\citeauthor{Blei}, describe word as, `A \emph{word} is a basic unit of discrete data, defined to be item from a vocabulary indexed by $\{1,\ldots,V\}$''~\cite[]{Blei}.\\
@@ -150,41 +151,79 @@ A single malware sample will be represented as a single document and all the res
 ``A \emph{corpus} is a collection of $M$ documents denoted by $D = \{w_1,w_2,\ldots,w_M\}$''~\cite[]{Blei}.\\
 The total resource activities (words) related to all the malware samples (documents), in our dataset, will be our corpus.\\
 
-How we represent malware activities as words for text corpora is shows in in~\autoref{sec:Document Clustering}.
 \section{Work Flow}
 \label{sec:Work Flow}
 % In previous section, we described different terms we use in our work to help reader properly understand the usage of those terms.
-In this section we outline an overview of our work flow.Figure~\ref{fig:bigpicture} depicts the overall structure of of our system.\\
-The old database had the analysis results of malware samples submitted to Anubis from public domain and 
-The database had resource activities for, resource type \emph{File, Registry, and Mutex}, and the operations \emph{create, read, modify, and delete}.\\
-Reverse index was generated from the database for all the resource types and operations, such that resource name is mapped with the malware samples based on operations.
-For instance, we mapped resource name related to \emph{files} with all the malware that created it.
-Same reverse index was generated for read, modify, and delete operations and for other resource types, \emph{registry} and \emph{mutex}.
-With the reverse index, we found the list of malware that created a resource, say \emph{`r'}, and another list of malware that read/modified/deleted the same resource \emph{`r'}.
-% After the reverse index was created, we mapped the create resource activity with read, modify, and delete activities.
-% As the result of the mapping we had list of malware that created a \textit{resource}, and a list of malware that either read/modify/delete the same \emph{resource}.
-We used some heuristics such as resource name created by exactly one single malware and delete by another single malware, to get the candidate pair and run the candidate pair in Anubis system.
-We analyzed the result and found some interesting case of dropper malware, self reading malware, and most importantly a logical flaw in our current approach.\\
-% The flaw in our current approach was we did not had failed attempt of malware activity such as read and delete logged in our database.
-The current database system did not had record of failed create, read, access, and delete resource activity required for better candidate selection.
-Every sample binary submitted to \emph{Anubis} system for analysis were run in complete isolation; thus, any other malware binary which would try to access the resource created by malware other than itself would be OS Operation with failed status value.
-We needed to recreated a new database with both success and failed resource activity.
-We used behavioral profile described in~\ref{sub:Behavioral Profile} to parse the pickle files and get the resource activity along with its success status.
+In this section we outline an overview of our work flow.
+Figure~\ref{fig:bigpicture} depicts the overall structure of of our system.\\
+\subsection{Database}
+\label{sub:Database}
+We needed resource activities of the malware dataset to process and find malware with behavioral interference.
+We had access to the database that saved the analysis result of malware samples submitted to \emph{Anubis}.
+It had resource activity of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.
+\\
+However, the old database was missing the resource activities that were not successful: for e.g., failed attempt to create a file.
+Anubis analyzed malware one at a time in total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
+Because of this, malware trying to detect or delete the resource created by another malware would be unsuccessful.
+We needed to create a new database with record of such failed attempts.\\
+We used ``behavioral profile'' of malware sample, described in~\autoref{sub:Behavioral Profile}, to get both the successful and failed resource activities.
+The ``behavioral profile'' of malware sample were parsed to get the resource name (object-name) and operations (operation-name) along with successful status, and was used to create new database.
+The new database was created for the above discussed 8 types of resource (\emph{File, Registry, Service, Section, Job, Process, Job, Sync, and Driver}) and operations were generalized to \emph{modify, read, delete}.
+The implementation is described in~\autoref{sec:Creation of Database}.
 
-% We also used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
-We used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
-We used approach as discussed in~\autoref{sec:Candidate Selection} to find the probable candidate pairs.
-After we had minimal number of candidate pairs covering all the family topic and interesting resources, we run those pairs in the Anubis system.
-The results were analyzed for occurrence of deletion of resources
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[scale=0.5]{figures/bigpicture.png}
-  \caption[Big Picture]{Overview of the research and experiment}\label{fig:bigpicture}
-\end{figure}
-\section{Candidate Selection}
-\label{sec:Candidate Selection}
-In this section we illustrate the candidate selection process.
-The selection steps are summarized as follows:
+\subsection{Reverse Indexing}
+\label{sub:Reverse Indexing}
+After we created the database, we created reverse index of the resource activities.
+% The database had all the resource activities(failed and success) of the resource types : such as file created, file deleted, registry modified, registry accessed and so on.
+% With the reverse index, we could list all the malware that modified, accessed, or deleted a resource.
+For instance, we mapped the resource name of the \emph{files}, with all the malware that modified it.
+Same reverse index was generated for read and delete operations and for other resource types, \emph{registry} and \emph{mutex}.
+\subsection{Heuristics}
+\label{sub:Heuristics}
+We mapped reverse indexes, based on common resource name, to get malware set that created a resource and another malware set that tried to delete or read the same resource.
+As described in~\autoref{sec:Malware Families}, malware families have different ways of infecting and taking control of system, peculiar to themselves.
+One can detect the presence of malware in the system, by checking the presence of unique resource (files, registries, and others) associated with that malware, in the system.
+Thus, when a malware tries to access or delete some resource created by another malware (with a failed attempt because each malware was analyzed by Anubis in new OS environment), that activity is interesting for our candidate selection.\\
+We selected malware from each of those set to get a candidate pair.
+Large number of malware were present in each candidate set. A single resource name was created by hundreds of thousands of malware and being accessed by hundreds of thousands of another malware.
+We needed to lower the number of candidate set to get substantial amount of good candidate pair.
+
+% With the reverse index, we found the list of malware that created a resource, say \emph{`r'}, and another list of malware that read/modified/deleted the same resource \emph{`r'}.
+% % After the reverse index was created, we mapped the create resource activity with read, modify, and delete activities.
+% % As the result of the mapping we had list of malware that created a \textit{resource}, and a list of malware that either read/modify/delete the same \emph{resource}.
+\subsection{Clustering}
+\label{sub:Clustering}
+We wanted to lower the size of candidate sets without loosing the quality of our dataset.
+Malware variants belonging to same family, will have similar behavior pattern (code semantics) despite of code obfuscation.
+We divide our dataset into different clusters (families), based on the similar resource activities.
+Candidate pairs, with each malware in the pair from different family, trying to create/delete same resource, has higher probability of behavioral interference than the previous heuristics.\\
+We did a literature survey of works on malware clustering, and found out that none of the works on large scale malware sample[see~\autoref{sec:Malware Clustering}].
+We modeled malware clustering to \emph{document clustering} and used \emph{LDA} for its low memory footprint, $O(\#words\times \#clusters)$, compared to \emph{tf-idf}, $O(\#docs \times \#words)$.
+\subsubsection{Latent Dirichlet Allocation}
+\label{ssub:Latent Dirichlet Allocation}
+%TODO: write about LDA
+A single resource activity -- such as `file read', `registry delete' or `service modify' -- would count as single \emph{`word'}.
+All such resource activities of a single malware sample, is the total `words' in the single document (malware).
+We created the corpus for document clustering with all the resource activities of all the malware dataset.
+We gave each resource type, operation name, and resource name a unique numeric code to represent the resource activity as a word (implementation described in~\autoref{sec:Document Clustering}).
+\subsubsection{Gensim}
+\label{ssub:Gensim}
+\emph{``Gensim''}~\cite[]{gensim} is an efficient python library.
+We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.\\
+We use the \emph{multicore}\cite[]{ldamulticore}  models for scalability.
+Some of the benefits of using the \emph{ldamulticore} model were~\cite[]{ldamulticore}:
+\begin{itemize}
+\item The model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
+\item The training algorithm is streamed and we could feed the input documents sequentially even for large data.
+\item The training algorithm runs in constant memory with respect to number of documents.
+This made possible for us to process corpora that was larger than the memory size of our machine, as size of training corpus did not affect the memory footprint.
+The maximum size of our corpus was 81 Gigabytes.
+
+\end{itemize}
+\subsection{Candidate Selection}
+\label{sub:Candidate Selection}
+% In this section we illustrate the heuristics for candidate selection process based on malware clustering.
+The candidate selection steps, based on malware clustering, are summarized as follows:
 \begin{itemize}
   \item Let, \emph{R}, be a set of candidate resources such that each resource ``r'' in \emph{R} have some malware set that create it (say set $A_r$) and some other set of malware that try to (unsuccessfully) access/delete it (say set $B_r$).
   \item Combine all such sets $A_r$ and $B_r$ corresponding to ``r'' in \emph{R} to sets \emph{A} and \emph{B}, respectively.
@@ -195,8 +234,54 @@ The selection steps are summarized as follows:
   \item Finally for any resource ``r'', if the size of the set $| C(x) : x \in A_r | > 10 or  | C(x) : x \in B_r | > 10$, we discard \emph{r} and its corresponding experiment pairs from \emph{E}, since the resource created/read by too many families is less interesting.
   \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first. In rare case, both samples may be trying to detect each other.
 \end{itemize}
+\subsection{Running the Candidate}
+\label{sub:Running the Candidate}
+%TODO: what was the technique used to add binary at the back
+Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
+We created \emph{`packer'} and \emph{`unpacker'} to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
+The \textbf{unpacker} is a self reading dropper binary.
+With \emph{Packer}, we attach the both binary of a pair, to the back of \emph{unpacker} binary, one after another in sequence.
+Followed by the binary, meta-information, such as size of both binary and preferred time delay, would be attached to the end of the \emph{unpacker}.
+We analyze the packed \emph{unpacker} binary in the \emph{Anubis}.
+When executed, the \emph{unpacker}, would read itself from the behind to get the meta-information, and recreate the packed binaries, and drop them inside the \emph{Anubis} OS environment.
+After both the binaries are dropped, it execute the first binary, waits for time delay specified, and runs another binary.
+At the end, both the binary runs in the \emph{Anubis} for us to analyze the result.
+In~\autoref{sub:packerunpacker}, we implement the \emph{packer} and \emph{unpacker}.
+\subsection{Analyze the result}
+\label{sub:Analyze the result}
+\emph{Anubis}, generates result of analysis as \emph{Extensible Markup Language} (XML) format.
+Every binary submitted to anubis is renamed into \emph{`sample.exe`}, and is considered as the primary analysis subject.
+All the binaries created and executed, after the execution of primary analysis subject, is tracked for its malicious activities.
+The XML report has the resource activities of each binaries presented under different XML node.\\
+We are interested in `access/delete' of the `resource', based on which the candidate pair was chosen -- `resource' created successfully by one malware and failed attempt to access/delete the same resource by another.
+Any successful access/delete of that resource (files or registries or others) will be the change in behavior of one malware caused by the presence of another malware.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=0.5]{figures/bigpicture.png}
+  \caption[Big Picture]{Overview of the research and experiment}\label{fig:bigpicture}
+\end{figure}
 \section{Summary}
 \label{sec:Summary}
 In this chapter, we described different terms used in our work in details and also gave an overview of our work flow.
 In next chapter, we will show how we implemented the work flow in our system.
+% The old database had the analysis results of malware samples submitted to Anubis from public domain and 
+% The database had resource activities for, resource type \emph{File, Registry, and Mutex}, and the operations \emph{create, read, modify, and delete}.\\
+% Reverse index was generated from the database for all the resource types and operations, such that resource name is mapped with the malware samples based on operations.
+% For instance, we mapped resource name related to \emph{files} with all the malware that created it.
+% Same reverse index was generated for read, modify, and delete operations and for other resource types, \emph{registry} and \emph{mutex}.
+% With the reverse index, we found the list of malware that created a resource, say \emph{`r'}, and another list of malware that read/modified/deleted the same resource \emph{`r'}.
+% % After the reverse index was created, we mapped the create resource activity with read, modify, and delete activities.
+% % As the result of the mapping we had list of malware that created a \textit{resource}, and a list of malware that either read/modify/delete the same \emph{resource}.
+% We used some heuristics such as resource name created by exactly one single malware and delete by another single malware, to get the candidate pair and run the candidate pair in Anubis system.
+% We analyzed the result and found some interesting case of dropper malware, self reading malware, and most importantly a logical flaw in our current approach.\\
+% % The flaw in our current approach was we did not had failed attempt of malware activity such as read and delete logged in our database.
+% The current database system did not had record of failed create, read, access, and delete resource activity required for better candidate selection.
+% Every sample binary submitted to \emph{Anubis} system for analysis were run in complete isolation; thus, any other malware binary which would try to access the resource created by malware other than itself would be OS Operation with failed status value.
+% We needed to recreated a new database with both success and failed resource activity.
+% We used behavioral profile described in~\ref{sub:Behavioral Profile} to parse the pickle files and get the resource activity along with its success status.
 
+% % We also used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
+% We used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
+% We used approach as discussed in~\autoref{sec:Candidate Selection} to find the probable candidate pairs.
+% After we had minimal number of candidate pairs covering all the family topic and interesting resources, we run those pairs in the Anubis system.
+% The results were analyzed for occurrence of deletion of resources

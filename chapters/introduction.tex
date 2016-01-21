@@ -69,13 +69,13 @@ It is trying to detect the presence of other files or registries in the environm
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
 The simple heuristic of finding candidate based on common resource gave us concrete candidate pairs.
 The candidate pairs were still large to run them in scalable manner and find substantial result.
-In order to further study the dataset, we used clustering of malware (based on behavioral profile), on those filtered candidates (\gettotalmalwareiii{} in numbers).
+In order to further study the dataset, we used clustering of malware (based on behavior of malware).
 \textbf{Malware Clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on behavioral profile in our case, to each other than to those in other group.
 Such groups are called \textbf{clusters}.
 Clustering of malware based on behavioral profile has been used extensively in previous research works, which we have listed in details in \autoref{sec:Malware Clustering}.
 We treated each cluster as a family, and malware falling in those cluster as variant of that family.
 Candidate pairs were chosen in such a way that two malware representing a pair, did not belong to same family.
-The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sec:Candidate Selection}.
+The algorithm for candidate selection based on clustering result and common resource heuristic is described in~\autoref{sub:Candidate Selection}.
 An \emph{unpacker} was designed in order to run a candidate pair inside the \emph{Anubis} system for analysis.
 The \textbf{Unpacker} drops the candidate pair in the analysis system, and executes both malware with a set time interval in between two execution [see~\autoref{sec:packerunpacker}].
 We were able to successfully find X pair of malware with interfering behavior with a true positive rate of X.\\

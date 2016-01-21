@@ -109,11 +109,11 @@ Also, many evasive malware can evade detection by \emph{dynamic analysis} by ide
 % We can look through the log such as attempt to open other executables with intent to modify its content,changing Master Boot Record, concealing themselves from the operating system
 % However it might not be feasible to traverse all the execution path that a program might take.
 \\
+We chose dynamic analysis because we can run the candidate malware pair together, to find the behavioral interferences, in live action.
+Static analysis would be tedious to analyze each candidate of a pair and correlate them for interference, within the time constraint.
 \subsection{Anubis}
 \label{sub:Anubis}
 For our experiment we use \textbf{Anbuis}, a dynamic malware analysis platform for analyzing Windows PE-executatbles~\cite[]{anubis}.
-We chose dynamic analysis because we can run the candidate malware pair together, in the analysis system, to find behavioral interferences, in live action.
-% It would be tedious work to perform static analysis on candidate pair and correlate with another malware.
 \emph{Anubis} generates a detailed report about modifications made to Windows registry or the file system, about interaction with the Windows Service Manager or other processes and logs of all generated network traffic~\cite[]{anubis}.
 We chose \emph{Anbuis} because of the following reasons:
 \begin{itemize}
@@ -121,18 +121,15 @@ We chose \emph{Anbuis} because of the following reasons:
   \item Our dataset of malware were those collected by Anubis over time, and we had access to already generated report of those malware.
   \item It is one of the well accepted dynamic analysis platform among the security researchers.
 \end{itemize}
-% With the increase in the rate of new malware with polymorphic and metamorphic nature, it has become much difficult to detect a new malware from \emph{static analysis}.
-% The syntactic signatures are ignorant of the semantics of the instruction and can be easily evaded with code obfuscation and making program control flow obscure~\cite[]{staticlimit}.\\
-% Many malware evade the \emph{dynamic analysis} detection and not performing any malicious activities, once they find out they are being run inside analysis environment.
-% This makes detection of evasive malware much more manual process~\cite[]{barecloud}.
 
 \section{Malware Clustering}
 \label{sec:Malware Clustering}
-In order to find the malware pair that belong to different families and analyze them for behavioral interference in \emph{Anubis}, we need a basis to cluster the malware into different families.
+We cluster our large dataset (million of malware samples), into different families (variant of same malware).
+This helps us find the candidate pair from smaller candidate set, each malware in a pair belonging to different clusters, without compromising the quality of dataset.
 % We believe that the candidate malware pair belonging to two different families will have high probability of interference in terms of negating each other.\\
 Anti-virus companies do provide labels to categorize malware into different families (such as listed in report of \emph{VirusTotal}~\cite[]{virustotal}), but they are not reliable.
 They have many shortcomings and limitations.
-According to~\citeauthor{bailey}, they do not fulfill the criteria consistency, completeness, and conciseness~\cite[]{bailey}.\\
+They do not fulfill the criteria consistency, completeness, and conciseness~\cite[]{bailey}.\\
 \begin{itemize}
 \item \textbf{Consistency.} Different AV vendors place the malware into different categories, and these categories also do not hold same meaning across the vendors.
 This leads to inconsistency in the AV vendors labels.
@@ -141,13 +138,13 @@ A month old binary could still be unlabeled, which makes the AV system labeling 
 \item \textbf{Conciseness.} The label provided by AV vendor are either too little or too much information with not much substantial meaning.
 They usually gave general idea of broad term as ``trojan'' and ``worm'' and not concise description of the specific malware or its family.
 \end{itemize}
-With the advent of dynamic analysis of malware, there has also been rise in different approach to build an automated system that could analyze the malware in large numbers.
-New malware are on the rise at an exponential rate with about 400,000 of them being introduced each day in the year 2015~\cite[]{avtest}; and with polymorphic and metamorphic techniques, malware have become complex and hard to detect from traditional signature based system.
+% With the advent of dynamic analysis of malware, there has also been rise in different approach to build an automated system that could analyze the malware in large numbers.
+% New malware are on the rise at an exponential rate with about 400,000 of them being introduced each day in the year 2015~\cite[]{avtest}; and with polymorphic and metamorphic techniques, malware have become complex and hard to detect from traditional signature based system.
 % Malware authors use polymorphic and metamorphic techniques to make malware more complex and change its form so as to make traditional signature based detection hard to detect them.
-As malware continue to evolve and rise in numbers, researchers are investigating machine learning techniques such as classification and clustering to analyze malware.
+As malware continue to evolve and rise in numbers~\cite[]{barecloud,avtest}, researchers are investigating machine learning techniques such as classification and clustering to analyze malware.
 \textbf{Classification} is an instance of supervised learning where a trained set of correctly identified data is used as a reference to classify new data.
 \textbf{Clustering}, on other hand is an instance of unsupervised learning, i.e., grouping unlabeled data object which are similar in some sense in same cluster.
-A good clustering system would be able to study new binary to find if the new binary is a variant of previous known malware and classify them accordingly.\\
+A good clustering system would be able to study behavior of new binary to find, if the new binary is a variant of previous known malware and classify them accordingly.\\
 As we described earlier that AV label on malware are not much reliable, we look onto different clustering techniques to categorize our dataset into different probable families.
 Let us discuss about works done so far on clustering and classification of malware to know about current state of art.\\
 % We looked on many previous works that were based on clustering of malware (\cite[]{mosko},\cite[]{bayer},\cite[]{firma},\cite[]{pirscoveanu},\cite[]{yavvari}).
@@ -175,27 +172,10 @@ Instead we preferred using something ready to use (not to spend time improving s
 Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
 As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} is statistically measured weight to evaluate the importance of a word in document with respect to whole corpus) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
-\\
-\subsection{Latend Dirichlet Allocation}
-\label{sub:Latend Dirichlet Allocation}
-\textit{latent Dirichlet allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora developed by~\citeauthor{Blei}~\cite[LDA]{Blei}.
+\textit{Latent Dirichlet Allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
 \textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $O(\#words\times \#clusters)$.
 This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
-% We will show the implementation and result of LDA, using python library \emph{Gensim} for clustering malware in~\autoref{sec:Document Clustering}.\\
-\subsection{Gensim}
-\label{sub:Gensim}
-\emph{``Gensim''} (\textbf{generate similar})~\cite[]{gensim} is an efficient python library developed by~\citeauthor{gensim}.
-We used \emph{``Gensim''}to perform the LDA for clustering malware into families.
-We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.\\
-We use the \emph{ldamulticore}\cite[]{ldamulticore}  models of the Gensim API.\@
-Some of the benefits of using the \emph{ldamulticore} model were~\cite[]{ldamulticore}:
-\begin{itemize}
-\item The model utilized the multi cores processor of the machine efficiently with parallelization making the clustering process faster.
-\item The training algorithm is streamed and we could feed the input documents sequentially even for large data.
-\item The training algorithm runs in constant memory with respect to number of documents.
-This made possible for us to process corpora that was larger than the memory size of our machine (32 Gigabytes), as size of training corpus did not affect the memory footprint.\\
-The maximum size of our corpus was 81 Gigabytes.
-\end{itemize}
+%TODO: Pachinko Allocation
 
 \section{Summary and Motivation}
 \label{sec:Motivation}
@@ -209,10 +189,10 @@ We gave an overview on two common malware analysis system and reason for choosin
 We see that different malware family have different techniques to inject themselves and keep themselves alive even after the system reboot.
 As described in~\autoref{sec:Malware Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware can be random or peculiar.
-These pattern related to each families could be used to check the presence of particular family.
-We use this rationale in our heuristics to filter probable malware candidate with behavioral interference.
-To select the sample candidate pair from different family, we look for those malware that tried to access or delete certain resource which was created by malware from another family.
-The detailed approach of selection of pair is described in~\autoref{sec:Candidate Selection}.\\
+These pattern related to each families can be used to check the presence of particular family.
+We use this rationale in our heuristics to find probable malware candidate with behavioral interference.
+To select the sample candidate pair, we look for the malware that tried to access or delete certain resource, which was created by another malware, from another family.
+The detailed approach of selection of pair is described in~\autoref{sub:Candidate Selection}.\\
 We believe such behavior of malware is suspicious and interesting case of interference between two malware family.\\
 We discussed why AV Vendors labeling of malware family are unreliable and how we will be using machine learning to achieve the clustering of malware to families.
 We discussed about use of machine learning techniques in the previous research work for clustering and classification of malware based on their behavioral profiles.
