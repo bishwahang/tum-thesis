@@ -174,17 +174,19 @@ The implementation is described in~\autoref{sec:Creation of Database}.
 \subsection{Reverse Indexing}
 \label{sub:Reverse Indexing}
 After we created the database, we created reverse index of the resource activities.
-% The database had all the resource activities(failed and success) of the resource types : such as file created, file deleted, registry modified, registry accessed and so on.
-% With the reverse index, we could list all the malware that modified, accessed, or deleted a resource.
+The database had all the resource activities (failed and success) of the resource types: such as file created, file deleted, registry modified, registry accessed and so on.
+We mapped `resource name', with all the malware, that had operations on that `resource name'.
 For instance, we mapped the resource name of the \emph{files}, with all the malware that modified it.
-Same reverse index was generated for read and delete operations and for other resource types, \emph{registry} and \emph{mutex}.
+Same reverse index was generated for read and delete operations, and for other resource types, \emph{registry} and \emph{mutex}.
+With the reverse index, for each resource, we have a list of all the malware that modified, accessed, or deleted that resource.
+We used the reverse index in our heuristics to select candidate malware pairs with behavioral interference.
 \subsection{Heuristics}
 \label{sub:Heuristics}
-We mapped reverse indexes, based on common resource name, to get malware set that created a resource and another malware set that tried to delete or read the same resource.
+We mapped reverse indexes, based on common resource name, to get malware set, say set \emph{`A'}, that created a resource \emph{`r'} with another malware set, say set \emph{`B'}, that tried to delete or read the same resource \emph{`r'}.
 As described in~\autoref{sec:Malware Families}, malware families have different ways of infecting and taking control of system, peculiar to themselves.
 One can detect the presence of malware in the system, by checking the presence of unique resource (files, registries, and others) associated with that malware, in the system.
 Thus, when a malware tries to access or delete some resource created by another malware (with a failed attempt because each malware was analyzed by Anubis in new OS environment), that activity is interesting for our candidate selection.\\
-We selected malware from each of those set to get a candidate pair.
+We selected malware sample from each of those set \emph{`A'} and \emph{`B'}, to get a candidate pair, with interference based on resource \emph{`r'}.
 Large number of malware were present in each candidate set. A single resource name was created by hundreds of thousands of malware and being accessed by hundreds of thousands of another malware.
 We needed to lower the number of candidate set to get substantial amount of good candidate pair.
 
