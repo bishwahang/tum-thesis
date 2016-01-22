@@ -1,13 +1,43 @@
 %!TEX root = ../main.tex
 \chapter{Literature Review}\label{chapter:literature_review}
-In this chapter we will discuss on anecdotal evidences and previous research works and show the necessity of our study to add a new aspect on understanding malware behavior.
-We start the chapter with brief summary of some popular malware families in~\autoref{sec:Malware Families} and different incident of interferences between malware families in the past in~\autoref{sec:Interference between Malware Families}.
-We discuss about malware analysis techniques and \emph{Anubis} system in~\autoref{sec:Malware Analysis}.
-We then discuss why AV vendor are not reliable in case of malware family determination, and how machine learning techniques has been used so far in different research work to classify and cluster malware in~\autoref{sec:Malware Clustering}.\\
-We end the chapter with summary of existing knowledge and motivation for new research.
-\section{Malware Families}
-\label{sec:Malware Families}
-We discussed about Malware and its types in~\autoref{chapter:introduction}.
+In this chapter we will discuss on anecdotal evidences on malware interference, malware analysis system, and previous research works on malware clustering.
+% and show the necessity of our study to add a new aspect on understanding malware behavior.
+With the insights from the literature review, we reason the motivation and design rational of our research work; to study the behavioral interference between malware families in large scale.\\
+We first describe commonly known malware types and families.
+%TODO: removed structure
+% We start the chapter with brief summary of some popular malware families in~\autoref{sec:Malware Families} and different incident of interferences between malware families in the past in~\autoref{sec:Interference between Malware Families}.
+% We discuss about malware analysis techniques and \emph{Anubis} system in~\autoref{sec:Malware Analysis}.
+% We then discuss why AV vendor are not reliable in case of malware family determination, and how machine learning techniques has been used so far in different research work to classify and cluster malware in~\autoref{sec:Malware Clustering}.\\
+% We end the chapter with summary of existing knowledge and motivation for new research.
+\section{Malware Types and Families}
+\label{sec:Malware Types and Families}
+% We discussed about Malware and its types in~\autoref{chapter:introduction}.
+Some of the commonly known malware types are viruses, worms, Trojans, and bots.\\
+A \textbf{Virus} is a piece of malicious code attached to some other executable host program or file, which gets executed when the user runs the host program.
+It can replicate itself to form multiple copies but cannot propagate on its own.
+It spreads when it is transferred or copied, by the user, to another computer via the network by file sharing or as an email attachment.\\
+A \textbf{Worm}, unlike a virus, is capable to run independently and is self-propagating.
+It propagates by exploiting some vulnerability in a machine OS, a device driver or taking the advantage of file-transfer features, such as email or network share.\\
+A \textbf{Trojan} is a non-replicating malware which gets its name from the ancient Greek story about the \textit{Trojan Horse}.
+It is a software that looks legitimate, but is harmful.
+Trojans are non reproducing non self-replicating.
+It spreads only by user actions such as opening infected Internet downloads and email attachments~\cite[]{ciscodif} \\
+A \textbf{Bot} is a malicious software that allows the infected host machine to be accessed and controlled remotely by its author, also called \emph{``botmaster''}.
+The botmaster does this from a central server called the Command and Control (C\&C) server.
+A network of such many Internet-connected bot is called \textbf{Botnet}.
+A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
+Botnet can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
+Some malware are able to change their structure and create a new variant of themselves each time they infects a new victim.
+On the basis of how a malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
+\textbf{Polymorphic} malware divides its program into two section of code: ``decryptor'' and ``encryptor''.
+The first code section, ``decryptor'', decrypts the second section of the code and hands the execution control to the decrypted section of code.
+When the second section of the code (encryptor) executes, it creates a new ``decryptor'' to encrypt itself, and links the new encrypted code section (encryptor) and the new ``decryptor'' to construct a new variant of malware.
+Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the ``decryptor'' to build the new one for new infected victim~\cite[]{rad2011evolution}.
+\textbf{Metamorphic} malware are body-polymorphic malware.
+Instead of generating new ``decryptor'', a new instance is created using similar code obfuscation techniques as used in polymorphic malware.
+Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
+In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
+
 Malware are categorized to different families in accordance to the malware author and similar behavior.\\
 In this section, we briefly describe three most common malware families to provide and idea on their behaviors, capabilities, and mode of operation.
 Even between these three families we can see stark difference in their behavior and approach of infecting victim's machine permanently keeping their presence low.
@@ -57,14 +87,14 @@ One of the symptoms to diagnose if a machine is infected by \emph{Sality} family
 \section{Interference between Malware Families}
 \label{sec:Interference between Malware Families}
 We discussed about malware families and their supposed behavior in previous section.
-In this section we show some of the evidences of interference between different malware families, recorded early in 2004 to latest in 2015.
-We look upon those incidents to know the families involved, nature of interference, and reason behind it.
-One of our main hypothesis is finding such behavioral interference between the malware families in large scale.
-This anecdotal evidences will serve as a ground truth for our research work.
+In this section we show some of the evidences of interference between different malware families.
+We look upon those incidents to know the families involved, nature of interference, and reasons behind it.
+One of our main goal is finding such behavioral interference between the malware families in large scale.
+This anecdotal evidences, quite popular among the security related media, will serve as a ground truth for our research work.
 \subsection{Bagle, Netsky, and Mydoom feud}
 \label{sub:Bagle, Netsky, and Mydoom feud}
 This feud between the malware family dates back to 2004, where there was exchange of words between the creators of \emph{Bagle, Netsky} and \emph{Mydoom}.
-All three malware family were computer worms spreading through email as an attachment and making victim curious enough to download and open it.
+All three malware family were computer worms spreading through email as an attachment and making victim curious enough to download and open it~\cite[]{wikinetsky}.
 The creators inserted their message inside the malware itself, making it visible for the victims too. This also gained much media attention and even appeared in~\cite[BBC]{bbccover}.
 Message \emph{``don't ruine (sic) our business, wanna start a war?''} was seen inside the \emph{Bagle.J}, where as \emph{NetSky.F} responded with message \emph{``Bagle \- you are a looser!!!! (sic)''}.
 Similar messages with profanity were also seen in variants of \emph{Mydoom.G} families.\\
@@ -91,7 +121,9 @@ It stopped those suspicious files from being installed in the system and also se
 If there were already presence of other malware, it would stop any updates to those other malware, by disconnecting them from their botmaster~\cite[]{secintelshifu}.
 \section{Malware Analysis}
 \label{sec:Malware Analysis}
-In previous sections, we talked about malware families and interference between them; in this section we describe techniques of malware analysis and \emph{Anbuis}, the dynamic analysis system, we chose for our research work.\\
+In previous sections, we discussed about malware families and interference between them.
+We need a malware analysis system to detect such behavioral interference from large dataset.
+In this section we describe techniques of malware analysis and \emph{Anbuis}, the dynamic analysis system, we chose for our research work.\\
 %TODO: connect to previous section
 \emph{Malware analysis} is a process of dissecting different components of a malware sample in order to study the behavior of the malware when it infects a host or victim's machine.
 It is done using different analysis tools and reverse engineering the binary.
@@ -109,6 +141,7 @@ Also, many evasive malware can evade detection by \emph{dynamic analysis} by ide
 % We can look through the log such as attempt to open other executables with intent to modify its content,changing Master Boot Record, concealing themselves from the operating system
 % However it might not be feasible to traverse all the execution path that a program might take.
 \\
+%TODO: something better reason??
 We chose dynamic analysis because we can run the candidate malware pair together, to find the behavioral interferences, in live action.
 Static analysis would be tedious to analyze each candidate of a pair and correlate them for interference, within the time constraint.
 \subsection{Anubis}
@@ -124,12 +157,14 @@ We chose \emph{Anbuis} because of the following reasons:
 
 \section{Malware Clustering}
 \label{sec:Malware Clustering}
-We cluster our large dataset (million of malware samples), into different families (variant of same malware).
-This helps us find the candidate pair from smaller candidate set, each malware in a pair belonging to different clusters, without compromising the quality of dataset.
+% We chose \emph{Anubis}, a dynamic analysis system, as our analysis tool.
+We wanted to select pairs that have high probability of behavioral interference, and analyze them in \emph{Anubis}, a dynamic analysis system, to confirm.
+% to run the candidate pair for dynamic analysis in \emph{Anubis}.
+We cluster our large dataset (million of malware samples), into different clusters (families), based on the malware behavior.
+This helps us find the candidate pair from smaller candidate set (clusters), each malware in a pair belonging to different clusters, without compromising the quality of dataset.
 % We believe that the candidate malware pair belonging to two different families will have high probability of interference in terms of negating each other.\\
 Anti-virus companies do provide labels to categorize malware into different families (such as listed in report of \emph{VirusTotal}~\cite[]{virustotal}), but they are not reliable.
-They have many shortcomings and limitations.
-They do not fulfill the criteria consistency, completeness, and conciseness~\cite[]{bailey}.\\
+They do not fulfill the criteria of consistency, completeness, and conciseness~\cite[]{bailey}.\\
 \begin{itemize}
 \item \textbf{Consistency.} Different AV vendors place the malware into different categories, and these categories also do not hold same meaning across the vendors.
 This leads to inconsistency in the AV vendors labels.
@@ -142,40 +177,44 @@ They usually gave general idea of broad term as ``trojan'' and ``worm'' and not 
 % New malware are on the rise at an exponential rate with about 400,000 of them being introduced each day in the year 2015~\cite[]{avtest}; and with polymorphic and metamorphic techniques, malware have become complex and hard to detect from traditional signature based system.
 % Malware authors use polymorphic and metamorphic techniques to make malware more complex and change its form so as to make traditional signature based detection hard to detect them.
 As malware continue to evolve and rise in numbers~\cite[]{barecloud,avtest}, researchers are investigating machine learning techniques such as classification and clustering to analyze malware.
+%TODO: add examples
 \textbf{Classification} is an instance of supervised learning where a trained set of correctly identified data is used as a reference to classify new data.
+Some examples of classification algorithms are \emph{Naive Bayes, Random Fores, and Neural Networks}~\cite[]{classification}.
 \textbf{Clustering}, on other hand is an instance of unsupervised learning, i.e., grouping unlabeled data object which are similar in some sense in same cluster.
+Some examples of clustering algorithms are \emph{expectation-maximization and k-means}~\cite[]{clustering}.
 A good clustering system would be able to study behavior of new binary to find, if the new binary is a variant of previous known malware and classify them accordingly.\\
-As we described earlier that AV label on malware are not much reliable, we look onto different clustering techniques to categorize our dataset into different probable families.
-Let us discuss about works done so far on clustering and classification of malware to know about current state of art.\\
+Because AV label on malware families are not much reliable, we look onto different clustering techniques to categorize our dataset into different families.
+% Let us discuss about works done so far on clustering and classification of malware to know about current state of art.\\
 % We looked on many previous works that were based on clustering of malware (\cite[]{mosko},\cite[]{bayer},\cite[]{firma},\cite[]{pirscoveanu},\cite[]{yavvari}).
 % We looked upon some of the previous workAll of the paper had different approach and number of dataset for their work.
 \textbf{\citeauthor{pirscoveanu}} used \emph{Random Forest} classifier on the behavior data set of \emph{42,068} malware to achieve high classification rate with weighted average Area Under Curve (AUC) value of 0.98~\cite[]{pirscoveanu}.
 \textbf{\citeauthor{mosko}} used \emph{Naive Bayes} classifier based on 20 malware-behavior to detect malware with mean detection accuracy of over 90\%~\cite[]{mosko}.
 \textbf{\citeauthor{yavvari}} used behavioral mapping approach to cluster \emph{1,727} unique malware pair samples~\cite[]{yavvari}.
-\textbf{\citeauthor{bayer}} used behavior clustering to cluster 75 thousand sample claiming to achieve better precision than the previous approaches~\cite[]{bayer}.
-\textbf{\citeauthor{firdausi}} in their paper did the measurement of five different classifiers, \emph{k-Nearest Neighbor, Naive Bayer, J48 decision trees, Support Vector Machine, and Multilayer Perception Neural Network}, to classify the malware based on behavioral data.
-With their result, they state that machine learning techniques based on behavioral profile could detect malware quite efficiently and effectively~\cite[]{firdausi}.\\
-Based on the previous research work and its result, we believe that machine learning techniques are good approach for malware clustering to cluster malware into different families.
-We studied the work of~\citeauthor{bayer} in detail to see if we could use their approach of behavioral clustering as their work were the only one to cluster malware in large scale, i.e. 75 thousands malware under three hours~\cite[]{bayer}.
+% \textbf{\citeauthor{bayer}} used behavior clustering to cluster 75 thousand sample claiming to achieve better precision than the previous approaches~\cite[]{bayer}.
+\textbf{\citeauthor{firdausi}} in their paper did the measurement of five different classifiers, \emph{k-Nearest Neighbor, Naive Bayes, J48 decision trees, Support Vector Machine, and Multilayer Perception Neural Network}, to classify the malware based on behavioral data, and state that machine learning techniques based on behavioral profile, can detect malware quite efficiently and effectively~\cite[]{firdausi}.
+Previous research work~\cite[]{bailey,bayer,rieck2009automatic}, showed that clustering and classification yields superior performance in timely detection of malware, against the arm race with malware authors, compared to signature based, dynamic or static analysis.
+\\
+\citeauthor{bailey} introduced the first clustering system based on observed behavior of malware~\cite[]{bailey}, which was later extended by~\citeauthor{bayer}~\cite[]{bayer}, to be scalable~\cite[]{rieck2009automatic}.
+We studied the work of~\citeauthor{bayer} in detail, as their work clustered malware in large scale; $75$ thousands malware under three hours~\cite[]{bayer}.
 % Also, they too used \emph{Anubis} system as dynamic analysis platform for their work to create the behavioral profile and we had access to those behavioral profiles.\\
 % To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\citeauthor{bayer}.
-With further study of the~\cite[Bayer]{bayer} paper, we found that their approach still was scalable to millions of samples we needed to cluster.
-% The clustering results were for tens of thousands of malware samples and not millions, and the approach still does not look like scalable to millions of samples.
+% We found that their approach still was not scalable to millions of samples we needed to cluster.
+But, the clustering results were for tens of thousands of malware samples, and the approach still does not look like to be scalable to millions of samples.
 The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75,000 samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
 Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
 \\
 % Another alternative was VirusTotal labels, but unfortunately they are not very reliable as we discussed early.
-\\
 % A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
 Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
-As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} is statistically measured weight to evaluate the importance of a word in document with respect to whole corpus) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
+As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} is statistically measured weight to evaluate the importance of a word in document with respect to whole corpus~\cite[]{tfidf}) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
 \textit{Latent Dirichlet Allocation} (\textbf{LDA}), is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
 \textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on number of documents and its memory footprint is $O(\#words\times \#clusters)$.
 This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\
 %TODO: Pachinko Allocation
+%TODO: Cite memory footprint, and tf-idf
 
 \section{Summary and Motivation}
 \label{sec:Motivation}

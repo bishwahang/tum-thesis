@@ -5,37 +5,44 @@ Malware can infect the system by being bundled with some other program or being 
 When the user opens such a program or file, the malware gets installed into the user's machine.
 Malware can also install themselves by exploiting some common vulnerabilities in an operating system (OS), a network device, or other common software.
 A vast majority of malware is installed by some action by the user, such as clicking an e-mail attachment or downloading a file from Internet~\cite[]{ciscodif}.\\
-% Malware can be classified into self-replicating and non-replicating categories.
+Malware can be classified into self-replicating, such as \emph{virus and worms}, and non-replicating, such as \emph{trojan}~\cite[]{malsoft}.
+Unlike virus, which needs user action (opening the infected file), worms are capable of automated replication and propagation, through computer networks~\cite[]{malsoft}.
+Trojan disguise themselves to be legitimate and harmless, but have hidden malicious functions.
+A malware can also be categorized into \emph{polymorphic} and \emph{metamorphic}, by its ability to change its code-structure, every time it infects a new victim.
+\emph{Polymorphic} malware uses code obfuscation (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) and encryption to create a new variant of itself, whereas,
+\emph{metamorphic} malware uses only code obfuscation to change its code-structure~\cite[]{rad2011evolution,rad2012camouflage}.
+However, the semantics of the program (malware) remains same.
+We discuss in details about types of malware in~\autoref{sec:Malware Types and Families}.\\
 % Viruses and Worms, which are the two most common types of malware, fall under the self-replicating, where as Trojans and Bots are categorized under non-replicating.\\
-Some of the commonly known malware types are viruses, worms, Trojans, and bots.
-A \textbf{Virus} is a piece of malicious code attached to some other executable host program or file, which gets executed when the user runs the host program.
-It can replicate itself to form multiple copies but cannot propagate on its own.
-It spreads when it is transferred or copied, by the user, to another computer via the network by file sharing or as an email attachment.\\
-A \textbf{Worm}, unlike a virus, is capable to run independently and is self-propagating.
-It propagates by exploiting some vulnerability in a machine OS, a device driver or taking the advantage of file-transfer features, such as email or network share.\\
-A \textbf{Trojan} is a non-replicating malware which gets its name from the ancient Greek story about the \textit{Trojan Horse}.
-It is a software that looks legitimate, but is harmful.
-Trojans are non reproducing non self-replicating.
-It spreads only by user actions such as opening infected Internet downloads and email attachments~\cite[]{ciscodif} \\
-A \textbf{Bot} is a malicious software that allows the infected host machine to be accessed and controlled remotely by its author, also called \emph{``botmaster''}.
-The botmaster does this from a central server called the Command and Control (C\&C) server.
-A network of such many Internet-connected bot is called \textbf{Botnet}.
-A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
-Botnet can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
-Some malware are able to change their structure and create a new variant of themselves each time they infects a new victim.
-On the basis of how a malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
-\textbf{Polymorphic} malware divides its program into two section of code: ``decryptor'' and ``encryptor''.
-The first code section, ``decryptor'', decrypts the second section of the code and hands the execution control to the decrypted section of code.
-When the second section of the code (encryptor) executes, it creates a new ``decryptor'' to encrypt itself, and links the new encrypted code section (encryptor) and the new ``decryptor'' to construct a new variant of malware.
-Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the ``decryptor'' to build the new one for new infected victim~\cite[]{rad2011evolution}.
-\textbf{Metamorphic} malware are body-polymorphic malware.
-Instead of generating new ``decryptor'', a new instance is created using similar code obfuscation techniques as used in polymorphic malware.
-Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
-In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
+% Some of the commonly known malware types are viruses, worms, Trojans, and bots.
+% A \textbf{Virus} is a piece of malicious code attached to some other executable host program or file, which gets executed when the user runs the host program.
+% It can replicate itself to form multiple copies but cannot propagate on its own.
+% It spreads when it is transferred or copied, by the user, to another computer via the network by file sharing or as an email attachment.\\
+% A \textbf{Worm}, unlike a virus, is capable to run independently and is self-propagating.
+% It propagates by exploiting some vulnerability in a machine OS, a device driver or taking the advantage of file-transfer features, such as email or network share.\\
+% A \textbf{Trojan} is a non-replicating malware which gets its name from the ancient Greek story about the \textit{Trojan Horse}.
+% It is a software that looks legitimate, but is harmful.
+% Trojans are non reproducing non self-replicating.
+% It spreads only by user actions such as opening infected Internet downloads and email attachments~\cite[]{ciscodif} \\
+% A \textbf{Bot} is a malicious software that allows the infected host machine to be accessed and controlled remotely by its author, also called \emph{``botmaster''}.
+% The botmaster does this from a central server called the Command and Control (C\&C) server.
+% A network of such many Internet-connected bot is called \textbf{Botnet}.
+% A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
+% Botnet can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
+% Some malware are able to change their structure and create a new variant of themselves each time they infects a new victim.
+% On the basis of how a malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
+% \textbf{Polymorphic} malware divides its program into two section of code: ``decryptor'' and ``encryptor''.
+% The first code section, ``decryptor'', decrypts the second section of the code and hands the execution control to the decrypted section of code.
+% When the second section of the code (encryptor) executes, it creates a new ``decryptor'' to encrypt itself, and links the new encrypted code section (encryptor) and the new ``decryptor'' to construct a new variant of malware.
+% Code obfuscation techniques (e.g.\ dead-code insertion, subroutine reordering, instruction substitution) are used to mutate the ``decryptor'' to build the new one for new infected victim~\cite[]{rad2011evolution}.
+% \textbf{Metamorphic} malware are body-polymorphic malware.
+% Instead of generating new ``decryptor'', a new instance is created using similar code obfuscation techniques as used in polymorphic malware.
+% Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
+% In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
 
 As the Internet increased its penetration over the last two decade, more and more devices became connected via the Internet.
 Many of our daily life activities are now depended on its usage, such as email, banking, bill payment, and social network.
-Along with this, the underground Internet economy has also been on the rise.
+Along with this, the underground Internet economy, illegal trading of valuable data and personal information, has also been on the rise.
 Malware authors now do not write malware just for fun, to create annoyance or break into some system for bragging rights, but also for profit generation.
 Malware authors look for banking credentials, credit cards, personal informations and identifications that they can gather and sell in the underground market.
 In 2006, annual losses caused by malware were estimated to be 2.8 billion dollars in United States and 9.3 billion euros in Europe~\cite[]{moore2009economics}.
@@ -47,13 +54,14 @@ Malware has become a lucrative business.
 Malware authors are now vying with each other to take sole control of their victim for larger profit.
 Many cases have been found, where one malware tries to delete another malware from the victim's machine.
 Further, once they have infected the victim, they prevent the host from being infected by other malware.
-In 2010, \emph{SpyEye}, a Trojan, was found to have a feature \emph{KillZeus} that would remove \emph{Zeus}, which is also another Trojan, making \emph{SpyEye} the only malware to run in the compromised system.
-In 2015, \emph{Shifu}, a banking Trojan, was found to have behavior similar to Anti Virus (AV), i.e., preventing the host from further infection by other malware, once it had taken control over the victim's machine.
+In 2010, \emph{SpyEye}, a Trojan, was found to have a feature \emph{KillZeus} that would remove \emph{Zeus}, which is also another Trojan, making \emph{SpyEye} the only malware to run in the compromised system~\cite[]{sanszeus}.
+In 2015, \emph{Shifu}, a banking Trojan, was found to have behavior similar to Anti Virus (AV), i.e., preventing the host from further infection by other malware, once it had taken control over the victim's machine~\cite[]{secintelshifu}.
 We have discussed in details, about such anecdotal evidence of interaction between malware families, in \autoref{sec:Interference between Malware Families}.\\
 The study of aforementioned behavioral interference between the malware family will provide a novel knowledge to understand dynamic aspect of modern malware and the inter family relations.
 This behavior is also a case for environment-sensitive malware, where malware change their behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
 To the best of our knowledge, there hasn't been a study of such interference between two malware families so far.
 We present a systematic way to find out such interferences from large number of malware samples.\\
+%TODO: do not go into detail introduction, put in methodology
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable.
@@ -83,8 +91,8 @@ We were able to successfully find X pair of malware with interfering behavior wi
 Our research will provide following contributions:
 \begin{itemize}
   \item To the best of our knowledge, we are the first to perform a systematic study of interferences between malware families.
+    Our work is based on wide variety of large malware dataset collected over time in the wild.
     This novel research will help better understand dynamic aspect of malware behavior.
-  \item Our work is based on wide variety of large malware dataset collected over time in the wild.
   \item A novel approach to malware clustering based on their behavior profiles.
     We show our clustering approach is pretty good in grouping similar behaving malware in same cluster.
   \item An automated system that detects interfering malware samples in large scale.
