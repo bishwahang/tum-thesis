@@ -1,28 +1,35 @@
 %!TEX root = ../main.tex
 \chapter{Implementation}\label{chapter:implementation}
 In this chapter we give a detail explanation of how we implemented and conducted our research as described in~\autoref{chapter:methodology}
-\section{Study of current Database}
+\section{Study of Anubis and Database}
 Our main resource for the research was direct access the millions of malware samples from Anubis collected over the years.
-Not only was this resource our main strength but it was also a challenge to effectively and efficiently analyze those data for our research work.\\
-We started with studying the Anubis system and current database. We primarily dealt with two database of Anubis backend, the \textbf{db\_report} and \textbf{web\_analysis}.
-The web analysis was the first entry of any sample malware submitted for analysis. It consisted of tables such as result, file, file\_task. Each sample was given a unique file\_id along with md5 and sha hashes.
-A new file\_task \emph{id} was created  and the analysis of the sample would be done for different behavioral activities related to resources such as File, Registry, Mutex activities.\\
-These activities were saved in db\_report database table.
-The resource activities of the malware in \textbf{db\_report} database was associated with the \textbf{web\_analysis} database by the constraint key \textit{result\_id} of \emph{result} table in web\_analysis database.
+We had to effectively and efficiently analyze those data for the goal of our research.\\
+We started with studying the Anubis system and current database.
+We primarily dealt with two database of Anubis backend, the \textbf{`db\_report'} and \textbf{'web\_analysis'}.
+The \emph{`web\_analysis'} database was hit first for any binary submitted for analysis.
+It consisted of tables such as \emph{`result', `file', and `file\_task'}.
+Each submission was a unique row in \emph{`result'} table.
+A new row is created in \emph{`file'} table with the \emph{`md5'} and \emph{`sha'} hash of the binary.
+We refer the unique primary key of the \emph{`file'} table as \textbf{malware id}.
+The \emph{file} and \emph{`result'} tables was associated through \emph{`file\_task'} table.
+The analysis of the sample would be done for different behavioral activities related to resources such as File, Registry and Mutex activities.
+These activities were saved in \emph{db\_report} database.
+The resource activities of the malware in \textbf{`db\_report'} database was associated with the \textbf{`web\_analysis'} database by the constraint key \textit{`result\_id'} of the \emph{`result'}.
 \begin{lstlisting}[language=sql,caption={sql showing database structure to get file created activities of a malware sample},label={lst:resultidsql}]
 SELECT result_id FROM web_analysis.task join web_analysis.file_task using (task_id) join web_analysis.file using (file_id) WHERE task_id=result_id;
 SELECT name from db_report.file_created join db_report.file_name using (file_name_id) where result_id ='12345';
 \end{lstlisting}
-We looked upon 3 resource type for the beginning. The resources type were \textit{File, Registry, Mutex}. For each resource type we took into account their \textit{create, read, delete} activities.\\
 The total number of malware samples that we had in our test database were \textbf{\gettotalmalwarei{}}.\\
+Initially, we started with 3 resource types \textit{File, Registry, Mutex}.
+For each resource type, their \textit{create, read, delete} resource activities were extracted.
 Our first step was to create a reverse index from the database so that we could get the list of malware that is associated with the resource activities.
-We started with writing a python script to do the task and save it in the file.
-However we found the first hurdle of our project.
-Since the number of malware were too large trying to save all their activities in data structure would cause our machine to run out of memory and hence crash the system.
+Since the number of malware were too large trying to save all their activities in data structure would cause our machine to run out of memory and crash the system.
 To solve this we took the approach of map reduce.\\
-We ran our script in batch 50K malware at a time and saved the reverse index of activity to the file with numbering.
-Around 420 files were created for each resource type. The result files were in the format where resource name and list of result ids were separated by commas (,) as delimiter.
-This was one of the time consuming operation and it took almost 5 days for the script to finish. After the reverse index was generated in multiple numbered output, we sorted the file based on resource name, alphabetically, and then joined the different parts with regard to the resource activity as key to merged it into one single file.\\
+We worked on a batch of 50K malware at a time and saved the reverse index of activity to the file with a numbering.
+Around 420 files were created for each resource type. The result files were in the format where resource name and list of unique malware id were separated by commas (,) as delimiter.
+This was one of the time consuming operation and it took almost 5 days for the script to finish.
+After the reverse index was generated in multiple numbered output, we sorted the file based on resource name, alphabetically.
+We joined the different parts with regard to the resource activity as key to merged it into one single file.\\
 Since, this was a merge sort, we considered two sorted files at a time until single file was left, the reduce part was pretty fast ($O( n * \log(n))$).
 
 \begin{lstlisting}[numbers=none]
@@ -44,7 +51,7 @@ C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/_MEI1192/,161552035,116241803
 
 \section{Packer \& Unpacker}
 \label{sec:packerunpacker}
-In order to run the pair of malware together inside the Anubis environment we made a Win32 console application, named Unpacker, as Anubis VM was based on Windows (XP).
+In order to run the pair of malware together inside the Anubis environment we made a Win32 console application, named Unpacker, as Anubis VM was based on Windows OS.\@
 We used the fact that we can append any data to \emph{exe}, and it would work fine.
 So we created a meta binary, that will read itself, and extract the other two binaries, that will be attached to it.
 It will then create it and spawn two independent process with certain time delay.
@@ -55,15 +62,15 @@ The structure of unpacker binary is shown in~\autoref{fig:unpacker}.\\
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.5]{figures/unpacker.png}
-\caption{[Packer structure] Structure of the Packer binary that would create the candidate pair and run them with delay.}
+\caption{[Unpacker structure] Structure of the Unpacker binary that would create the candidate pair and run them with delay.}
 \label{fig:unpacker}
 \end{figure}
 \\
-We used a struct of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte had the binary pair sizes information and delay, know as meta information.
+We used a struct of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte had the binary pair sizes information and delay time, known as meta information.
 The offset would be deduction of $3 * \textit{size of uint}$ from the total size of itself.\\
 When the file size of packed binary was known, we used \texttt{fseek\(\)} function appropriately to start reading form the correct position until the exact size of binary were read.
-Then these bytes were saved to the new file pointer. Once the binary pairs were extracted by the unpacker new binary files were created in the Anubis environment and those were executed one after another with the delay of time as given in meta information.
-We used \texttt{windows.h} standard libraries \emph{CreateProcess} and \emph{Sleep} function for the purpose.\\
+Then these bytes were saved to the new file pointer. Once the binary pairs were extracted by the unpacker new binary files were created in the Anubis environment and those were executed one after another with the delay of time.
+We used \emph{windows.h} standard libraries \emph{CreateProcess} and \emph{Sleep} function for the purpose.\\
 
 \begin{lstlisting}[language=c,caption={snippet of unpacker.c file}, label={lst:unpacker.c}]
   /* stuct for storing meta information */
@@ -103,15 +110,15 @@ We used \texttt{windows.h} standard libraries \emph{CreateProcess} and \emph{Sle
 From the reverse index of the resource activities of the Malware, we created a mapping between the created activities against the deleted or read activities.
 We created a list of malware based on the common resource name as the key, where a list of malware which created the resource and another list of malware which delete/read the same resource.
 We started looking for one to one interaction of malware to a single resource. Any resource type that was created by exactly single malware and deleted by exactly another single malware.
-We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, and malware `b' deletes the same resource, \emph{r}, and no other malware has create or delete activities on that resource \emph{r}.\\
-After finding such pairs, when we ran those malware pairs in the Anubis system using our unpacker.\\
-In our initial run, we found lots of dropper malware causing this interaction. Binary `a' was a dropper that would create many binaries including the binary `b', and binary `b' actually read itself upon execution, which was recorded as read activity by Anubis.
+We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, and malware `b' deletes the same resource, \emph{r}, such that no other malware has create or delete activities on that resource \emph{r}.\\
+After finding such pairs, when we ran those malware pairs in the Anubis system using the \emph{unpacker}.\\
+During our initial run, we found lots of dropper malware causing this interaction. Binary `a' was a dropper that would create many binaries including the binary `b', and binary `b' actually read itself upon execution, which was recorded as read activity by Anubis.
 After running many other candidate pairs with different level of interaction and analyzing the results manually, not only were we able to understand the Anubis report in depth but also found an logical error on our current approach.\\
 Our notion behind checking the malware interaction was finding candidate pairs such that one malware `a' creates some resource, `r', and another malware `b' tries to access or delete the same resource,`r'.
-But since Anubis ran each submitted binary in an isolated environment, there was no way that a malware sample `b' would find the resource that was supposed to be created by malware `a'.\\
-We should have been looking for failed attempt activities, where a malware sample unsuccessfully tried to access or delete a resource created by another malware, but the current database that we had did not had record of such failed attempt, but only recorded the successful operations.
-This lead us to look for the alternatives were we could find log of such failed attempt activities during the execution of binary.\\
-We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile} to find such failed activities of deletion and access.
+But, Anubis ran each submitted binary in an isolated environment, hence there was no way that a malware sample `b' would find the resource that was supposed to be created by malware `a'.\\
+We should have been looking for failed attempt activities, where a malware sample unsuccessfully tried to access or delete a resource created by another malware, but the current database had no record of such failed attempt.
+This lead us to look for the alternatives where we could find log of such failed attempt activities during the execution of binary.\\
+We used \emph{anubis} log file and the behavioral profiles, as described in~\autoref{sub:Behavioral Profile}, to find such failed activities of deletion and access.
 % A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
 % \begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
 %   op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
@@ -142,11 +149,11 @@ We used the behavioral profiles as described in~\autoref{sec:Behavioral Profile}
 \section{Creation of Database}
 \label{sec:Creation of Database}
 Recreating the database was one of the bottleneck in our project and consumed much time.
-The profile files were needed to be accessed via network file system, walking through list of directories and file to find the profile pickle of malware.
-Not all of the profile pickle were found. We found \emph{\gettotalmalwareii{}} out of \emph{\gettotalmalwarei{}} malware.\\
+The behavioral profile files were needed to be accessed via network file system, walking through list of directories and file to find the profile pickle of specific malware.
+We found \emph{\gettotalmalwareii{}} behavioral profile files out of \emph{\gettotalmalwarei{}} malware.\\
 % We mapped the Windows Native and Windows Api call into three category modified, accessed, and delete.
-We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Service, Job, and Driver.
-We went through the most common used system calls defined as OS Operation as described in~\autoref{sec:Behavioral Profile} and then mapped them into the broad three categories \emph{Modify, Access, and Delete}.
+We took only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Service, Job, and Driver [see \autoref{sub:Resource Types and Activities}]
+We went through the most common used system calls defined as OS Operation as described in~\autoref{ssub:OS Operation} and then mapped them into the broad three categories \emph{Modify, Access, and Delete}.
 Windows Native and Windows API calls were already generalized during the creation of behavioral profile.
 
 \begin{lstlisting}[language=ruby,caption={Mapping of generalize system calls with regard to behavioral profile },label={lbl:ntapi}]
@@ -185,16 +192,17 @@ DELETE_LIST = {
 
 \end{lstlisting}
 We used \textbf{MySql Version 5.5.46} as our database engine.MySQL~\cite[]{mysql} is highly scalable and flexible relational database system which complies with the ACID model design principle.
+%TODO: Why ACID?
 We followed the previous table structure to design our new database so that we could reuse parts of our previous program for data processing.
-The final database size was 1.2 Terabyte.\\
 The basic CRUD operations were time expensive and made the overall operation slow.
 We also hit the integer overflow for the primary index of registry access activities table.
 The total registry access activities were more than 4 billion of records.
 To solve this, we had to create another registry access table and start inserting the registry access records in new table.
-When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware sample.\\
+When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware sample.
+The final database size was 1.2 Terabyte.\\
 We had to spent much time then expected on database tuning to make the program run faster so that it would complete in reasonable time.
-Most part of the execution time was taken to read the profile gzip pickle and then normal sql CRUD operation as shown in Figure~\ref{fig:dbcreation}.\\
-These were for \gettotalmalwareii{} binary pickle profiles and their resource activities.
+Most part of the execution time was taken to read the profile gzip pickle and then normal sql CRUD operation as shown in Figure~\ref{fig:dbcreation}.
+\gettotalmalwareii{} binary pickle profiles were processed.\\
 % The execution profile is shown in~\autoref{fig:dbcreation}
 %TODO: put profile.png
 \begin{figure}
@@ -208,24 +216,25 @@ These were for \gettotalmalwareii{} binary pickle profiles and their resource ac
 After the creation of new database, we made a reverse index from the new refined data for the \emph{resource\_name} to malware ids modifying, accessing, and deleting the resource.
 Getting all the resource activities related to all the resource types \emph{file, registry, section, driver, sync,service, process, and job} was also time expensive.
 It took almost 5 days for us to get the reverse index of resource name to the malware ids with respective modify, access or delete operation.
-While creating the resource mapping this time, we took into account those activity that had successful creation with those activities with failed access and another mapping between successful creation and delete activity.
+For reverse indexes mapping, we took into account those activity that had successful creation with those activity with failed access and delete attempt.
 \\
 We made this mapping for every resource types. We made a mapping between successful file creation and failed file deletion and mapping between successful file creation and failed file access.
 Same mapping was done for resource types registry, sync, section,service, job, and driver. The resource name was always the common key for the mapping between the malware.\\
 Once we had a mapping of resource activity with respect to resource name, we started to run the candidate pairs to test the behavioral interaction between those pairs. But, since the number of pairs were too many we hit the \emph{n-combination} problem.
 A single resource \texttt{`r'} would have been created by more than thousands of malware and also same resource \texttt{`r'} would have been tried to access or delete with a failed attempt by another thousands of malware. If we made a pair out of every malware as possible candidate there would be too many candidates for us to run and analyze result.\\
+%TODO: add one more reason "not good enough"
 We looked into clustering of the malware behavior to address this problem so that we could cluster malware on different topic and only choose one sample from one topic among the list of topics.
 \section{Document Clustering}
 \label{sec:Document Clustering}
-We researched on many types of clustering algorithm that we could use to cluster our malware. Our idea of clustering was based on malware resource activities.
-We had all the resource activities such as modification, access and deletion related to different resource types as discussed above.
-We represented each resource type and activities as numeric value. And each resource name would be represented by it's unique resource name id on our database system.
-\begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
-  RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
-  OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
-\end{lstlisting}
-So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with \textit{file\_name\_id}, ``4986'' in our database, by some malware ``A'', would be represented as single word \emph{``1\_2\_4986''}. Each such resource activities related to one single malware would be a bag of words representing  a single document representing that particular malware.\\
-We needed to convert all the resource activities related to modify, access and delete of the our test binaries into the corpora text.
+% We researched on many types of clustering algorithm that we could use to cluster our malware. Our idea of clustering was based on malware resource activities.
+% We had all the resource activities such as modification, access and deletion related to different resource types.
+% We represented each resource type and activities as numeric value. And each resource name would be represented by it's unique resource name id from our new database.
+% \begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
+%   RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
+%   OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
+% \end{lstlisting}
+% So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with \textit{file\_name\_id}, ``4986'' in our database, by some malware ``A'', would be represented as single word \emph{``1\_2\_4986''}. Each such resource activities related to one single malware would be a bag of words representing  a single document representing that particular malware.\\
+We needed to convert all the resource activities related to modify, access and delete of the our test binaries into the corpora text as discussed in~\autoref{sub:Clustering}.
 After 6 days of running the script, we could gather all the resource activity of {\gettotalmalwareii} malware as the corpus for algorithm.
 The profiling of the program is shown in Figure~\ref{fig:actcreation}.
 This was about 81 Gigabytes of data.
@@ -237,7 +246,9 @@ This was about 81 Gigabytes of data.
 \label{fig:actcreation}
 \end{figure}
 \\
-We used python module Gensim~\cite[Gensim]{gensim}  for the topic clustering and used the LDA model as described in Methodology section. We filtered our corpora by discarding any resource activity that occurred in less than 1000 or more than 1 million for clustering. This was based on heuristic after studying the cdf graph of activities to number of malware.
+We used python module Gensim~\cite[Gensim]{gensim}  for the topic clustering and used the LDA model as described in~\autoref{sub:Gensim}.
+We filtered our corpora by discarding any resource activity that occurred in less than 1000 or more than 1 million for clustering.
+This was based on heuristic after studying the cdf graph of activities to number of malware.
 %TODO: add cdf of reverse index
 The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
 \begin{lstlisting}[float,floatplacement=H,language=python,caption={Script to run Gensim LDA},label={lbl:lda.py}]
@@ -267,10 +278,12 @@ To do this we tried the manual approach. We sorted the reverse index of resource
 Once we had it sorted in descending order, we got most commonly modified/accessed/created resource at the top of the list, and went through all the mapping line by line until we found some interesting resource name.
 Once we found that, we made a threshold to that resource name, and excluded any resource to malware mapping before that as it was not of substantial importance.\\
 We did not had any resource activity mapping for resource type Service, Job, and Driver. Hence, we looked upon the remaining five resource type from our original resource types considered.\\
-For instance, resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the sample binary.\\
+For instance, resource with name such as \emph{Dr.\ Watson.exe} and \emph{Sample.exe} were the one with highest count of malware associated with it. The former one is created whenever the program crashes and the later one is the name that anubis uses to run the binary input.
 We looked for such benign resource names and weeded out for all the resource activities related to resource type file, registry, section, sync, and process. We were able to lower the total number of malware from {\gettotalmalwareii{}} to {\gettotalmalwareiii{}}.\\
-We created the bag of words again for those {\gettotalmalwareiii{}} malware, and started the document clustering LDA algorithm. This time we had even better results with respect to inter distance and intra distance of the clusters.\\
-The malware were clustered into 662 clusters. The largest cluster size was {\getlargestclustersize{}} and the lowest was {\getlowestclustersize{}}.
+We created the bag of words again for those {\gettotalmalwareiii{}} malware, and performed the document clustering.
+This time we had even better results with respect to inter distance and intra distance of the clusters.\\
+The malware were clustered into \textbf{``662 clusters''}.
+The largest cluster size was {\getlargestclustersize{}} and the lowest was {\getlowestclustersize{}}.
 The histogram and cumulative distributive graph showing the sizes of cluster can be seen in~\ref{fig:histclustersize},~\ref{fig:ecdfclustersize}, and~\ref{fig:cdfclusterlen}.\\
 \begin{figure}[htbp]
 \begin{center}
@@ -293,13 +306,15 @@ The histogram and cumulative distributive graph showing the sizes of cluster can
 \caption{Graph showing cdf between size of cluster and total number of malware}
 \label{fig:cdfclusterlen}
 \end{figure}
-From the above graph we can see that distribution of cluster size was mostly below 50,000.
-$90\%$ of the cluster topic, about \emph{629}, falls under the cluster size of less than 50,000, where as about \emph{4 million} malware, which is the $65\%$ of total malware, are in the clsuter size of less than 50K.\\
-To show the quality of our clustering we present the following graph showing the graph of inter-cluster and intra-cluster distance in Figure~\ref{fig:intraclustcommon} and Figure~\ref{fig:interclustcommon}.\\
-In case of intra-distance, for each topic family, we sampled at maximum 1000 malware, if the topic had that many number of malware. We calculated the average number of resource activities\textit{(words)} present among those sampled mawlare\textit{(document)}
-We then calculated the average common resources between the combinations of sample. We could see that the average common words between the intra malware sample were quite good with intra-distance of at least \emph{500} covering $80\%$ of family topics.
-For the inter-distance calculation, we took a random combination pair of topic \emph{`x'} with other topics, and randomly sampled 1000 malware sample, if present, from those topic pair.
-We calculated the average common words between those the sampled malware for each pair to find the inter distance between the malware of different family topics.
+From the graph we can see that distribution of cluster size was mostly below 50,000.
+$90\%$ of the cluster, about \emph{629}, falls under the cluster size of less than 50,000 and \emph{4 million} malware, which is the $65\%$ of total malware, are in the cluster size of less than 50K.\\
+To show the quality of our clustering we provide the following graph showing the graph of inter-cluster and intra-cluster distance in Figure~\ref{fig:intraclustcommon} and Figure~\ref{fig:interclustcommon}.\\
+In case of intra-distance, for each topic family, we sampled at maximum 1000 malware.
+We calculated the average number of resource activities\textit{(words)} present among those sampled mawlare\textit{(document)}
+We then calculated the average common words between the combinations of sample.
+We could see that the average common words between the intra malware sample were quite good with intra-distance of at least \emph{500} covering $80\%$ of family topics.
+For the inter-distance calculation, we took a random combination pair of cluster \emph{`x'} with other clusters (not \emph{`x'}), and randomly sampled 1000 malware sample, if present, from those cluster pair.
+We calculated the average common words between those the sampled malware for each pair to find the inter distance between the malware of different clusters.
 We can see that the inter-distance of only 10 was covering almost $90\%$ of family topic.
 \begin{figure}[htbp]
 \begin{center}
@@ -318,21 +333,23 @@ We can see that the inter-distance of only 10 was covering almost $90\%$ of fami
 \label{fig:interclustcommon}
 \end{figure}
 
-\section{Finding out the candidate pairs}
-\label{sec:Finding out the candidate pairs}
-After the clustering of the malware was done, we used the result and the our mapping of resource to malware to find the candidate pairs for experiment.
+\section{Filtering the candidate pairs}
+\label{sec:Filtering the candidate pairs}
+With the procedure described in~\autoref{ssub:Candidate Selection}, we found malware candidates with probable behavioral interference.
+We needed to further filter the candidates such that there is no repetition of malware pairs for different resource name.
 In order to find the optimal set of candidate we interpreted the interaction of malware and resource with respect to cluster into Flow Network.
+% We represented malware with its \emph{`md5'} hash.
 \subsection{Max Flow apporach}
 \label{sub:Max Flow apporach}
 We wanted to find the optimal pair of malware such that we have all the interesting mapped resource covered along with the cluster associated with it.
-We represented the mapping between the resource, malware, and cluster as a flow network, and run the max flow algorithm as shown in Figure~\ref{fig:maxflow}, to yield the optimal solution.\\
-The network is made of 4 layers, other than sink and source. Layer one is reading malware, the samples that tried to access or delete interesting resources but failed.
+We represented the mapping between the resource, malware, and cluster as a flow network, and run the max flow algorithm as given in Figure~\ref{fig:maxflow}.\\
+The network is made of 4 layers, other than sink and source. Layer one is reading malware, the malware samples that tried to access or delete interesting resources but failed.
 Layer two is combinations of clusters, \emph{ic=input cluster}, that the malware with failed access or delete attempt belongs to, and the interesting resources on which the malware tried to operate.
 Layer three is the combinations of clusters, \emph{oc=output cluster}, that the malware with successful modification operation belongs to, and the interesting resources that they could successfully modify.
-Layer four is the malware that successfully created/modified the resource.\\
+Layer four is the malware that successfully modified the resource.\\
 The flow rules were:
 \begin{itemize}
-  \item All malware from layer one is connected from source and also connected to the input cluster and resource combination it belongs to.
+  \item All malware from layer one is connected from sources and also connected to the input cluster and resource combination it belongs to.
   \item All input cluster resource combination in layer two is connected to all output cluster resource combination in layer 3 that has a matching resource.
   \item All output cluster resource in layer 3 is connected to the corresponding malware in layer 4.
   \item Each malware in layer 4 is connected to the sink (T).
@@ -341,8 +358,8 @@ The capacities were:
 \begin{itemize}
   \item All connections have capacity of infinite except connections from layer 2 to layer 3.
   \item All connections from layer 2 to layer 3 have a capacity of one.
-  \item The maximum flow in this network is corresponding to an optimum match up.
 \end{itemize}
+The maximum flow in this network is corresponding to an optimum match up.
 Combinations and nodes that do not have a path from source to sink were not be put in the graph.\\
 \begin{figure}[h]
   \centering
@@ -350,14 +367,16 @@ Combinations and nodes that do not have a path from source to sink were not be p
   \caption[Max Flow]{Graph representing the max flow implementation}\label{fig:maxflow}
 \end{figure}
 \\
-We ran the max flow algorithm and found the optimal set of candidate pairs corresponding to every family topic, and interesting resource activity.
-However, the total number of candidate pairs to test were many for us to complete in time.
-We wanted to decrease this number in such a way that there were no repetition of malware pair if we already chose it regardless of different resource name.
+% We ran the max flow algorithm and found the optimal set of candidate pairs corresponding to every family topic, and interesting resource activity.
+% However, the total number of candidate pairs to test were many for us to complete in time.
+% We wanted to decrease this number in such a way that there were no repetition of malware pair if we already chose it regardless of different resource name.
+%TODO: maxflow did not provide optimal
+% The max flow approach, did lower
 In order to achieve that, we tried Heuristic approach.
 \subsection{Heuristics Approach}
 \label{sub:Heuristics Approach}
 % We see in the first approach, we are not covering all resource interactions that were meticulously carved from millions of data points. 
-The problem was to find the ``minimal set'' of md5 pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource \emph{`r'} from resources \emph{`R'}, at least one md5\_pair from the final set should correspond the resource \emph{r}.\\
+The problem was to find the ``minimal set'' of malware pairs that covers all unique family pairs (dictated by the set of all candidate pairs) and it also covers all resources that help build the candidate pairs, i.e., for each resource \emph{`r'} from resources \emph{`R'}, at least one malware pair from the final set should correspond the resource \emph{r}.\\
 The relations has been represented in the graph below, where, \emph{I} is a set of input clusters from set \emph{`A'} and \emph{`O'} is the output clusters from set \emph{`B'}. Set \emph{`A', `B'} and \emph{`R'} has usual meanings as described in the\textit{~\autoref{sub:Candidate Selection}}.
 \begin{figure}[htbp]
   \centering
@@ -372,7 +391,7 @@ The problem is to find the minimal number of paths from each element \emph{$c_x$
 % This should work as we hard clusters (sample only falls into one cluster).
 \\
 We created the following data structure as shown in~\ref{lst:dbdict}.
-The data is a dictionary. All candidate cluster pairs are keys and the value is a dictionary whose keys are md5 pairs (all md5 pairs) and values are the list of corresponding resource ids.
+The data is a dictionary. All candidate cluster pairs are keys and the value is a dictionary whose keys are malware pairs (all malware pairs) and values are the list of corresponding resource ids.
 \\
 \begin{lstlisting}[language=python,floatplacement=htpb,caption={Database Structure},label={lst:dbdict}]
 db = { (c_i, c_o) :
@@ -382,13 +401,13 @@ db = { (c_i, c_o) :
 }
 \end{lstlisting}
 The reduced candidate set was computed as shown in algorithm~\ref{lst:heuristicalgo}.
-It's a greedy algorithm starting from the md5 pair that corresponds most number of resource interactions.
-For each md5 pair it checks if that pair has been already chosen, and if not, adds the pair to the candidate list.
+It's a greedy algorithm starting from the malware pair that corresponds most number of resource interactions.
+For each malware pair it checks if that pair has been already chosen, and if not, adds the pair to the candidate list.
 \\
 \begin{lstlisting}[float,floatplacement=htbp,language=python,caption={Alogrithm to get minimal set of candidates for all resource},label={lst:heuristicalgo}]
 candidate_set = set()
 for c_pair, v in db.iteritems():
-    # reverse sort md5 pairs by number of associated resources
+    # reverse sort malware pairs by number of associated resources
     x = sorted( [(len(b), a) for a,b in v.iteritems()] , reverse=True)
     r_set = set()
     for c, m_pair in x:
@@ -414,10 +433,11 @@ Modified has the usual meaning of successful operation, and access and delete ar
 \subsection{Anubis Worker}
 \label{sub:Anubis Worker}
 We were provided with 7 instances of Anubis worker for conducting the experiment.
+Anubis worker is an instance of Anubis system which we used to run our candidate pairs for analysis.
 For each candidate pairs we packed them together using the method as described in~\ref{sec:packerunpacker}.
 Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.\\
-The Anubis worker were remotely accessed and operated. The time of execution for each worker was set to 6 minutes, when we ran the experiment such that malware `a' of pair $(a,b)$, run first for 3 minutes, and after that malware `b' of the same pair is run in the same anubis worker.
+The Anubis worker were remotely accessed and operated. The time of execution for each worker was set to 15 minutes, when we ran the experiment such that malware `a' of pair $(a,b)$, run first for 3 minutes, and after that malware `b' of the same pair is run in the same anubis worker.
 The time of execution were changed accordingly with respect to experiment.
 When we ran the malware `a' first, then wait for some minutes for malware `b' to run, and again wait for some minutes before malware `a' was run again, the anubis worker run time was set to 9 minutes.
 \\
-The result of the Anubis run were then copied to local machine to analyze further.
+% The result of the Anubis run were then copied to local machine to analyze further.

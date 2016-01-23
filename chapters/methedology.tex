@@ -204,10 +204,17 @@ We modeled malware clustering to \emph{document clustering} and used \emph{LDA} 
 \subsubsection{Latent Dirichlet Allocation}
 \label{ssub:Latent Dirichlet Allocation}
 %TODO: write about LDA
+-- write more about LDA --
 A single resource activity -- such as `file read', `registry delete' or `service modify' -- would count as single \emph{`word'}.
 All such resource activities of a single malware sample, is the total `words' in the single document (malware).
 We created the corpus for document clustering with all the resource activities of all the malware dataset.
-We gave each resource type, operation name, and resource name a unique numeric code to represent the resource activity as a word (implementation described in~\autoref{sec:Document Clustering}).
+We gave each resource type, operation name, and resource name a unique numeric code to represent the resource activity as a word.
+The number coding is given in~\autoref{sub:numericode}
+\begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
+  RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
+  OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
+\end{lstlisting}
+So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}gbot.exe'}, with \textit{file\_name\_id}, ``4986'' in our database, by some malware ``A'', would be represented as single word \emph{``1\_2\_4986''}.
 \subsubsection{Gensim}
 \label{ssub:Gensim}
 \emph{``Gensim''}~\cite[]{gensim} is an efficient python library.
