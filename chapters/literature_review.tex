@@ -20,13 +20,13 @@ A \textbf{Worm}, unlike a virus, is capable to run independently and is self-pro
 It propagates by exploiting some vulnerability in a machine OS, a device driver or taking the advantage of file-transfer features, such as email or network share.\\
 A \textbf{Trojan} is a non-replicating malware which gets its name from the ancient Greek story about the \textit{Trojan Horse}.
 It is a software that looks legitimate, but is harmful.
-Trojans are non reproducing non self-replicating.
+Trojans are non reproducing and non self-replicating.
 It spreads only by user actions such as opening infected Internet downloads and email attachments~\cite[]{ciscodif} \\
 A \textbf{Bot} is a malicious software that allows the infected host machine to be accessed and controlled remotely by its author, also called \emph{``botmaster''}.
 The botmaster does this from a central server called the Command and Control (C\&C) server.
 A network of such many Internet-connected bot is called \textbf{Botnet}.
 A bot is capable of logging keystroke, gather passwords, and financial information, and send it to C\&C server.
-Botnet can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server, with many requests or sending spam in large scale.\\
+Botnet can also be used to launch \emph{Distributed Denial of Service (DDoS)} attack, by flooding single server with many requests, or sending spam in large scale.\\
 Some malware are able to change their structure and create a new variant of themselves each time they infects a new victim.
 On the basis of how a malware changes its structure, it can be broadly divided into Polymorphic and Metamorphic malware.
 \textbf{Polymorphic} malware divides its program into two section of code: ``decryptor'' and ``encryptor''.
@@ -40,14 +40,14 @@ In both cases the new variants may have different syntactic properties, but the 
 
 Malware are categorized to different families in accordance to the malware author and similar behavior.\\
 In this section, we briefly describe three most common malware families to provide and idea on their behaviors, capabilities, and mode of operation.
-Even between these three families we can see stark difference in their behavior and approach of infecting victim's machine permanently keeping their presence low.
-Also each malware families created or modified some specific resource (such as file or registry) which can be used to detect their presence.
+Even between these three families we can see stark difference in their behavior and approach of infecting victim's machine permanently, keeping low presence.
+Each malware families created or modified some specific resource (such as file or registry), which can be used to detect their presence.
 \subsection{Conficker}
 \label{sub:Conficker}
 \textbf{Conficker} is a computer \emph{worm} that targets the \emph{Microsfot Windows} Operating system which was first found in November 2008.
 According to \emph{Microsoft} the detection of \emph{Conficker} worm increased by more that 225 percent since start of 2009~\cite[]{conficker}.
 It is capable of infecting and spreading across network without any human interaction.
-If the user of the compromised machine does not has admin privilege, it is capable of trying different common weak passwords (such as \emph{`test123'},\emph{`password123'}) in order to gain admin privilege of network share directory, and drop a copy of itself.\\
+If the user of the compromised machine does not has admin privilege, it is capable of trying different common weak passwords (such as \emph{`test123'},\emph{`password123'}) in order to gain admin privilege of network share directory, and drop a copy of itself there.\\
 The worm first tries to copy itself in the Windows system folder as a hidden Dynamic Link Library (DLL) using some random name. When unsuccessful it tries to copy itself in \emph{\%ProgramFiles\%} directory.
 In order to run on startup, every time the Window boots, it also changes the registry as in~\autoref{lst:confikerregistry}.
 \begin{lstlisting}[language=TeX,caption={Registry key created by Confiker worm for autostart},label={lst:confikerregistry}]
@@ -74,11 +74,11 @@ With data: "<system folder>\userinit.exe,<system folder>\<malwar"
 \subsection{Sality}
 \label{sub:Sality}
 \textbf{Sality} is a family of polymorphic malware that infects files on \emph{Microsfot Windows} OS with extensions \emph{.EXE} or \emph{.SCR}.
-It spreads by infecting executable files and replicating itself across network shares and steals sensitive information like cached password and logged keystrokes.A\\
+It spreads by infecting executable files and replicating itself across network shares and steals sensitive information like cached password and logged keystrokes.\\
 Each infected host becomes the part of peer to peer (p2p) botnet that would create a hard to take down decentralized network of C\&C servers.
 The botnet is also used to relay spam, proxy communications, or achieve DDoS~\cite[Sality]{salitysym}\\
 \emph{Sality} targets all files in system drive (usually \emph{`C`} drive in Windows) and tries to delete files related to anti-virus.
-It stops any security related process (anti-virus) and changes Windows registry keys related to AV software in order to lower the computer security.
+It stops any security (anti-virus) related process  and changes Windows registry keys related to AV software in order to lower the computer security.
 One of the symptoms to diagnose if a machine is infected by \emph{Sality} family malware is the presence of files, listed in~\autoref{lst:salityfiles}, in the system~\cite[Win32/Sality]{salitymicro}.
 \begin{lstlisting}[language=TeX,caption={Files created by Sality in the infected machine},label={lst:salityfiles}]
 <system folder>\wmdrtc32.dll
@@ -105,7 +105,7 @@ The creator of \emph{Netsky}, \emph{Sven Jaschan}, admitted that he had written 
 This was another war between the two \emph{Trojan} malware families \emph{Spy Eye} and \emph{Zeus}.\\
 \textbf{SpyEye} is a Trojan malware which like \emph{Zeus} was created specifically to facilitate online theft from the financial institutions, especially targeting U.S.
 It infected roughly 1.4 million computers, mainly located in U.S, and got the personal identification informations and financial informations of victim in order to transfer money out of victim bank accounts~\cite[]{fbispyeye} \\
-\textbf{SpyEye} came with the feature called \emph{Kill Zeus} that was successful in removing large varieties of \emph{Zeus} family.
+\textit{SpyEye} came with the feature called \emph{Kill Zeus} that was successful in removing large varieties of \emph{Zeus} family.
 The battle between these two families were pretty much dynamic.
 Many releases of the Trojan toolkit were made from both the family in order to negate each others dominance~\cite[]{sanszeus}.
 \subsection{Shifu}
@@ -161,9 +161,9 @@ We chose \emph{Anbuis} because of the following reasons:
 We wanted to select pairs that have high probability of behavioral interference and analyze them in \emph{Anubis}, a dynamic analysis system, to confirm.
 % to run the candidate pair for dynamic analysis in \emph{Anubis}.
 We cluster our large dataset (million of malware samples), into different clusters (families), based on the malware behavior.
-This helps us find the candidate pair from smaller candidate set (clusters), each malware in a pair belonging to different clusters, without compromising the quality of dataset.
+This helps us find the candidate pair from smaller candidate set (clusters), malware in a pair belonging to two different clusters, without compromising the quality of dataset.
 % We believe that the candidate malware pair belonging to two different families will have high probability of interference in terms of negating each other.\\
-Anti-virus companies do provide labels to categorize malware into different families (such as listed in report of \emph{VirusTotal}~\cite[]{virustotal}), but they are not reliable.
+Anti-virus companies do provide labels to categorize malware into different families (such as listed in \emph{VirusTotal}~\cite[]{virustotal} report), but they are not reliable.
 They do not fulfill the criteria of consistency, completeness, and conciseness~\cite[]{bailey}.\\
 \begin{itemize}
 \item \textbf{Consistency.} Different AV vendors place the malware into different categories, and these categories also do not hold same meaning across the vendors.
@@ -171,7 +171,7 @@ This leads to inconsistency in the AV vendors labels.
 \item \textbf{Completeness.} Not every malware has been labeled by the AV vendors, and many malware go undetected because of this.
 A month old binary could still be unlabeled, which makes the AV system labeling incomplete.
 \item \textbf{Conciseness.} The label provided by AV vendor are either too little or too much information with not much substantial meaning.
-They usually gave general idea of broad term as ``trojan'' and ``worm'' and not concise description of the specific malware or its family.
+They usually give general idea of broad term as ``trojan'' and ``worm'' and not concise description of the specific malware or its family.
 \end{itemize}
 % With the advent of dynamic analysis of malware, there has also been rise in different approach to build an automated system that could analyze the malware in large numbers.
 % New malware are on the rise at an exponential rate with about 400,000 of them being introduced each day in the year 2015~\cite[]{avtest}; and with polymorphic and metamorphic techniques, malware have become complex and hard to detect from traditional signature based system.
@@ -180,7 +180,7 @@ As malware continue to evolve and rise in numbers~\cite[]{barecloud,avtest}, res
 %TODO: add examples
 \textbf{Classification} is an instance of supervised learning where a trained set of correctly identified data is used as a reference to classify new data.
 Some examples of classification algorithms are \emph{Naive Bayes, Random Fores, and Neural Networks}~\cite[]{classification}.
-\textbf{Clustering}, on other hand is an instance of unsupervised learning, i.e., grouping unlabeled data object which are similar in some sense in same cluster.
+\textbf{Clustering}, on other hand, is an instance of unsupervised learning, i.e, grouping unlabeled data object which are similar in some sense, in same cluster.
 Some examples of clustering algorithms are \emph{expectation-maximization and k-means}~\cite[]{clustering}.
 A good clustering system would be able to study behavior of new binary to find, if the new binary is a variant of previous known malware and classify them accordingly.\\
 Because AV label on malware families are not much reliable, we look onto different clustering techniques to categorize our dataset into different families.
@@ -199,7 +199,7 @@ We studied the work of~\citeauthor{bayer} in detail, as their work clustered mal
 % Also, they too used \emph{Anubis} system as dynamic analysis platform for their work to create the behavioral profile and we had access to those behavioral profiles.\\
 % To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\citeauthor{bayer}.
 % We found that their approach still was not scalable to millions of samples we needed to cluster.
-But, the clustering results were for tens of thousands of malware samples, and the approach still does not look like to be scalable to millions of samples.
+The clustering was done for tens of thousands of malware samples, but the approach still was not scalable to millions of samples, we needed to cluster.
 The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75,000 samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
@@ -226,7 +226,7 @@ Our research provides a systematic way to find such behavioral interference of m
 \\
 We gave an overview on two common malware analysis system and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.\\
 We see that different malware family have different techniques to inject themselves and keep themselves alive even after the system reboot.
-As described in~\autoref{sec:Malware Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
+As described in~\autoref{sec:Malware Types and Families}, they copy themselves in certain system path, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware can be random or peculiar.
 These pattern related to each families can be used to check the presence of particular family.
 We use this rationale in our heuristics to find probable malware candidate with behavioral interference.

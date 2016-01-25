@@ -5,7 +5,7 @@ Malware can infect the system by being bundled with some other program or being 
 When the user opens such a program or file, the malware gets installed into the user's machine.
 Malware can also install themselves by exploiting some common vulnerabilities in an operating system (OS), a network device, or other common software.
 A vast majority of malware is installed by some action by the user, such as clicking an e-mail attachment or downloading a file from Internet~\cite[]{ciscodif}.\\
-Malware can be classified into self-replicating, such as \emph{virus and worms}, and non-replicating, such as \emph{trojan}~\cite[]{malsoft}.
+Malware can be classified into self-replicating, such as \emph{virus and worms}, and non-replicating, such as \emph{Trojan}~\cite[]{malsoft}.
 Unlike virus, which needs user action (opening the infected file), worms are capable of automated replication and propagation, through computer networks~\cite[]{malsoft}.
 Trojan disguise themselves to be legitimate and harmless, but have hidden malicious functions.
 A malware can also be categorized into \emph{polymorphic} and \emph{metamorphic}, by its ability to change its code-structure, every time it infects a new victim.
@@ -40,7 +40,7 @@ We discuss in details about types of malware in~\autoref{sec:Malware Types and F
 % Unlike Polymorphic malware, it has no encrypted part~\cite[]{rad2012camouflage}.
 % In both cases the new variants may have different syntactic properties, but the real behavior of the malware remains same.\\
 
-As the Internet increased its penetration over the last two decade, more and more devices became connected via the Internet.
+As the Internet increased its penetration over the last two decade, more and more devices are now connected via the Internet.
 Many of our daily life activities are now depended on its usage, such as email, banking, bill payment, and social network.
 Along with this, the underground Internet economy, illegal trading of valuable data and personal information, has also been on the rise.
 Malware authors now do not write malware just for fun, to create annoyance or break into some system for bragging rights, but also for profit generation.
@@ -64,10 +64,10 @@ We present a systematic way to find out such interferences from large number of 
 %TODO: do not go into detail introduction, put in methodology
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
-Randomly picking a malware pair to analyze from the available dataset would not be good approach, whereas running all the possible pairs of millions of malware is not scalable.
+Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas running all the possible pairs of millions of malware is not scalable.
 We needed to filter our data set without losing malware sample exhibiting behavioral interference.
-We called those malware pairs as possible \emph{candidate pair}.
 In order to minimize our search space for candidate pair selection, and maximize the probability for finding a pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
+We called those malware pairs as possible \emph{candidate pair}.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since, \emph{Anubis}, emulates Windows OS, \textbf{system calls} refers to Windows Application Programming Interface (API) functions.
 The trace of all the resource modified or queried by malware during its execution is referred as \textbf{Behavioral Profile} of that malware.

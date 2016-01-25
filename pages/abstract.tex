@@ -17,7 +17,7 @@ There are some anecdotal evidences (blogs).
 This is an interesting case of `environment-sensitive malware' and behavioral interference between malware families.
 To the best of our knowledge, there is no prior research addressing this problem in systematic way.
 We explore this scene in the wild, on millions of malware samples, collected over time by \emph{Anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
-Because of the large dataset and Anti-Virus labels being not reliable, we used machine learning to cluster and filter our dataset without compromising the quality.
+Because of the large dataset and Anti-Virus labels being not reliable, we used machine learning to cluster and filter our dataset, without compromising the quality.
 We clustered our dataset based on behavioral profile of malware into different malware families.
 We used heuristics to find the probable malware pair with behavioral interference, based on common resource (files, registries, and others) interactions (modify or delete) and belonging to different clustered families.
 Our approach could find X number of malware pairs with the true positive rate of $X\%$.
