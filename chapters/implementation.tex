@@ -1,64 +1,58 @@
 %!TEX root = ../main.tex
 \chapter{Implementation}\label{chapter:implementation}
 In this chapter we give a detail explanation of how we implemented and conducted our research as described in~\autoref{chapter:methodology}
-\section{Study of Anubis and Database}
-Our main resource for the research was direct access the millions of malware samples from Anubis collected over the years.
-We had to effectively and efficiently analyze those data for the goal of our research.\\
-We started with studying the Anubis system and current database.
+\section{Old Database and Reverse Index}
+Our work was based on wide variety of millions of malware samples, collected over the years, by \emph{Anubis}.
+% Our main resource for the research was the direct access of the millions of malware samples from Anubis collected over the years in wild.
+We had to effectively and efficiently analyze those to find the behavioral interference between malware families.\\
+We started with studying the Anubis system and its database.
 We primarily dealt with two database of Anubis backend, the \textbf{`db\_report'} and \textbf{'web\_analysis'}.
-The \emph{`web\_analysis'} database was hit first for any binary submitted for analysis.
-It consisted of tables such as \emph{`result', `file', and `file\_task'}.
-Each submission was a unique row in \emph{`result'} table.
-A new row is created in \emph{`file'} table with the \emph{`md5'} and \emph{`sha'} hash of the binary.
+The \emph{`web\_analysis'} database was hit first for any binary submitted for analysis from public web interface.
+Some of the important tables for our work were \emph{`result', `file', and `file\_task'}.
+Each submission is a unique row data in \emph{`result'} table.
+A new row is also created in \emph{`file'} table with the \emph{`md5'} and \emph{`sha'} hash of the submitted binary.
 We refer the unique primary key of the \emph{`file'} table as \textbf{malware id}.
-The \emph{file} and \emph{`result'} tables was associated through \emph{`file\_task'} table.
+The \emph{file} and \emph{`result'} tables are associated through \emph{`file\_task'} table.
 The analysis of the sample would be done for different behavioral activities related to resources such as File, Registry and Mutex activities.
 These activities were saved in \emph{db\_report} database.
 The resource activities of the malware in \textbf{`db\_report'} database was associated with the \textbf{`web\_analysis'} database by the constraint key \textit{`result\_id'} of the \emph{`result'}.
+In~\autoref{lst:resultidsql}, we show a simple \emph{sql} statement to get all the binaries submitted to Anubis from \emph{`web\_analysis'} database, and get the name of files created by the binary from database \emph{`db\_report'}.
 \begin{lstlisting}[language=sql,caption={sql showing database structure to get file created activities of a malware sample},label={lst:resultidsql}]
-SELECT result_id FROM web_analysis.task join web_analysis.file_task using (task_id) join web_analysis.file using (file_id) WHERE task_id=result_id;
-SELECT name from db_report.file_created join db_report.file_name using (file_name_id) where result_id ='12345';
+SELECT result_id, md5 FROM web_analysis.result join web_analysis.file_task using (task_id) join web_analysis.file using (file_id) WHERE task_id = result_id;
+SELECT name from db_report.file_created join db_report.file_name using (file_name_id) where result_id = '12345';
 \end{lstlisting}
 The total number of malware samples that we had in our test database were \textbf{\gettotalmalwarei{}}.\\
 Initially, we started with 3 resource types \textit{File, Registry, Mutex}.
-For each resource type, their \textit{create, read, delete} resource activities were extracted.
-Our first step was to create a reverse index from the database so that we could get the list of malware that is associated with the resource activities.
-Since the number of malware were too large trying to save all their activities in data structure would cause our machine to run out of memory and crash the system.
-To solve this we took the approach of map reduce.\\
-We worked on a batch of 50K malware at a time and saved the reverse index of activity to the file with a numbering.
-Around 420 files were created for each resource type. The result files were in the format where resource name and list of unique malware id were separated by commas (,) as delimiter.
-This was one of the time consuming operation and it took almost 5 days for the script to finish.
-After the reverse index was generated in multiple numbered output, we sorted the file based on resource name, alphabetically.
-We joined the different parts with regard to the resource activity as key to merged it into one single file.\\
-Since, this was a merge sort, we considered two sorted files at a time until single file was left, the reduce part was pretty fast ($O( n * \log(n))$).
-
-\begin{lstlisting}[numbers=none]
+For each resource type, their \textit{create, read, delete} resource activities were queried.
+Our first step was to create a reverse index from the database so that we could get the list of malware that created/deleted/read the resource.
+Since, the number of malware to process were in millions, trying to save all their activities in data structure would cause our machine to run out of memory and crash.
+To solve the problem, we took the approach of map reduce.\\
+We worked on a batch of $50,000$ malware at a time, and saved the reverse index of activity to the file with a numbering for each batch.
+The resultant numbered files were in the format where resource name and list of unique malware ids were separated by commas (,) as delimiter.
+The numbered files of each resource types were sorted, and then joined, to get the final reverse index.
+The merging operation as shown in~\autoref{lst:sortandjoin} was pretty fast as it was a merge sort $O( n \times \log(n))$.
+We used comma as field separator for both commands. The sort and join was done on first field which is the resource name.
+\begin{lstlisting}[numbers=none,language=bash,caption={Sort and join the reverse index},label={lst:sortandjoin}]
   LANG=en_EN sort -t, -k 1,1 $file_name
-  LANG=en_EN join -t , -a1 -a2 $file_name
+  LANG=en_EN join -t , -a1 -a2 $file_name1 $file_name2
 \end{lstlisting}
-The snippet of resultant output:
-\begin{lstlisting}[numbers=none]
-Application Data,87623151,87079727,87034095
-AutoHotkey,87623151,87079727,87034095
-AutoScriptWriter,87623151,87079727,87034095
-B:\mbr.exe,121858971
-BIN,177509111,103858187
-Base Images,189524063,184501719,87504631,86763863
+A snippet of reverse index of file created activity is shown in~\autoref{lst:reverseindex}, where resource type \emph{`file'}, with resource name \emph{`mbr.exe`}, is created by malware with ids \emph{189524063, 184501719, 87504631, and 86763863}.
+\begin{lstlisting}[numbers=none,caption={Sample of reverse index created for File activity},label={lst:reverseindex}]
+C:\mbr.exe,189524063,184501719,87504631,86763863
 Buttons,111448211
-C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/Adobe Reader 8,178046895,174206059,183601891,89650247
-C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/_MEI1192/,161552035,116241803
+C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/telnet.exe,178046895,174206059,183601891,89650247
+C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
 \end{lstlisting}
 
 \section{Packer \& Unpacker}
 \label{sec:packerunpacker}
 In order to run the pair of malware together inside the Anubis environment we made a Win32 console application, named Unpacker, as Anubis VM was based on Windows OS.\@
 We used the fact that we can append any data to \emph{exe}, and it would work fine.
-So we created a meta binary, that will read itself, and extract the other two binaries, that will be attached to it.
-It will then create it and spawn two independent process with certain time delay.
-We called this Unpacker binary.\\
-We also wrote a packer program that would add the candidate binary pair at the end of Unpacker binary and then further append the time delay and file size of each candidate binary as meta information.\\
-The unpacker binary when executed would read itself to fetch the meta information and then the candidate binary bytes.\\
-The structure of unpacker binary is shown in~\autoref{fig:unpacker}.\\
+We wrote a \textbf{packer} program that would add the candidate binary pair at the end of \textbf{unpacker} binary and then further appends the time delay and file size of each candidate binary as meta information.
+The structure of unpacker binary is shown in~\autoref{fig:unpacker}.
+The \textbf{unpacker} binary, when executed, would read itself from the back to get the meta information and read candidate binaries bytes.
+% We created a meta binary, that will read itself, and extract the other two binaries, that will be attached to it.
+It will then create the candidate binaries from the read bytes, and run both binaries with a time delay given.\\
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.5]{figures/unpacker.png}
@@ -66,11 +60,13 @@ The structure of unpacker binary is shown in~\autoref{fig:unpacker}.\\
 \label{fig:unpacker}
 \end{figure}
 \\
-We used a struct of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte had the binary pair sizes information and delay time, known as meta information.
-The offset would be deduction of $3 * \textit{size of uint}$ from the total size of itself.\\
-When the file size of packed binary was known, we used \texttt{fseek\(\)} function appropriately to start reading form the correct position until the exact size of binary were read.
-Then these bytes were saved to the new file pointer. Once the binary pairs were extracted by the unpacker new binary files were created in the Anubis environment and those were executed one after another with the delay of time.
-We used \emph{windows.h} standard libraries \emph{CreateProcess} and \emph{Sleep} function for the purpose.\\
+Code snippet of the \emph{`unpacker'} binary is shown in~\autoref{lst:unpacker.c}.\\
+We used a struct of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte of \emph{unpacker} has the binary pair sizes information and delay time, known as meta information.
+The offset for meta-information was calculated by deduction of $3 \times \textit{size of `uint'}$ from the total size of itself (unpacker).
+We calculate the starting position of appended binaries, and use \texttt{`fseek\(\)'} function to set the file position pointer there.
+We then read until the exact size of binary is read.
+The read bytes were then saved to create new binary file.
+We used \emph{windows.h} standard libraries: \emph{`CreateProcess'} function to execute the binary, and \emph{`Sleep'} function for delay in between two execution.\\
 
 \begin{lstlisting}[language=c,caption={snippet of unpacker.c file}, label={lst:unpacker.c}]
   /* stuct for storing meta information */
@@ -107,18 +103,17 @@ We used \emph{windows.h} standard libraries \emph{CreateProcess} and \emph{Sleep
  \end{lstlisting}
 \section{Initial Experiment}
 \label{sec:Initial Experiment}
-From the reverse index of the resource activities of the Malware, we created a mapping between the created activities against the deleted or read activities.
-We created a list of malware based on the common resource name as the key, where a list of malware which created the resource and another list of malware which delete/read the same resource.
-We started looking for one to one interaction of malware to a single resource. Any resource type that was created by exactly single malware and deleted by exactly another single malware.
-We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, and malware `b' deletes the same resource, \emph{r}, such that no other malware has create or delete activities on that resource \emph{r}.\\
-After finding such pairs, when we ran those malware pairs in the Anubis system using the \emph{unpacker}.\\
+From the reverse index of the resource activities of the Malware, we mapped created activities against the deleted or read activities.
+% We made a list of malware based on the common resource name as the key, where a list of malware which created the resource and another list of malware which delete/read the same resource.
+We started looking for one to one interaction of malware to a single resource.
+We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, and malware `b' deletes the same resource, \emph{r}, such that no other malware has create or delete activities on that resource \emph{r}. We ran those malware pairs in the Anubis system using the \emph{unpacker}.\\
 During our initial run, we found lots of dropper malware causing this interaction. Binary `a' was a dropper that would create many binaries including the binary `b', and binary `b' actually read itself upon execution, which was recorded as read activity by Anubis.
-After running many other candidate pairs with different level of interaction and analyzing the results manually, not only were we able to understand the Anubis report in depth but also found an logical error on our current approach.\\
+After running many other candidate pairs and analyzing the results manually, not only were we able to understand the Anubis report in depth but also found a logical error on our current approach.\\
 Our notion behind checking the malware interaction was finding candidate pairs such that one malware `a' creates some resource, `r', and another malware `b' tries to access or delete the same resource,`r'.
 But, Anubis ran each submitted binary in an isolated environment, hence there was no way that a malware sample `b' would find the resource that was supposed to be created by malware `a'.\\
 We should have been looking for failed attempt activities, where a malware sample unsuccessfully tried to access or delete a resource created by another malware, but the current database had no record of such failed attempt.
 This lead us to look for the alternatives where we could find log of such failed attempt activities during the execution of binary.\\
-We used \emph{anubis} log file and the behavioral profiles, as described in~\autoref{sub:Behavioral Profile}, to find such failed activities of deletion and access.
+We parsed the behavioral profiles, as described in~\autoref{sub:Behavioral Profile}, of malware samples to find failed activities of deletion and access.
 % A snippet of behavioral profile in shown in~\autoref{lst:bpsample}.
 % \begin{lstlisting}[basicstyle=\tiny,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
 %   op|file|'C:\\Program Files\\Common Files\\sumbh.exe'
@@ -197,7 +192,7 @@ We followed the previous table structure to design our new database so that we c
 The basic CRUD operations were time expensive and made the overall operation slow.
 We also hit the integer overflow for the primary index of registry access activities table.
 The total registry access activities were more than 4 billion of records.
-To solve this, we had to create another registry access table and start inserting the registry access records in new table.
+To solve the problem, we had to create another registry access table and start inserting the registry access records in new table.
 When accessing the data for later use, we had to change our program so that we checked both the tables in order to find the registry access activities of a malware sample.
 The final database size was 1.2 Terabyte.\\
 We had to spent much time then expected on database tuning to make the program run faster so that it would complete in reasonable time.
