@@ -1,25 +1,13 @@
 \chapter{\abstractname}
-% Malware of different families may not like each other.
-% For example, different malware binaries might try to uninstall each other before infecting a system.
-% This is an interesting case of `environment-sensitive malware'.
+We present a novel approach for finding the behavioral interference between malware families at large scale.
+Driven by monetary profit, malware from different families might try to uninstall each other before infecting a system, to get the larger share on underground market.
 % There are some anecdotal evidences (blogs).
-% To the best of our knowledge, there is no prior research addressing this problem in a systematic way.
-% In this research we systematically try explore the scene in the wild.
-% We ran multiple malware samples from different families at the same time in the Anubis environment (a dynamic full-system-emulation-based malware analysis environment).
-% We later analyzed the results of the emulation and detect such behaviors.
-% We used clustering algorithm to cluster the malware based on its resources activities such as file,registry,section,syncs.
-We present a novel approach to find the behavioral interference between malware families in large scale.
-% Driven by the monetary profit and better obfuscation techniques malware numbers are on the rise.
-% Also, malware are evolving and being sophisticated.
-% Malware are not only on the rise, driven by the monetary profit, but also evolving and being more sophisticated.
-Driven by the monetary profit, malware from different families might try to uninstall each other before infecting a system, to get the larger share on underground market.
-There are some anecdotal evidences (blogs).
 This is an interesting case of `environment-sensitive malware' and behavioral interference between malware families.
 To the best of our knowledge, there is no prior research addressing this problem in systematic way.
 We explore this scene in the wild, on millions of malware samples, collected over time by \emph{Anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
-Because of the large dataset and Anti-Virus labels being not reliable, we used machine learning to cluster and filter our dataset, without compromising the quality.
-We clustered our dataset based on behavioral profile of malware into different malware families.
-We used heuristics to find the probable malware pair with behavioral interference, based on common resource (files, registries, and others) interactions (modify or delete) and belonging to different clustered families.
+Because of the large dataset and Anti-Virus labels being unreliable, we used machine learning to cluster and filter our dataset, without compromising the quality.
+We clustered our dataset based on the behavioral profile of malware into different malware families.
+We used heuristics to find the probable malware pair with behavioral interference, based on common resources (files, registries, and others), interactions (modify or delete), and belonging to different clustered families.
 Our approach could find X number of malware pairs with the true positive rate of $X\%$.
-This novel research will help better understand dynamic aspect of malware behavior.
+This novel research will help better understand the dynamic aspect of malware behavior.
 
