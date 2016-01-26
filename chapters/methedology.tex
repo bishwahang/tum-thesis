@@ -11,6 +11,7 @@ In this section we give a detailed description of different terms we will be usi
 \citeauthor{bayer} define \textbf{behavioral profile} as, ``the abstraction of a program's execution trace that provides information on the OS objects that the program operated on, along with the operations''.
 OS Object refers to resource type such as file, registry or section, that could be modified or queried with the system calls.
 System calls consisted of Windows NT, native API and the Windows API functions.\\
+
 The behavioral profile was based on the execution traces of programs irrespective of order execution as reordering system calls could be done without changing the semantics of program~\cite[]{bayer}.
 It consisted of a list of different operations operated on the different OS objects during the execution of binary.
 The system calls that had same purpose as resultant output but different calling API name were generalized under single name---\emph{NtCreateProcess} and \emph{NtCreateProcessEx} would be generalized as, \emph{`create'} OS Operation for, \emph{`porcess'} OS object~\cite[]{bayer}.\\
@@ -18,7 +19,7 @@ The system calls that had same purpose as resultant output but different calling
 \label{ssub:OS Objects}
 OS Object were primarily the resource that were created, delete, modified during the program execution.
 \citeauthor{bayer} define \emph{OS Objects} as:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 OS Object ::= (type, object-name)
 type ::= file|registry|process|job|
        network|thread|section|
@@ -34,14 +35,14 @@ For an instance, \url{`c:\\ntlos.exe'} is an object-name for object type \emph{f
 \label{ssub:OS Operations}
 Broadly, OS Operation is the generalization of a system call.
 \citeauthor{bayer} define \emph{OS Operations} as:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 OS operation ::= (operation-name,
                 opeartion-attributes?,
                 successful?)
 \end{lstlisting}
 An OS operation object consists of name of the operation, any additional attributes, and the status of the operation whether it was successful or not.\\
 A snippet of behavioral profile is shown in~\autoref{lst:bpsample} with sample of operations executed on OS Objects file, registry, and section.
-\begin{lstlisting}[language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
+\begin{lstlisting}[numbers=none,language=TeX,caption={Behvaioral Profile sample}, label={lst:bpsample}]
   op|file|`C:\\Program Files\\Common Files\\sumbh.exe'
    create:1
    open:1
@@ -70,7 +71,7 @@ Informations from \emph{OS Objects} and \emph{Operations} were used to extract r
 \subsection{Resource Type and Activities}
 \label{sub:Resource Types and Activities}
 As discussed before in~\autoref{ssub:OS Objects}, an OS Object, are representation of resource types.
-For our research, we took following 8 resource types into consideration, that could best determine the behavioral interference between malware.
+For our research, we considered following 8 resource types into consideration, that could best determine the behavioral interference between malware.
 We will give a short description of each resource type according to Microsoft Developers Network documentation~\cite[MSDN]{msdn}.
 \subsubsection{File}
 \label{ssub:File}
@@ -162,10 +163,12 @@ We needed resource activities of the malware dataset to process and find malware
 We had access to the database that saved the analysis result of malware samples submitted to \emph{Anubis}.
 It had resource activity of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.
 \\
+
 However, the old database was missing the resource activities that were not successful, for an e.g., failed attempt to delete a file.
 Anubis analyzed malware one at a time in total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
 Because of this, malware trying to detect or delete the resource created by another malware would be unsuccessful.
 We needed to create a new database with record of such failed attempts.\\
+
 We used ``behavioral profile'' of malware sample, described in~\autoref{sub:Behavioral Profile}, to get both the successful and failed resource activities.
 The ``behavioral profile'' of malware sample were parsed to get the resource name (object-name) and operations (operation-name) along with successful status, and was used to create new database.
 The new database was created for the above discussed 8 types of resource (\emph{File, Registry, Service, Section, Job, Process, Job, Sync, and Driver}) and operations were generalized to \emph{modify, read, delete}.
@@ -186,6 +189,7 @@ We mapped reverse indexes, based on common resource name, to get malware set, sa
 As described in~\autoref{sec:Malware Types and Families}, malware families have different ways of infecting and taking control of system, peculiar to themselves.
 One can detect the presence of malware in the system, by checking the presence of unique resource (files, registries, and others) associated with that malware, in the system.
 Thus, when a malware tries to access or delete some resource created by another malware (with a failed attempt because each malware was analyzed by Anubis in new OS environment), that activity is interesting for our candidate selection.\\
+
 We selected malware sample from each of those set \emph{`A'} and \emph{`B'}, to get a candidate pair, with interference based on resource \emph{`r'}.
 Large number of malware were present in each candidate set. A single resource name was created by tens of thousands of malware and being accessed by tens of thousands of another malware.
 We needed to lower the number of candidate set to get substantial amount of good candidate pair.
@@ -198,8 +202,11 @@ We needed to lower the number of candidate set to get substantial amount of good
 We wanted to lower the size of candidate sets without loosing the quality of our dataset.
 Malware variants belonging to same family, will have similar behavior pattern (code semantics) despite of code obfuscation.
 We divide our dataset into different clusters (families), based on the similar resource activities.
-Candidate pairs, with each malware in the pair from different family, trying to create/delete same resource, has higher probability of behavioral interference than the previous heuristics.\\
-We did a literature survey of works on malware clustering, and found out that none of the works on large scale malware sample[see~\autoref{sec:Malware Clustering}].
+Candidate pairs, with each malware in the pair from different family, trying to create/delete same resource has higher probability of behavioral interference than the previous heuristics.\\
+
+% We did a literature survey of works on malware clustering, and found out that none of the works on large scale malware sample[see~\autoref{sec:Malware Clustering}].
+Many previous research based on malware clustering were done for small number of malware samples [see~\autoref{sec:Malware Clustering}].
+We needed an approach to cluster millions of malware samples.
 We modeled malware clustering to \emph{document clustering} and used \emph{LDA} for its low memory footprint, $O(\#words\times \#clusters)$, compared to \emph{tf-idf}, $O(\#docs \times \#words)$.
 \subsubsection{Latent Dirichlet Allocation}
 \label{ssub:Latent Dirichlet Allocation}
@@ -209,8 +216,8 @@ A single resource activity---such as `file read', `registry delete' or `service 
 All such resource activities of a single malware sample, is the total `words' in the single document (malware).
 We created the corpus for document clustering with all the resource activities of all the malware dataset.
 We gave each resource type, operation name, and resource name a unique numeric code to represent the resource activity as a word.
-The number coding is given in~\autoref{sub:numericode}
-\begin{lstlisting}[language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
+The number coding is given in~\autoref{lbl:numericode}
+\begin{lstlisting}[numbers=none,language=python,caption={Numeric codes given to resource and operation},label={lbl:numericode}]
   RESOURCE_CODE    = {"file" : "1", "registry" : "2", "section" : "3", "service" : "4", "driver" : "5", "sync" : "6", "process" : "7", "job" : "8"}
   OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
 \end{lstlisting}
@@ -218,7 +225,7 @@ So a file delete activity of filename, \textit{`c:\textbackslash\textbackslash{}
 \subsubsection{Gensim}
 \label{ssub:Gensim}
 \emph{``Gensim''}~\cite[]{gensim} is an efficient python library.
-We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.\\
+We preferred using it because of its simplicity, well documented API, and ability to work on large corpus.
 We use the \emph{multicore}\cite[]{ldamulticore}  models for scalability.
 Some of the benefits of using the \emph{ldamulticore} model were~\cite[]{ldamulticore}:
 \begin{itemize}
@@ -273,24 +280,3 @@ Any successful access/delete of that resource (files or registries or others) wi
 \label{sec:Summary}
 In this chapter, we described different terms used in our work in details and also gave an overview of our work flow.
 In next chapter, we will show how we implemented the work flow in our system.
-% The old database had the analysis results of malware samples submitted to Anubis from public domain and 
-% The database had resource activities for, resource type \emph{File, Registry, and Mutex}, and the operations \emph{create, read, modify, and delete}.\\
-% Reverse index was generated from the database for all the resource types and operations, such that resource name is mapped with the malware samples based on operations.
-% For instance, we mapped resource name related to \emph{files} with all the malware that created it.
-% Same reverse index was generated for read, modify, and delete operations and for other resource types, \emph{registry} and \emph{mutex}.
-% With the reverse index, we found the list of malware that created a resource, say \emph{`r'}, and another list of malware that read/modified/deleted the same resource \emph{`r'}.
-% % After the reverse index was created, we mapped the create resource activity with read, modify, and delete activities.
-% % As the result of the mapping we had list of malware that created a \textit{resource}, and a list of malware that either read/modify/delete the same \emph{resource}.
-% We used some heuristics such as resource name created by exactly one single malware and delete by another single malware, to get the candidate pair and run the candidate pair in Anubis system.
-% We analyzed the result and found some interesting case of dropper malware, self reading malware, and most importantly a logical flaw in our current approach.\\
-% % The flaw in our current approach was we did not had failed attempt of malware activity such as read and delete logged in our database.
-% The current database system did not had record of failed create, read, access, and delete resource activity required for better candidate selection.
-% Every sample binary submitted to \emph{Anubis} system for analysis were run in complete isolation; thus, any other malware binary which would try to access the resource created by malware other than itself would be OS Operation with failed status value.
-% We needed to recreated a new database with both success and failed resource activity.
-% We used behavioral profile described in~\ref{sub:Behavioral Profile} to parse the pickle files and get the resource activity along with its success status.
-
-% % We also used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
-% We used document clustering algorithm, discussed in~\autoref{sec:Topic model} to cluster the malware based on their dynamic behavioral activities into different topic families.
-% We used approach as discussed in~\autoref{sec:Candidate Selection} to find the probable candidate pairs.
-% After we had minimal number of candidate pairs covering all the family topic and interesting resources, we run those pairs in the Anubis system.
-% The results were analyzed for occurrence of deletion of resources
