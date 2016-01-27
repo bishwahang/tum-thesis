@@ -159,7 +159,7 @@ In this section we outline an overview of our work flow.
 Figure~\ref{fig:bigpicture} depicts the overall structure of of our system.\\
 \subsection{Database}
 \label{sub:Database}
-We needed resource activities of the malware dataset to process and find malware with behavioral interference.
+We required resource activities of the malware samples, to process and find malware with behavioral interference.
 We had access to the database that saved the analysis result of malware samples submitted to \emph{Anubis}.
 It had resource activity of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.
 \\
@@ -167,7 +167,7 @@ It had resource activity of \emph{File, Registry, Mutex} for operations \emph{cr
 However, the old database was missing the resource activities that were not successful, for an e.g., failed attempt to delete a file.
 Anubis analyzed malware one at a time in total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
 Because of this, malware trying to detect or delete the resource created by another malware would be unsuccessful.
-We needed to create a new database with record of such failed attempts.\\
+A new database with record of such failed attempts was essential.\\
 
 We used ``behavioral profile'' of malware sample, described in~\autoref{sub:Behavioral Profile}, to get both the successful and failed resource activities.
 The ``behavioral profile'' of malware sample were parsed to get the resource name (object-name) and operations (operation-name) along with successful status, and was used to create new database.
@@ -192,7 +192,7 @@ Thus, when a malware tries to access or delete some resource created by another 
 
 We selected malware sample from each of those set \emph{`A'} and \emph{`B'}, to get a candidate pair, with interference based on resource \emph{`r'}.
 Large number of malware were present in each candidate set. A single resource name was created by tens of thousands of malware and being accessed by tens of thousands of another malware.
-We needed to lower the number of candidate set to get substantial amount of good candidate pair.
+We had to lower the number of candidate set to get substantial number of good candidate pair.
 
 % With the reverse index, we found the list of malware that created a resource, say \emph{`r'}, and another list of malware that read/modified/deleted the same resource \emph{`r'}.
 % % After the reverse index was created, we mapped the create resource activity with read, modify, and delete activities.
@@ -247,8 +247,10 @@ The candidate selection steps, based on malware clustering, are summarized as fo
   \item For each ``r'' in \emph{R}, generate a set of candidate pairs $P_r$ for experiment. $P_r$ is a set of malware pairs $(x_r, y_r)$ such that $x_r$ belongs to $A_r$ and $y_r$ belongs to $B_r$ and $C(x_r) \neq C(y_r)$, not belonging to same cluster.
   \item Generate such $(x_r, y_r)$ pairs for all possible cluster pairs $(C(x_r), C(y_r))$ corresponding to a resource ``r''.
   \item The final experiment set \emph{E} is a set of such $(x_r, y_r)$ for all resources \emph{r} in \emph{R}.
-  \item Finally for any resource ``r'', if the size of the set $| C(x) : x \in A_r | > 10 \quad or \quad | C(x) : x \in B_r | > 10$, we discard \emph{r} and its corresponding experiment pairs from \emph{E}, since the resource modified/deleted by too many families is less interesting.
-  \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first.
+  \item Finally for any resource ``r'', if the size of the set $| C(x) : x \in A_r | > n \quad or \quad | C(x) : x \in B_r | > n$, we discard \emph{r} and its corresponding experiment pairs from \emph{E}.
+    The resource modified/deleted by too many families is less interesting.
+    We choose \emph{`n'} accordingly to filter resource associated with too many families.
+  % \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first.
 \end{itemize}
 \subsection{Running the Candidate}
 \label{sub:Running the Candidate}

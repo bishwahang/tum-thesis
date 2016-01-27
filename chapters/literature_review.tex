@@ -191,17 +191,12 @@ Previous research work, showed that clustering and classification yields superio
 
 \citeauthor{bailey} introduced the first clustering system based on observed behavior of malware~\cite[]{bailey}, which was later extended by~\citeauthor{bayer}~\cite[]{bayer}, to be scalable~\cite[]{rieck2009automatic}.
 We studied the work of~\citeauthor{bayer} in detail, as their work clustered malware in large scale; $75$ thousands malware under three hours~\cite[]{bayer}.
-% Also, they too used \emph{Anubis} system as dynamic analysis platform for their work to create the behavioral profile and we had access to those behavioral profiles.\\
-% To cluster the malware we had multiple options. We looked into the behavioral-clustering paper by~\citeauthor{bayer}.
-% We found that their approach still was not scalable to millions of samples we needed to cluster.
-The clustering was done for tens of thousands of malware samples, but the approach still was not scalable to millions of samples, we needed to cluster.
+The clustering was done for tens of thousands of malware samples, but the approach still was not scalable to millions of samples we needed to cluster.
 The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75,000 samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
 Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
 \\
-% Another alternative was VirusTotal labels, but unfortunately they are not very reliable as we discussed early.
-% A third approach was to use a clustering algorithm that is scalable, but maybe less accurate than the behavioral clustering, but able to cluster millions of samples.
 Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
 As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} a statistically measured weight to evaluate the importance of a word in document with respect to the whole corpus~\cite[]{tfidf}) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).

@@ -1,7 +1,7 @@
 \chapter{Introduction}\label{chapter:introduction}
 Malware, short for malicious software, is a generic term referring to any illegitimate software that can cause damage, disrupt, or steal on a computer, server, or computer network~\cite[]{ciscodif}.
 Malware can infect the system by being bundled with some other program or being attached as macros in a file.
-When the user opens such a program or file, the malware gets installed onto the user's machine.
+When a user opens such a program or file, the malware gets installed onto the user's machine.
 Malware can also install themselves by exploiting some common vulnerabilities in an operating system (OS), a network device, or other common software.
 A vast majority of malware is installed by some action by the user, such as clicking an e-mail attachment or downloading a file from the Internet~\cite[]{ciscodif}.\\
 
@@ -14,7 +14,7 @@ A malware can also be categorized into \emph{polymorphic} and \emph{metamorphic}
 However, the semantics of the program (malware) remains same.
 We discuss in details about types of malware in~\autoref{sec:Malware Types and Families}.\\
 
-As the Internet increased grew over the last two decades, more and more devices are now connected to the Internet.
+As the Internet increased growth over the last two decades, more and more devices are now connected to the Internet.
 Many of our daily life activities are now depended on its usage, such as email, banking, bill payment, and social networking.
 Along with this, the underground Internet economy, illegal trading of valuable data and personal information, has also been on the rise.
 Malware authors now do not write malware just for fun, to create annoyance or break into some system for bragging rights, but also for profit.
@@ -41,7 +41,7 @@ We present a systematic way to find out such interferences from a large number o
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas running all the possible pairs of millions of malware is not scalable.
-We needed to filter our data set without losing malware samples exhibiting behavioral interference.
+We wanted to filter our data set without losing malware samples exhibiting behavioral interference.
 In order to minimize our search space for candidate pair selection, and maximize the probability for finding a pair with behavioral interference, we, take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
 We call those malware pairs as possible \emph{candidate pairs}.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
