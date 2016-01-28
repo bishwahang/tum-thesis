@@ -257,13 +257,14 @@ The candidate selection steps, based on malware clustering, are summarized as fo
 %TODO: what was the technique used to add binary at the back
 Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
 We created \emph{`packer'} and \emph{`unpacker'} to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
+We used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
 The \textbf{unpacker} is a self reading dropper binary.
 With \textbf{Packer}, we attach the append binary of the candidate pair, to the back of \emph{unpacker} binary, one after another in sequence.
 Followed by the binary, meta-information, such as size of both binary and preferred time delay, was appended to the end of the \emph{unpacker}.
 We analyze the packed \emph{unpacker} binary in the \emph{Anubis}.
 When executed, the \emph{unpacker}, would read itself from the behind to get the meta-information, and recreate the packed binaries, and drop them inside the \emph{Anubis} OS environment.
 After both the binaries are dropped, it execute the first binary, waits for time delay specified, and runs another binary.
-At the end, both the binary runs in the \emph{Anubis}, and we analyze the result.
+In the end, both the binary runs in the \emph{Anubis}, and we analyze the result.
 In~\autoref{sec:packerunpacker}, we implement the \emph{packer} and \emph{unpacker}.
 \subsection{Analyze the result}
 \label{sub:Analyze the result}

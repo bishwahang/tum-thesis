@@ -55,8 +55,7 @@ We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, a
 \section{Packer \& Unpacker}
 \label{sec:packerunpacker}
 In order to run the pair of malware together inside the Anubis environment we made a Win32 console application (Anubis VM is based on Windows OS.\@), named \textbf{Unpacker}.
-%TODO: the idea used for unpacker
-We used the fact that we can append any data to an executable binary, and it would not affect the program flow.
+We used the fact that we can append any data at the end of Windows PE executable, and it would not affect the executable's program flow.
 We wrote a \textbf{packer} program that would add the candidate binary pair at the end of the \emph{Unpacker} binary and then further appends the time delay and file size of each candidate binary as meta information.
 The structure of the Unpacker binary is shown in~\autoref{fig:unpacker}.
 The \emph{Unpacker} binary, when executed, would read itself from the back to get the meta information and read candidate binaries bytes.
