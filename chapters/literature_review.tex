@@ -199,7 +199,7 @@ Instead we preferred using something ready to use (not to spend time improving s
 \\
 Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
-As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} a statistically measured weight to evaluate the importance of a word in document with respect to the whole corpus~\cite[]{tfidf}) approaches have a large memory footprint, $O(\#docs \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
+As \textbf{term frequency-inverse document frequency} (\emph{tf-idf} a statistically measured weight to evaluate the importance of a word in document with respect to the whole corpus~\cite[]{tfidf}) approaches have a large memory footprint, $O(\#documents \times \#words)$, we switched to clustering algorithms whose memory footprint does not depend on the number of documents, and decided to use \textit{latent Dirichlet allocation} (\textbf{LDA}).
 \textit{Latent Dirichlet Allocation} (\textbf{LDA}) is a generative probabilistic model for collections of discrete data such as text corpora~\cite[LDA]{Blei}.
 \textbf{LDA}, equivalent to dimension-reduction algorithms for high-dimensional clustering, is one such algorithm which does not depend on the number of documents and its memory footprint is $O(\#words\times \#clusters)$.
 This gives us a more fine grained clustering compared to previously proposed LHS (Locality-sensitive hashing) based approach.\\

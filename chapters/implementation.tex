@@ -64,7 +64,7 @@ It will then create the candidate binaries from the read bytes, and run both bin
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.5]{figures/unpacker.png}
-\caption{[Unpacker structure] Structure of the Unpacker binary that would create the candidate pair and run them with delay.}
+\caption{Structure of the Unpacker binary that would create the candidate pair and run them with delay.}
 \label{fig:unpacker}
 \end{figure}
 
@@ -190,7 +190,7 @@ About $62\%$ of execution time was taken to load the gzip pickle~\cite[]{pythonp
 \begin{center}
   \includegraphics[scale=0.4]{figures/db_create2.png}
 \end{center}
-\caption{profile of database creation process}
+\caption{Profile of new database creation}
 \label{fig:dbcreation}
 \end{figure}
 \\
@@ -234,7 +234,7 @@ The resultant text corpora was about 81 Gigabytes of data.
 \begin{center}
   \includegraphics[scale=0.4]{figures/activities_creation.png}
 \end{center}
-\caption{profiling for creation of resource activities of malware}
+\caption{Profiling of building a corpus}
 \label{fig:actcreation}
 \end{figure}
 \\
@@ -245,10 +245,10 @@ The LDA model generation code snippet is show in~\autoref{lst:lda.py}.
 The corpora consisted of one document per line.
 We created a dictionary from the corpora using Gensim \emph{`corpora.Ditionary`} module~\cite[]{gensimdict}.
 Dictionary is representation of all the unique tokens (words) by a unique token-ids.
-We filtered the dictionary by discarding any resource activity that occurred in less than 1000 or more than 1 million for clustering, as those activities are too less or too common to take into consideration.
-We kept only $200,000$ tokens after the filtering 
-This is done in line $7$~[\autoref{lst:lda.py}], where the arguments passed into \emph{`filter\_extremes'} method are minimum threshold (which is 1000), maximum threshold in fraction (which is $0.6$: 1,000,000 out of total \gettotalmalwareii{} documents), and total number of frequent words to keep after filtering (which is $200,000$).
-
+We filtered the dictionary by discarding any resource activity that occurred in less than 10 or more than 1 million for clustering, as those activities are too less or too common to take into consideration.
+The lower and upper limit were chosen based the cumulative distribution function graph of resource activities.
+We kept only $200,000$ tokens after the filtering.
+This is done in line $7$~[\autoref{lst:lda.py}], where the arguments passed into \emph{`filter\_extremes'} method are minimum threshold (which is 1000), maximum threshold in fraction (which is $0.14$: 1,000,000 out of total \gettotalmalwareiii{} documents), and total number of frequent words to keep after filtering (which is $200,000$).
 In line 9--12~[\autoref{lst:lda.py}], we make an iterator to read the corpus.
 The iterator operates on each line, which represents a document, of corpus text file and yields a bag of words of the document.
 Bag of words is a list of two-element tuple, which represents word (token-id) and its count (number of occurrence) in document.
@@ -265,7 +265,7 @@ document_name = sys.argv[1]
 # read the file with malware activities and create dictionary
 dictionary = corpora.Dictionary(line.split() for line in open(document_name))
 # filter the dictionary for extreme
-dictionary.filter_extremes(no_below=10,no_above=0.6,keep_n=100000)
+dictionary.filter_extremes(no_below=10,no_above=0.14,keep_n=1000000)
 # create a iterator corpus as the file is large 80GB
 class MyCorpus(object):
     def __iter__(self):

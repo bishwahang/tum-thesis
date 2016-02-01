@@ -1,0 +1,7 @@
+
+3 resource type was of no use, remaing 5 was used.
+we can see that files and registries checking was done the most and process was the least.
+the candidate pair was chosen correctly with true positive rate of
+
+by deleting the files or registries.
+

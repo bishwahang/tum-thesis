@@ -1,15 +1,17 @@
 %!TEX root = ../main.tex
 \chapter{Conclusion and Future Work}\label{chapter:conclusion_and_future_work}
-We presented a systematic approach to find the behavioral interference between the malware families at large scale.
-We analyzed the behavioral profile of millions of malware samples and found interfering pairs.
-We used document clustering to cluster the malware samples into different families and heuristics to select probable candidate pairs.
+We have presented a systematic approach to find the behavioral interference between the malware families at large scale.
+We analyzed the behavioral profile of millions of malware samples to find the probable candidate malware pairs that could interfere with each other.
+The candidate pairs were then run together in the Anubis system, to detect the interference during live run.
 
-We found {\gettotalcandidatepairs{}} probable candidate pairs exhibiting behavioral interference with the true positive rate of {\gettruepositiverate{}}.
+Using document clustering, where each malware was represented as a document and their resource activities as words, we clustered the malware dataset into different families.
+We used heuristics based on common resource to select probable candidate pairs, such that one malware creates a resource, and another malware tries to delete or access the same resource.
+Also, the malware samples in a candidate pair belonged to different families.
+% We found {\gettotalcandidatepairs{}} probable candidate pairs exhibiting behavioral interference with the true positive rate of {\gettruepositiverate{}}.
+
+We showed that the behavioral interference between the malware families exists, and also illustrated an approach to find such case where malware belonging to different family try to detect each others' presence and remove the resources, such as files or registries, created by another malware.
+This behavior is also one of the traits of environment-sensitive malware.
+% It also infers that malware authors from one family try to negate the dominance of another family.
 
 
-To the best of our knowledge, we are the first to do the research on the topic.
-We showed that the behavioral interference exists and also illustrated an approach to find such case where malware try to detect the presence of file created by another malware and delete it.
-% This case is 
-
-Our research provides a novel insights on they dynamic behavior of malware.
 

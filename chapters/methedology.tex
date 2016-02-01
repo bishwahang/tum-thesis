@@ -207,11 +207,11 @@ Candidate pairs, with each malware in the pair from different family, trying to 
 % We did a literature survey of works on malware clustering, and found out that none of the works on large scale malware sample[see~\autoref{sec:Malware Clustering}].
 Many previous research based on malware clustering were done for small number of malware samples [see~\autoref{sec:Malware Clustering}].
 We needed an approach to cluster millions of malware samples.
-We modeled malware clustering to \emph{document clustering} and used \emph{LDA} for its low memory footprint, $O(\#words\times \#clusters)$, compared to \emph{tf-idf}, $O(\#docs \times \#words)$.
+We modeled malware clustering to \emph{document clustering} and used \emph{LDA} for its low memory footprint, $O(\#words\times \#clusters)$, compared to \emph{tf-idf}, $O(\#documents \times \#words)$.
 \subsubsection{Latent Dirichlet Allocation}
 \label{ssub:Latent Dirichlet Allocation}
 %TODO: write about LDA
--- write more about LDA --\\
+% -- write more about LDA --\\
 A single resource activity---such as `file read', `registry delete' or `service modify'---would count as single \emph{`word'}.
 All such resource activities of a single malware sample, is the total `words' in the single document (malware).
 We created the corpus for document clustering with all the resource activities of all the malware dataset.
