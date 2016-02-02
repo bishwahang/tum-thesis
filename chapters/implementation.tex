@@ -246,7 +246,7 @@ The corpora consisted of one document per line.
 We created a dictionary from the corpora using Gensim \emph{`corpora.Ditionary`} module~\cite[]{gensimdict}.
 Dictionary is representation of all the unique tokens (words) by a unique token-ids.
 We filtered the dictionary by discarding any resource activity that occurred in less than 10 or more than 1 million for clustering, as those activities are too less or too common to take into consideration.
-The lower and upper limit were chosen based the cumulative distribution function graph of resource activities.
+% The lower and upper limit were chosen based the cumulative distribution function graph of resource activities.
 We kept only $200,000$ tokens after the filtering.
 This is done in line $7$~[\autoref{lst:lda.py}], where the arguments passed into \emph{`filter\_extremes'} method are minimum threshold (which is 1000), maximum threshold in fraction (which is $0.14$: 1,000,000 out of total \gettotalmalwareiii{} documents), and total number of frequent words to keep after filtering (which is $200,000$).
 In line 9--12~[\autoref{lst:lda.py}], we make an iterator to read the corpus.
@@ -433,8 +433,8 @@ for c_pair, v in db.iteritems():
 The reduced candidate set was computed as shown in pseudocode~\ref{lst:heuristicalgo}.
 It is a greedy algorithm starting from the malware pair that corresponds most number of resource interactions.
 For each malware pair it checks if that pair has been already chosen, and if not, adds the pair to the candidate list.
-\section{Running the Candidate Pairs}
-\label{sec:Running the Candidate Pairs}
+\section{Testing the Candidate Pairs}
+\label{sec:Testing the Candidate Pairs}
 In total we had \emph{263,701} candidate pairs to run the experiment.
 % The breakdown of the number is given below.
 % Modified has the usual meaning of successful operation, and access and delete are the failed attempt.

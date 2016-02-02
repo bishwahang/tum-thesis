@@ -252,9 +252,8 @@ The candidate selection steps, based on malware clustering, are summarized as fo
     We choose \emph{`n'} accordingly to filter resource associated with too many families.
   % \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first.
 \end{itemize}
-\subsection{Running the Candidate}
-\label{sub:Running the Candidate}
-%TODO: what was the technique used to add binary at the back
+\subsection{Testing the Candidate}
+\label{sub:Testing the Candidate}
 Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
 We created \emph{`packer'} and \emph{`unpacker'} to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
 We used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
@@ -266,8 +265,8 @@ When executed, the \emph{unpacker}, would read itself from the behind to get the
 After both the binaries are dropped, it execute the first binary, waits for time delay specified, and runs another binary.
 In the end, both the binary runs in the \emph{Anubis}, and we analyze the result.
 In~\autoref{sec:packerunpacker}, we implement the \emph{packer} and \emph{unpacker}.
-\subsection{Analyze the result}
-\label{sub:Analyze the result}
+\subsection{Result Analysis}
+\label{sub:Result Analysis}
 \emph{Anubis}, generates result of analysis as \emph{Extensible Markup Language} (XML) format.
 Every binary submitted to anubis is renamed into \emph{`sample.exe`}, and is considered as the primary analysis subject.
 All the binaries created and executed, after the execution of primary analysis subject, is tracked for its malicious activities.
