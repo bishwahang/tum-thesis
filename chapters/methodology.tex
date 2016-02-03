@@ -252,8 +252,8 @@ The candidate selection steps, based on malware clustering, are summarized as fo
     We choose \emph{`n'} accordingly to filter resource associated with too many families.
   % \item Here $(x,y)$ and $(y,x)$ will be different experiments because we run one sample, wait, and run another sample. Result can be different based on which one runs first.
 \end{itemize}
-\subsection{Testing the Candidate}
-\label{sub:Testing the Candidate}
+\subsection{Running the Candidate}
+\label{sub:Running the Candidate}
 Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
 We created \emph{`packer'} and \emph{`unpacker'} to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
 We used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
