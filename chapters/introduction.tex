@@ -46,7 +46,7 @@ We present a systematic way to find out such interferences from a large number o
 \label{fig:overview}
 \end{figure}
 A holistic overview of our approach is shown in~\autoref{fig:overview}.
-We analyze large number of malware samples and find possible malware pairs from those samples, that could exhibit behavioral interference.
+From the large dataset of malware samples, we choose a list of malware pairs that has high probability of exhibiting behavioral interference.
 We call those malware pairs \textbf{candidate pairs}.
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime (2007--02--07 to 2012--09--10) by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
@@ -58,12 +58,12 @@ In order to minimize our search space for candidate pair selection, and maximize
 Since \emph{Anubis} emulates the Windows OS, \textbf{system calls} refers to the Windows Application Programming Interface (API) functions.
 The trace of all the resources modified or queried by malware during its execution is referred to as the \textbf{Behavioral Profile} of that malware.
 In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Types and Activities} we define behavioral profiles and different resource types in detail respectively.
+
 If malware makes a failed attempt to access or delete resources created by another malware, there should be some interaction between those malware, as these actions are suspicious.
 It is trying to detect the presence of other files or registries in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
 
-The simple heuristic of finding interfering malware candidates based on common resource gave us concrete candidate pairs.
-The candidate pairs were still too large to run in a scalable manner and find substantial results.
+The simple heuristic of finding interfering malware candidates based on common resource gave us concrete candidate pairs.  The candidate pairs were still too large to run in a scalable manner and find substantial results.
 In order to further study the dataset, we used clustering of malware (based on behavior of malware).
 \textbf{Malware Clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on the behavioral profile in our case, to each other than to those in other group.
 Such groups are called \textbf{clusters}.
@@ -71,10 +71,12 @@ Clustering of malware based on behavioral profiles has been used extensively in 
 We treat each cluster as a family, and malware falling in those clusters as variants of that family.
 Candidate pairs are chosen in such a way that two malware representing a pair, do not belong to the same family.
 The algorithm for candidate selection based on clustering results and the common resource heuristic is described in~\autoref{sub:Candidate Selection}.
-Both malware sample belonging to a candidate pair were run in the \emph{Anubis} system consecutively, with a time interval between the two run.
-We describe the process of running the candidate pair in \emph{Anubis} system in~\autoref{sub:Running the Candidate}.
-The result of Anubis was then analyzed to see if there was deletion of resources as expected, which proves for behavioral interference between the two malware.
-The details of result analysis is describe in~\autoref{sub:Result Analysis}.\\
+Each candidate pair from the list of candidate pairs were then run in the \emph{Anubis} system for analysis.
+
+Two malware sample belonging to a single candidate pair were run in the \emph{Anubis} system consecutively, with a time interval between the two run.
+The procedure has been described in detail in~\autoref{sub:Running the Candidate}.
+The result of Anubis was then analyzed to see if one malware deletes the resource created by another, which provides proof for behavioral interference between the two malware.
+The details of result analysis is described in~\autoref{sub:Result Analysis}.\\
 
 % An \emph{unpacker} was designed in order to run a candidate pair inside the \emph{Anubis} system for analysis.
 % The \textbf{Unpacker} drops the candidate pair into the analysis system and executes both malware with a set time interval in between two executions [see~\autoref{sec:packerunpacker}].
