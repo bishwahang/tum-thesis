@@ -35,8 +35,7 @@ We have discussed in details, about such anecdotal evidence of interaction betwe
 The study of aforementioned behavioral interference between the malware family will provide novel knowledge for understanding the dynamic aspect of modern malware and the inter-family relations.
 This behavior is also a case for environment-sensitive malware, where malware change their behavior depending on different factors of its running environment, such as presence or absence of files, programs, or running services.
 To the best of our knowledge, there hasn't been a study of such interference between two malware families so far.
-We present a systematic way to find out such interferences from a large number of malware samples.\\
-
+We present a systematic way to find out such interferences from a large number of malware samples.
 \begin{figure}[h]
     \centering
     \def\svgwidth{\columnwidth}
@@ -45,9 +44,12 @@ We present a systematic way to find out such interferences from a large number o
 \caption{System Overview}
 \label{fig:overview}
 \end{figure}
+
 A holistic overview of our approach is shown in~\autoref{fig:overview}.
-From the large dataset of malware samples, we choose a list of malware pairs that has high probability of exhibiting behavioral interference.
+We use heuristics and clustering to get filtered list of malware pairs that could possibly exhibit the behavioral interference.
 We call those malware pairs \textbf{candidate pairs}.
+The candidate pairs are then run in malware analysis system, and the results are further analyzed to detect if there was behavioral interference between the malware during the run.
+
 Our dataset consists of {\gettotalmalwarei{}} malware samples, collected overtime (2007--02--07 to 2012--09--10) by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas analyzing all the possible pairs of millions of malware is not scalable.
@@ -58,7 +60,6 @@ In order to minimize our search space for candidate pair selection, and maximize
 Since \emph{Anubis} emulates the Windows OS, \textbf{system calls} refers to the Windows Application Programming Interface (API) functions.
 The trace of all the resources modified or queried by malware during its execution is referred to as the \textbf{Behavioral Profile} of that malware.
 In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Types and Activities} we define behavioral profiles and different resource types in detail respectively.
-
 If malware makes a failed attempt to access or delete resources created by another malware, there should be some interaction between those malware, as these actions are suspicious.
 It is trying to detect the presence of other files or registries in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\

@@ -129,10 +129,11 @@ The behavioral profile files had to be accessed via network file system.
 We need to walk through large list of directories and file, to find the behavioral profile pickle~\cite[]{pythonpickle} of specific malware.
 We found \emph{\gettotalmalwareii{}} behavioral profile files out of \emph{\gettotalmalwarei{}} malware.\\
 
-We considered only 8 of the resource type into account while parsing the profile files; those were File, Registry, Sync, Section, Process, Service, Job, and Driver [see \autoref{sub:Resource Types and Activities}].
-Windows Native and Windows API calls were generalized into OS Operation during the creation of behavioral profile.
+We considered eight resource type into account while parsing the profile files: File, Registry, Sync, Section, Process, Service, Job, and Driver [see \autoref{sub:Resource Types and Activities}].
+Windows Native and Windows API calls were generalized into OS Operation during the creation of behavioral profile.[see~\autoref{sub:Behavioral Profile}]
 We went through the list of OS Operations~[\autoref{ssub:OS Operations}] and mapped them into the broad three categories \emph{Modify, Access, and Delete}.
-The modify, access, and read list for the resource types \emph{\getresourcetypes{}} are shown in~\autoref{lbl:ntapi}
+The modify, access, and read list for the resource types \emph{\getresourcetypes{}} are shown in~\autoref{lbl:ntapi}.
+
 
 \begin{lstlisting}[numbers=none,language=ruby,caption={Mapping of generalized OS Operation from behavioral profile},label={lbl:ntapi}]
 MODIFY_LIST = {
@@ -169,6 +170,13 @@ DELETE_LIST = {
         }
 
 \end{lstlisting}
+
+Each malware submitted to Anubis had its own unique behavioral profile saved as python pickle~\cite{pythonpickle} object.
+We parsed behavioral profile and extracted the object names and operations from the \emph{OS Object} and \emph{OS Operations} respectively.
+The object name is the name of the resource and operations is the activity performed on the resource.
+The OS operation was categorized into \emph{modify}, \emph{access}, and \emph{delete} activity according to the mapping in~\autoref{lbl:ntapi}.
+The status of the operation, failed or successful, was also taken into account this time.
+With the resource name, operations and status, we create a new database of malware activities.
 
 We used \textbf{MySql Version 5.5.46} as our database engine. MySQL~\cite[]{mysql} is highly scalable and flexible relational database system which complies with the ACID model~\cite[]{acid} design principle.
 We used multiple workers to create the database, and ACID compliance prevented from inconsistency of data when being updated across multiple tables.\\

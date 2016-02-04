@@ -148,7 +148,9 @@ Static analysis would be tedious if we were to analyze each candidate of a pair 
 \subsection{Anubis}
 \label{sub:Anubis}
 For our experiment we use \textbf{Anbuis}, a dynamic malware analysis platform for analyzing Windows PE-executatbles~\cite[]{anubis}.
-\emph{Anubis} generates a detailed report about modifications made to the Windows registry or the file system, about interactions with the Windows Service Manager or other processes and logs of all generated network traffic~\cite[]{anubis}.
+Anubis is a whole-system emulator for PCs and Intel X86 architecture.
+It executes binary inside the emulated environment and gets the details of all the system calls invoked by binary~\cite[]{bayer}.
+With the trace of system calls, \emph{Anubis} generates a detailed report about modifications made to the Windows registry or the file system, about interactions with the Windows Service Manager or other processes and logs of all generated network traffic~\cite[]{anubis}.
 We chose \emph{Anbuis} because of the following reasons:
 \begin{itemize}
   \item We had direct access to Anubis and multiple instance of Anubis system to perform our malware analysis.
@@ -181,7 +183,7 @@ Some examples of classification algorithms are \emph{Naive Bayes, Random Fores, 
 Some examples of clustering algorithms are \emph{expectation-maximization and k-means}~\cite[]{clustering}.
 A good clustering system would be able to study behavior of a new binary to find, if the new binary is a variant of previously known malware and classify them accordingly.\\
 
-Because AV label on malware families are not reliable, we look onto different clustering techniques to categorize our dataset into different families.
+Because AV label on malware families are not reliable, we look onto different machine learning techniques to categorize our dataset into different families.
 \textbf{\citeauthor{pirscoveanu}} used \emph{Random Forest} classifier on the behavior data set of \emph{42,068} malware to achieve a high classification rate with a weighted average Area Under Curve (AUC) value of 0.98~\cite[]{pirscoveanu}.
 \textbf{\citeauthor{mosko}} used \emph{Naive Bayes} classifier based on 20 malware-behavior to detect malware with mean detection accuracy of over 90\%~\cite[]{mosko}.
 \textbf{\citeauthor{yavvari}} used behavioral mapping approach to cluster \emph{1,727} unique malware pair samples~\cite[]{yavvari}.
@@ -195,7 +197,7 @@ The clustering was done for tens of thousands of malware samples, but the approa
 The approach has a linear bootstrapping phase of Locality-sensitive hashing (LSH), after which the $O(n^2)$ hierarchical clustering starts.
 The whole premise of faster execution lies within careful tuning of multiple parameters and hash functions (to make the initial phase take care of most of the load), which had not been done by the authors for millions of samples (the biggest execution they had was for 75,000 samples).
 This means that we would have needed to tune and change the code as we go forward to get the results we hope for.
-Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
+% Instead we preferred using something ready to use (not to spend time improving something that would not be considered any novelty for our work).
 \\
 Another approach was to use a clustering algorithm that is scalable and capable to cluster millions of samples.
 We decided to map the problem to document clustering, considering each malware as a document, and their behavioral profile as the words in document.
@@ -214,7 +216,7 @@ We showed some evidence of interferences between the malware families where they
 Such behavioral interference between the malware families is an interesting case to study and would provide a novel aspect of dynamic behavior to evolving malware.
 Our research provides a systematic way to find such behavioral interference of malware families on a large scale.
 \\
-We gave an overview on two common malware analysis systems and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.
+We gave an overview on two common malware analysis approaches and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.
 We see that different malware families have different techniques to inject themselves and keep themselves alive even after the system reboot.
 As described in~\autoref{sec:Malware Types and Families}, they copy themselves in certain system paths, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware can be random or peculiar.
@@ -231,6 +233,6 @@ However, the clustering of malware performed so far are on a small number of sam
 We present a different approach for large scale malware clustering, using LDA for document clustering and python library \emph{Gemsim} for the implementation.\\
 
 Our working dataset consists of {\gettotalmalwarei{}} malware samples.
-The study of behavioral interference between the malware families in this of a large scale is new research in the field of malware study.
+The study of behavioral interference between the malware families in this large scale is new research in the field of malware study.
 Our work will be a cornerstone in that topic.
 It will help to understand dynamic behavior of environment sensitive malware.
