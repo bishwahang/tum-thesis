@@ -170,9 +170,16 @@ We required resource activities of the malware samples to process and find malwa
 For every binary submitted to Anubis for analysis, it executes the binary inside the emulated environment and keeps track of operating system services that are called by the binary.
 Anubis does this by keeping the log of all the Windows native system calls and Windows API functions that the binary invokes.
 Resource activity such as creating a file or a registry, by the binary with the Windows API functions (\emph{CreateFile, RegCreateKeyEx}), are monitored and recorded.
+
+A portion of sample log file is shown in~\autoref{lst:anubislog}.
+In Line 6, \emph{`test.exe'} process was included for the analysis.
+Each process is uniquely identified by its page directory base address, which is \emph{0X04660000} in this case. % chktex-file 29
+The page directory address of currently running process is stored in page-directory base register (PDBR), and it ensures that each process has its own virtual memory space~\cite[]{ttanalyze}.
+For the analysis subject \emph{`test.exe'}, we can see the log file has record of the loading of \emph{ntdll.dll} (module that contains NT system functions~\cite[]{ntdll}) and \emph{RPCRT4.dll} (Remote Procedural Call API used by Windows application for network and Internet communication~\cite[]{rpcrt}) in Line 5 and Line 13 respectively.
+In Line 8--12, we can see the log for different native system calls such as \emph{NtOpenKey, NtDeleteKey,NtCreateKey} related to opening, delete, and creating registry key respectively.
 With the log, Anubis generates the report of the analysis (resource activities of the analysis subject), and also keeps the record of the analysis report and the binary file, in the relational database for further record.
-We had access to those databases.
-The report database has record of resource activities of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.\\
+We had access to those databases.\\
+% The report database has record of resource activities of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.\\
 
 However, the old database was missing the resource activities that were not successful, for an example, failed attempt to delete a file.
 For each run, Anubis analyzed malware one at a time in a total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
@@ -183,7 +190,20 @@ With the log of execution trace and system calls, Anubis also creates the ``beha
 The ``behavioral profile'' of malware sample was used to get the resource name (object-name)[see~\autoref{ssub:OS Objects}] and operations (operation-name)[see~\autoref{ssub:OS Operations}] with successful status, to create new database.
 The new database was created for the above discussed 8 types of resource (\emph{File, Registry, Service, Section, Job, Process, Job, Sync, and Driver}) and operations were generalized to \emph{modify, read, and delete}.
 The implementation is described in~\autoref{sec:Creation of Database}.
-
+\begin{lstlisting}[float,floatplacement=ht,language=TeX,caption={Snippet of Anubis Log},label={lst:anubislog}]
+ Anubis Logfile Version: 1.1
+ Starting Anubis at 02/04/16, 02:22:23 UTC.
+ Logging all function calls: 0
+ 00:00:18.389876 [ANALYSIS_INFORMATION]: X X Added all of ntdll.dll's exported functions to the function Addresses Map.
+ 00:00:18.390846 [ANALYSIS_INFORMATION]: X X ntdll.dll was loaded.
+ 00:00:18.391247 [ANALYSIS_COORDINATOR]: X X Going to include test.exe with PDB 0x04660000 in the analysis.
+ 00:00:45.363931 [ANALYSIS_COORDINATOR]: "test.exe" 0 1 Event 'First instruction of the process' happened.
+ 00:00:45.365954 [FUNCTION_COORDINATOR]: "test.exe" 0 1 Added callback for function NtOpenKey (7C90D5B0)
+ 00:00:45.366673 [FUNCTION_COORDINATOR]: "test.exe" 0 1 Added callback for function NtDeleteKey (7C90D230)
+ 00:00:45.367363 [FUNCTION_COORDINATOR]: "test.exe" 0 1 Added callback for function NtCreateKey (7C90D0D0)
+ 00:00:45.555742 [ANALYSIS_INFORMATION]: "test.exe" 0 1 Added all of RPCRT4.dll's exported functions to the function Addresses Map.
+ 00:00:45.556358 [ANALYSIS_INFORMATION]: "test.exe" 0 1 RPCRT4.dll was loaded.
+\end{lstlisting}
 \subsection{Reverse Indexing}
 \label{sub:Reverse Indexing}
 After we created the database, we created reverse index of the resource activities.
