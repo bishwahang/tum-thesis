@@ -1,7 +1,14 @@
 %!TEX root = ../main.tex
 \chapter{Implementation}\label{chapter:implementation}
 In this chapter we give a detail explanation of how we implemented and conducted our research as described in~\autoref{chapter:methodology}.
+We start with study of old database structure and creation of reverse index in~\autoref{sec:Old Database and Reverse Index}.
+We describe the implementation of the \emph{packer} and the \emph{unpacker} to run the candidate pair inside \emph{Anubis} in~\autoref{sec:packerunpacker} and in~\autoref{sec:Initial Experiment} we run our preliminary test of candidate pairs.
+Because the old database did not had record of failed activities, we create the new database with both success and failed resource activity in~\autoref{sec:Creation of Database}.
+The implementation of LDA based on resource activities from the newly created database is describe in~\autoref{sec:Document Clustering}.
+Finally, in~\autoref{sec:Finding Optimal Candidate Pairs}, we describe the use of max-flow approach and heuristics to find the optimal sets of candidate malware pairs corresponding to interesting resource.
+
 \section{Old Database and Reverse Index}
+\label{sec:Old Database and Reverse Index}
 Our work was based on wide variety of millions of malware samples, collected over the years, by \emph{Anubis}.
 % Our main resource for the research was the direct access of the millions of malware samples from Anubis collected over the years in wild.
 We had to effectively and efficiently analyze those to find the behavioral interference between malware families.\\
@@ -389,8 +396,10 @@ Path from source (S) to $m_2$ in layer 1 and $(ic_2,r_1)$ which does not reach t
 % The max flow approach, did lower
 The max flow approach gave us optimal candidate pairs such that each pair of cluster is only covered once.
 However, the approach did not take care of repetition of cluster pair corresponding to different resource.
-If malware pair $(m_1,m_2$) is associated with resource $(r_1,r_2,r_3)$, same candidate pairs gets repeated three times.
-We wanted to group those repetition so that we can run single malware pair and analyze the behavioral interference they might have on different resources.
+% If malware pair $(m_1,m_2$) is associated with resource $(r_1,r_2,r_3)$, same candidate pairs gets repeated three times.
+If malware $m_1$ is belongs to input cluster $ic_1$ and malware $m_2$ belongs to output cluster $oc_2$ and both are associated with resource $(r_1,r_2,r_3)$, same candidate pairs $(m_1,m_2)$, belonging to same cluster pair $(ic_1,oc_2)$, gets repeated three times.
+% We wanted to group those repetition so that we get only single candidate pair $(m_1,m_2)$and analyze the behavioral interference they might have on different resources.
+We wanted to group those repetition so that we get single candidate pair $(m_1,m_2)$ that covers the unique cluster pair $(ic_1,oc_2)$, for all its corresponding resources $(r_1,r_2,\ldots)$.
 We used heuristics approach to eliminate those repetition.
 \subsection{Heuristics Approach}
 \label{sub:Heuristics Approach}
@@ -438,29 +447,8 @@ for c_pair, v in db.iteritems():
             candidate_set.add(m_pair)
 \end{lstlisting}
 
-The reduced candidate set was computed as shown in pseudocode~\ref{lst:heuristicalgo}.
+The reduced candidate set was computed as shown in pseudo-code~\ref{lst:heuristicalgo}.
 It is a greedy algorithm starting from the malware pair that corresponds most number of resource interactions.
 For each malware pair it checks if that pair has been already chosen, and if not, adds the pair to the candidate list.
-\section{Testing the Candidate Pairs}
-\label{sec:Testing the Candidate Pairs}
-In total we had \emph{263,701} candidate pairs to run the experiment.
-% The breakdown of the number is given below.
-% Modified has the usual meaning of successful operation, and access and delete are the failed attempt.
-% \begin{itemize}
-%   \item process\_modified\_vs\_process\_deleted: 54
-%   \item file\_modified\_vs\_file\_deleted: 589
-%   \item section\_modified\_vs\_section\_accessed: 2786
-%   \item registry\_modified\_vs\_registry\_deleted: 4781
-%   \item sync\_modified\_vs\_sync\_accessed: 7791
-%   \item registry\_modified\_vs\_registry\_accessed: 35118
-%   \item file\_modified\_vs\_file\_accessed: 212582
-% \end{itemize}
-We were provided with remote access to 7 instances of Anubis system for running candidate pairs.
-For each candidate pairs we packed them together using the \emph{`Pakcer'} and dropped them inside Anubis system using the \emph{`Unpacker'}as described in~\ref{sec:packerunpacker}.
-The time delay between the execution of two binaries was set to 5 minutes.
-This allowed the first binary enough time to perform its resource activities before the second binary starts.
-Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.
-% The time of execution for each worker was set to 10 minutes, when we ran the experiment such that malware `a' of candidate pair $(a,b)$, run first for 3 minutes, and after that malware `b' of the same pair is run in the same anubis worker.
-% The time of execution were changed accordingly with respect to experiment.
-% When we ran the malware `a' first, then wait for some minutes for malware `b' to run, and again wait for some minutes before malware `a' was run again, the anubis worker run time was set to 9 minutes.
-% The result of the Anubis run were then copied to local machine to analyze further.
+% \section{Testing the Candidate Pairs}
+% \label{sec:Testing the Candidate Pairs}

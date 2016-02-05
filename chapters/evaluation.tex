@@ -1,21 +1,73 @@
 %!TEX root = ../main.tex
 \chapter{Evaluation}
 \label{chapter:evaluation}
-\begin{table}[htsb]
-  \caption[Number of candidate pairs and positive rate w.r.t. Resource types]{Number of candidate pairs and positive rate w.r.t. Resource types}\label{tab:routers}
+So far we implemented the system to find the minimal set of candidate pairs from our test dataset that has probability of exhibiting behavioral interference.
+In this section, we describe how we test those candidate pairs in the Anubis system to detect if the behavioral interference exists between the malware samples and evaluate the effectiveness of our approach.
+% In this section we describe how we experiment those candidate pair and evaluate the results.
+\section{Candidate Pairs}
+\label{sec:Candidate Pairs}
+With our approach, in total we found \emph{263,691} candidate pairs with probable behavioral interference.
+The breakdown of the number is shown in~\autoref{tab:totalcandidates}.
+
+\begin{table}[ht]
+  \caption[Number of probable candidate pairs w.r.t. Resource types]{Number of candidate pairs w.r.t. Resource types}\label{tab:totalcandidates}
   \centering
   \begin{tabular}{l l l l}
     \toprule
       % \bf{Resource Types} & \bf{\# of candidate pairs}  & \bf{true positive} \\
-    Resource types & \# candidate pairs& \# of interfering pairs & True positive \\
+    Resource types & \# candidate pairs\\
     \midrule
-    File & 213171 & X & X \\
-    Registry & 39899 & X & X \\
-    Sync & 7781 & X & X \\
-    Section & 2786 & X & X \\
-    Process & 54 & X & X \\
+    File & 213171 \\
+    Registry & 39899 \\
+    Sync & 7781 \\
+    Section & 2786 \\
+    Process & 54\\
     \bottomrule
-    Total & 263691 & X & X \\
+    Total & 263691\\
   \end{tabular}
 \end{table}
+The largest number of candidate pairs was \emph{213,171} for resource type \emph{File} and the lowest number was \emph{54} for for resource type \emph{Process}.\\
+Although, in our dataset, we had taken resource types {\getresourcetypes{}} into consideration, our algorithm did not find any candidate pair with behavioral interference based on resource type \emph{Job, Device, and Driver}.
+This infers that in our dataset, there were no two malware sample from two different families, where once created a device driver and another deleted it.
+\section{Running the Experiment}
+\label{sec:Running the Experiment}
+We had remote access to 7 instances of Anubis system for running candidate pairs.
+Candidate pair were packed together using the \emph{`Pakcer'} and dropped them inside Anubis system using the \emph{`Unpacker'}as described in~\ref{sec:packerunpacker}.
+The time delay between the execution of two binaries in the \emph{Unpacker} was set to 4 minutes.
+This allowed the first binary enough time to perform its resource activities before the second binary starts.
+The total time set for a single Anubis run was set to 10 minutes.
+Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.\\
 
+We sampled malware sample pairs randomly from the probable candidate pairs list and run them in Anubis system to test for behavioral interference.
+The number of sampled candidate pair and the result of the experiment is shown in~\autoref{tab:resultscandidate}.
+% The time of execution for each worker was set to 10 minutes, when we ran the experiment such that malware `a' of candidate pair $(a,b)$, run first for 3 minutes, and after that malware `b' of the same pair is run in the same anubis worker.
+% The time of execution were changed accordingly with respect to experiment.
+% When we ran the malware `a' first, then wait for some minutes for malware `b' to run, and again wait for some minutes before malware `a' was run again, the anubis worker run time was set to 9 minutes.
+% The result of the Anubis run were then copied to local machine to analyze further.
+\begin{table}[ht]
+  \caption[Results of candidate pair run]{Results of candidate pair run}\label{tab:resultscandidate}
+  \centering
+  \begin{tabular}{l l l l}
+    \toprule
+    Resource types & \# tested pairs & \# true positive & precision\\
+    \midrule
+    File & 2000\\
+    Registry & 1000\\
+    Sync & 1000\\
+    Section & 1000\\
+    Process & 54\\
+    \bottomrule
+    % Total & 263691\\
+  \end{tabular}
+\end{table}
+\section{Effectiveness}
+\label{sec:Effectiveness}
+\section{Efficiency}
+\label{sec:Efficiency}
+
+
+\section{Threats to Validity}
+\label{sec:Threats to Validity}
+
+\section{Summary}
+\label{sec:Summary}
