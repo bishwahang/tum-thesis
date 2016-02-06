@@ -178,8 +178,8 @@ The page directory address of currently running process is stored in page-direct
 For the analysis subject \emph{`test.exe'}, we can see the log file has record of the loading of \emph{ntdll.dll} (module that contains NT system functions~\cite[]{ntdll}) and \emph{RPCRT4.dll} (Remote Procedural Call API used by Windows application for network and Internet communication~\cite[]{rpcrt}) in Line 5 and Line 13 respectively.
 In Line 8--12, we can see the log for different native system calls such as \emph{NtOpenKey, NtDeleteKey,NtCreateKey} related to opening, delete, and creating registry key respectively.
 With the log, Anubis generates the report of the analysis (resource activities of the analysis subject), and also keeps the record of the analysis report and the binary file, in the relational database for further record.
-We had access to those databases.\\
-% The report database has record of resource activities of \emph{File, Registry, Mutex} for operations \emph{create, delete, modify, read}.\\
+We had access to those databases.
+The report database has record of resource activities of \emph{File, Registry, Service, Process, and Network} for operations \emph{create, delete, modify, read}.\\
 
 However, the old database was missing the resource activities that were not successful, for an example, failed attempt to delete a file.
 For each run, Anubis analyzed malware one at a time in a total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
