@@ -1,13 +1,13 @@
 \chapter{\abstractname}
 We present a novel approach for finding the behavioral interference between malware families at large scale.
 Driven by monetary profit, malware from different families might try to uninstall each other before infecting a system, to get the larger share on the underground market.
-% There are some anecdotal evidences (blogs).
 This is an interesting case of `environment-sensitive malware' and behavioral interference between malware families.
-To the best of our knowledge, there is no prior research addressing this problem in systematic way.
+Exploration of this behavior of malware will provide better insights over different families of malware and their associated ``underground economy''.
+To the best of our knowledge, there is no prior research addressing this problem in a systematic way.
+% To the best of our knowledge, there is no prior research on the study of behavioral interference between the malware in a systematic way.
 We explore this scene in the wild, on millions of malware samples, collected over time by \emph{Anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
-Because of the large dataset and Anti-Virus labels being unreliable, we use machine learning techniques (document clustering) to cluster the malware samples, based on the behavioral profile of malware into different malware families.
-% Because of the large dataset and Anti-Virus labels being unreliable, we used machine learning techniques (document clustering) to cluster and filter our dataset, without compromising the quality.
-% We clustered our dataset based on the behavioral profile of malware into different malware families.
+We find the malware pair that have the possibility of behavioral interference and analyze them in the \emph{Anubis} system to detect the interference between the malware.
+Because of the large dataset and lack of reliable source for labeling malware samples into families, we use machine learning techniques (document clustering) to cluster the malware samples, based on malware behavioral profiles, into different malware families.
 We use heuristics to find the probable malware pair with behavioral interference, based on common resources (files, registries, and others), interactions (modify or delete), and belonging to different clustered families.
 Our approach could find X number of malware pairs with the true positive rate of $X\%$.
 This novel research will help better understand the dynamic aspect of malware behavior.
