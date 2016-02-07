@@ -59,7 +59,7 @@ From the reverse index of the resource activities of the Malware, we mapped crea
 % We made a list of malware based on the common resource name as the key, where a list of malware which created the resource and another list of malware which delete/read the same resource.
 We started looking for one to one interaction of malware to a single resource.
 We looked for a set $(a, b)$, where malware `a' creates the resource \emph{r}, and malware `b' deletes the same resource, \emph{r}, such that no other malware has create or delete activities on that resource \emph{r}. We ran those malware pairs in the Anubis system using the \emph{Unpacker}.
-\section{Packer \& Unpacker}
+\section{Packer and Unpacker}
 \label{sec:packerunpacker}
 In order to run the pair of malware together inside the Anubis environment we made a Win32 console application (Anubis VM is based on Windows OS.\@), named \textbf{Unpacker}.
 We used the fact that we can append any data at the end of Windows PE executable, and it would not affect the executable's program flow.
@@ -201,14 +201,15 @@ We processed \gettotalmalwareii{} behavioral profiles.
 About $62\%$ of execution time was taken to load the gzip pickle~\cite[]{pythonpickle} of malware profile and the normal SQL CRUD (create, read, update, and delete) operation, which can be seen in Figure~\ref{fig:dbcreation}.
 % The execution profile is shown in~\autoref{fig:dbcreation}
 %TODO: put profile.png
-\begin{figure}
-\begin{center}
-  \includegraphics[scale=0.4]{figures/db_create2.png}
-\end{center}
+\begin{figure}[ht]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \scalebox{0.99}{\input{figures/dbcreate.pdf_tex}}
+    % \input{figures/overview.pdf_tex}
 \caption{Profile of new database creation}
 \label{fig:dbcreation}
 \end{figure}
-\\
+
 After the creation of new database, we made a reverse index, like before, for the `\emph{resource name}' to `\emph{malware ids}' modifying, accessing, and deleting the resource.
 This time the refined database had both the success and failed resource activities.
 % Getting all the resource activities related to all the resource types \emph{file, registry, section, driver, sync,service, process, and job} was also time expensive.
@@ -245,13 +246,19 @@ Each resource activity was represented as word, each malware was represented as 
 The process was database intensive as seen in Figure~\ref{fig:actcreation}, and took almost week for us to get complete text copora.
 The resultant text corpora was about 81 Gigabytes of data.
 % After days of running the script, we could gather all the resource activity of {\gettotalmalwareii} malware as the corpus for algorithm.
-\begin{figure}
-\begin{center}
-  \includegraphics[scale=0.4]{figures/activities_creation.png}
-\end{center}
+\begin{figure}[ht]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \scalebox{1}{\input{figures/activities_creation.pdf_tex}}
+    % \input{figures/overview.pdf_tex}
 \caption{Profiling of building a corpus}
 \label{fig:actcreation}
 \end{figure}
+% \begin{figure}
+% \begin{center}
+%   \includegraphics[scale=0.4]{figures/activities_creation.png}
+% \end{center}
+% \end{figure}
 \\
 \subsection{LDA Model}
 \label{sub:LDA Model}

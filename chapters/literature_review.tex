@@ -144,7 +144,7 @@ Also, many evasive malware can evade detection by \emph{dynamic analysis} by ide
 
 %TODO: something better reason??
 We chose dynamic analysis because we can run the candidate malware pair together, to find the behavioral interferences, in live action.
-Static analysis would be tedious if we were to analyze each candidate of a pair and correlate them for interference, within the time constraint.
+Static analysis would be tedious if we were to analyze each malware sample of a candidate pair and correlate them for interference, within the time constraint.
 \subsection{Anubis}
 \label{sub:Anubis}
 For our experiment we use \textbf{Anbuis}, a dynamic malware analysis platform for analyzing Windows PE-executatbles~\cite[]{anubis}.
@@ -216,6 +216,7 @@ We showed some evidence of interferences between the malware families where they
 Such behavioral interference between the malware families is an interesting case to study and would provide a novel aspect of dynamic behavior to evolving malware.
 Our research provides a systematic way to find such behavioral interference of malware families on a large scale.
 \\
+
 We gave an overview on two common malware analysis approaches and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.
 We see that different malware families have different techniques to inject themselves and keep themselves alive even after the system reboot.
 As described in~\autoref{sec:Malware Types and Families}, they copy themselves in certain system paths, disguise themselves with benign filenames and register themselves to autostart services.

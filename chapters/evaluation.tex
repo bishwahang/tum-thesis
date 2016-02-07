@@ -6,11 +6,11 @@ In this section, we describe how we test those candidate pairs in the Anubis sys
 % In this section we describe how we experiment those candidate pair and evaluate the results.
 \section{Candidate Pairs}
 \label{sec:Candidate Pairs}
+To find the candidate pairs, the maximum number of families, the value of \emph{`N'} in Algorithm~\autoref{alg:Candidate Selection}, was set to 10;
+i.e., any interesting resource with more than 10 corresponding malware families, associated by create or access/delete operation, were discarded.
+We do this because any resource associated with too many families is less interesting [see~\autoref{sub:Candidate Selection}].
 With our approach, in total we found \emph{263,691} candidate pairs with probable behavioral interference.
 The breakdown of the number is shown in~\autoref{tab:totalcandidates}.
-We set the maximum number of families, the value of \emph{`N'} in Algorithm~\autoref{alg:Candidate Selection}, to be 10.
-Any interesting resource, with corresponding malware families count for create or access/delete more than 10, were discarded.
-We do this because any resource associated with too many families is less interesting [see~\autoref{sub:Candidate Selection}].
 
 \begin{table}[ht]
   \caption[Number of probable candidate pairs w.r.t. Resource types]{Number of candidate pairs w.r.t. Resource types}\label{tab:totalcandidates}
@@ -48,10 +48,6 @@ Some of the missing binary from the candidate pairs were downloaded from \emph{V
 
 We sampled malware pairs randomly from the probable candidate pairs list and run them in Anubis system to test for behavioral interference.
 The number of sampled candidate pair and the result of the experiment is shown in~\autoref{tab:resultscandidate}.
-% The time of execution for each worker was set to 10 minutes, when we ran the experiment such that malware `a' of candidate pair $(a,b)$, run first for 3 minutes, and after that malware `b' of the same pair is run in the same anubis worker.
-% The time of execution were changed accordingly with respect to experiment.
-% When we ran the malware `a' first, then wait for some minutes for malware `b' to run, and again wait for some minutes before malware `a' was run again, the anubis worker run time was set to 9 minutes.
-% The result of the Anubis run were then copied to local machine to analyze further.
 \begin{table}[ht]
   \caption[Results of candidate pair run]{Results of candidate pair run}\label{tab:resultscandidate}
   \centering
@@ -59,10 +55,10 @@ The number of sampled candidate pair and the result of the experiment is shown i
     \toprule
     Resource types & \# tested pairs & \# true positive & precision\\
     \midrule
-    File & 2000\\
-    Registry & 1000\\
-    Sync & 1000\\
-    Section & 1000\\
+    File & 10,000\\
+    Registry & 5,000\\
+    Sync & 1,000\\
+    Section & 1,000\\
     Process & 54\\
     \bottomrule
     % Total & 263691\\
@@ -70,13 +66,12 @@ The number of sampled candidate pair and the result of the experiment is shown i
 \end{table}
 \section{Effectiveness}
 \label{sec:Effectiveness}
-\section{Efficiency}
-\label{sec:Efficiency}
-
+% \section{Efficiency}
+% \label{sec:Efficiency}
 
 \section{Threats to Validity}
 \label{sec:Threats to Validity}
-The results we presented is in the context of our approach with dependent variables which we controlled throughout the experiment.
+The results we presented here is in the context of our approach, with dependent variables which we controlled throughout the experiment.
 In this section we discuss such threats to validity of our results.
 
 % Firstly, we only took into consideration eight resource types ({\getresourcetypes{}).
