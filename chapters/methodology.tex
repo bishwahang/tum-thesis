@@ -174,20 +174,21 @@ Resource activity such as creating a file or a registry, by the binary with the 
 A portion of sample log file is shown in~\autoref{lst:anubislog}.
 In Line 6, \emph{`test.exe'} process was included for the analysis.
 Each process is uniquely identified by its page directory base address, which is \emph{0X04660000} in this case. % chktex-file 29
-The page directory address of currently running process is stored in page-directory base register (PDBR), and it ensures that each process has its own virtual memory space~\cite[]{ttanalyze}.
-For the analysis subject \emph{`test.exe'}, we can see the log file has record of the loading of \emph{ntdll.dll} (module that contains NT system functions~\cite[]{ntdll}) and \emph{RPCRT4.dll} (Remote Procedural Call API used by Windows application for network and Internet communication~\cite[]{rpcrt}) in Line 5 and Line 13 respectively.
+The page directory address ensures that each process has its own virtual memory space.
+The page directory address of currently running process is stored in page-directory base register (PDBR)~\cite[]{ttanalyze}.
+For the analysis subject \emph{`test.exe'}, we see the log file has record of the loading of \emph{ntdll.dll} (module that contains Windows NT system functions~\cite[]{ntdll}) and \emph{RPCRT4.dll} (Remote Procedural Call API used by Windows application for network and Internet communication~\cite[]{rpcrt}) in Line 5 and Line 13 respectively.
 In Line 8--12, we can see the log for different native system calls such as \emph{NtOpenKey, NtDeleteKey,NtCreateKey} related to opening, delete, and creating registry key respectively.
 With the log, Anubis generates the report of the analysis (resource activities of the analysis subject), and also keeps the record of the analysis report and the binary file, in the relational database for further record.
 We had access to those databases.
 The report database has record of resource activities of \emph{File, Registry, Service, Process, and Network} for operations \emph{create, delete, modify, read}.\\
 
-However, the old database was missing the resource activities that were not successful, for an example, failed attempt to delete a file.
+However, the old database was missing the resource activities that were not successful; for an example, failed attempt by malware to delete a file.
 For each run, Anubis analyzed malware one at a time in a total new OS environment; so the resources created during one analysis run were not present during the analysis run of another malware.
 Because of this, malware trying to detect or delete the resource created by some other malware would be unsuccessful.
 A new database with record of such failed attempts was essential.\\
 
 With the log of execution trace and system calls, Anubis also creates the ``behavioral profile'', described in~\autoref{sub:Behavioral Profile}, for the submitted malware sample, which has record of both the successful and failed resource activities.
-The ``behavioral profile'' of malware sample was used to get the resource name (object-name)[see~\autoref{ssub:OS Objects}] and operations (operation-name)[see~\autoref{ssub:OS Operations}] with successful status, to create new database.
+The ``behavioral profile'' of malware sample was used to get the resource name (object-name)[see~\autoref{ssub:OS Objects}] and operations (operation-name)[see~\autoref{ssub:OS Operations}] with successful or failed status, to create the new database.
 The new database was created for the above discussed 8 types of resource (\emph{File, Registry, Service, Section, Job, Process, Job, Sync, and Driver}) and operations were generalized to \emph{modify, read, and delete}.
 The implementation is described in~\autoref{sec:Creation of Database}.
 \begin{lstlisting}[float,floatplacement=ht,language=TeX,caption={Snippet of Anubis Log},label={lst:anubislog}]
@@ -326,16 +327,18 @@ Followed by the binary, meta-information, such as size of both binary and prefer
 We analyze the packed \emph{unpacker} binary in the \emph{Anubis}.
 When executed, the \emph{unpacker}, would read itself from the behind to get the meta-information, and recreate the packed binaries, and drop them inside the \emph{Anubis} OS environment.
 After both the binaries are dropped, it execute the first binary, waits for time delay specified, and runs another binary.
+The sequence of the execution is: candidate malware that creates the resource first, followed by candidate malware that tried to access/delete the resource with failure.
 In the end, both the binary runs in the \emph{Anubis}, and we analyze the result.
 In~\autoref{sec:packerunpacker}, we implement the \emph{packer} and \emph{unpacker}.
 \subsection{Result Analysis}
 \label{sub:Result Analysis}
-\emph{Anubis}, generates result of analysis as \emph{Extensible Markup Language} (XML) format.
 A binary submitted to Anubis is renamed into \emph{`sample.exe`}, and is considered as the primary analysis subject.
 % All the binaries created and executed, after the execution of primary analysis subject, is tracked for its malicious activities.
-All the binaries created and executed by the primary analysis subject, after its execution, is also tracked for its malicious activities.
-The XML report has the resource activities of each binaries presented under different XML node.\\
-We analyze the activities of two malware binary, candidate pair, that gets dropped by unpacker and executed.
+All the binaries created and executed by the primary analysis subject, after its execution, is also tracked for its resource activities.
+% \emph{Anubis}, generates result of analysis as \emph{Extensible Markup Language} (XML) format.
+% The XML report has the resource activities of each binaries presented under different XML node.\\
+% We analyze the activities of two malware binary, candidate pair, that gets dropped by unpacker and executed.
+We analyze the resource activities of our candidate pair and any other process started by them.
 We are interested in `access/delete' activity of the `resource', based on which the candidate pair was chosen---`resource' created successfully by one malware, and failed attempt to access/delete the same resource by another.
 Any successful access/delete of that resource (files or registries or others) will be the change in behavior of one malware caused by the presence of another malware.
 
@@ -346,6 +349,6 @@ Any successful access/delete of that resource (files or registries or others) wi
 \end{figure}
 
 \section{Summary}
-\label{sec:Summary}
+\label{sec:ssummary}
 In this chapter, we described different terms used in our work in details and also gave an overview of our work flow.
 In next chapter, we will show how we implemented the work flow in our system.

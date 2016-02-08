@@ -243,8 +243,9 @@ The total number of malware samples were filtered to {\gettotalmalwareiii{}}.\\
 We created the text corpora for those {\gettotalmalwareiii{}} malware, and performed the document clustering.
 We converted all the resource activities related of the malware samples into the corpora text as discussed in~\autoref{sub:Clustering}.
 Each resource activity was represented as word, each malware was represented as the document, and the collection of documents were text corpora.
-The process was database intensive as seen in Figure~\ref{fig:actcreation}, and took almost week for us to get complete text copora.
-The resultant text corpora was about 81 Gigabytes of data.
+The process was database intensive; as seen in Figure~\ref{fig:actcreation} $94.50\%$ of the run time was spent on executing the database cursor (traversal, addition, retrieval of database records).
+It took almost 7 days for us to get complete text copora.
+The size of resultant text corpora was about 81 Gigabytes.
 % After days of running the script, we could gather all the resource activity of {\gettotalmalwareii} malware as the corpus for algorithm.
 \begin{figure}[ht]
     \centering

@@ -34,19 +34,25 @@ Registry resource type was second with number of candidate pairs \emph{39,899}.
 Sync and Section resource type were third and fourth with number of candidate pairs \emph{7,781} and \emph{2,786} respectively.
 With our data, we can say that file and registry are the most modified resource type, whose presence in the system is checked by another malware.\\
 
-
 Although, in our dataset, we had taken resource types {\getresourcetypes{}} into consideration, our algorithm did not find any candidate pair with behavioral interference based on resource type \emph{Job, Device, and Driver}.
 This infers that in our dataset, there were no two malware sample from two different families, where one malware created a Job, Device or Driver and another malware accessed or deleted it.
-\section{Running the Experiment}
-\label{sec:Running the Experiment}
-We had remote access to 7 instances of Anubis system for running candidate pairs.
+\section{Experiment and Results}
+\label{sec:Experiment and Results}
+We had remote access to 7 instances of Anubis system for running the candidate pairs.
+Anubis uses Qemu~\cite[]{qemu}, ``a machine emulator which can run an unmodified target operating system (such as Windows or Linux) and all its applications in a virtual machine'', as emulator component.
+Anubis modifies Qemu's dynamic translation~\cite[]{qemu}, runtime conversion of target CPU instruction into host instruction set, to closely monitor the process under analysis.
+Anubis does so by invoking its callback routine before every basic block (sequence of instruction ending in jump statement or changing the CPU state) is executed on the virtual processor~\cite[]{ttanalyze}.
+Each of the 7 instance of Anubis system emulates an entire PC computer system, running complete and unmodified version of Windows XP (with Service Pack 2) as an underlying operating system, to provide an accurate environment for malware experiment~\cite[]{ttanalyze}.
+\\
+
 Candidate pair were packed together using the \emph{`Pakcer'} and dropped them inside Anubis system using the \emph{`Unpacker'}as described in~\ref{sec:packerunpacker}.
 The time delay between the execution of two binaries in the \emph{Unpacker} was set to 4 minutes.
 This allowed the first binary enough time to perform its resource activities before the second binary starts.
-The total time set for a single Anubis run was set to 10 minutes.
+The total time set for a single Anubis run was set to 10 minutes; 4 minutes for each malware and 2 minutes of extra caution time.
 Some of the missing binary from the candidate pairs were downloaded from \emph{VirusTotal}.\\
 
-We sampled malware pairs randomly from the probable candidate pairs list and run them in Anubis system to test for behavioral interference.
+We sampled malware pairs randomly from the probable candidate pairs list (\autoref{tab:totalcandidates}) and ran them in Anubis system to test for behavioral interference.
+The log of resource activities from the experiment run was then parsed and analyzed as described in~\autoref{sub:Result Analysis} to detect the behavioral interference between the malware samples.
 The number of sampled candidate pair and the result of the experiment is shown in~\autoref{tab:resultscandidate}.
 \begin{table}[ht]
   \caption[Results of candidate pair run]{Results of candidate pair run}\label{tab:resultscandidate}
@@ -78,22 +84,23 @@ In this section we discuss such threats to validity of our results.
 % We chose this based on k
 During candidate selection, we chose the cutoff number for families to 10.
 Different values of N would drastically change the candidate pairs list generated from the candidate selection algorithm [see Algorithm~\autoref{alg:Candidate Selection}].
-This can change the statistics of results.
+This can change the quantity of resultant candidate pairs presented above.
 We also did not tackle the fact that many resources can have randomly generated names.
-The resource name we considered for the selection of malware pair, might not be generated next time we run the malware pair for testing.
+The resource name we considered for the selection of malware pair might not be generated next time, when we run the malware pair for testing.
 We could have increased the quality of probable candidate pair selection if we had filter out malware pair with such corresponding resource.
 % Hence our list of candidate pairs is dependent on the choice of number of N, and result values could be 
 % However, this did not effect the quality of the candidate pair selected, but we could have filtered out many fals
 
-When we ran the experiment on those candidate pairs, the number of delay between the two executions were set to be 4 minutes.
+When we ran the experiment on the probable candidate pairs, the number of delay between the execution of two malware was set to be 4 minutes.
 We chose the delay times after running some initial candidate pairs and recording their time of execution.
-Some malware might execute only for few seconds and some executed for few minutes.
+Some malware executed only for few seconds and some executed for few minutes.
 We chose 4 minutes based on the highest time taken by our test malware samples to finish its execution.
-The reason was to let the first malware run completely and create all the resources it is supposed to.
-But, there might be some malware samples that runs more than 4 minutes.
-We did not know the exact maximum time, and increasing the time delay arbitrarily would mean increasing the time of experiment for each candidate pair without certainty to get better results, which we avoided.
+The reason was to let the first malware run completely and create all the resources it is supposed to, so that second malware can access it.
+But, there can be some malware samples that runs more than 4 minutes.
+We do not know the exact maximum malware execution time.
+Increasing the time delay arbitrarily would mean increasing the time of experiment for each candidate pair without certainty to get better results, which we avoided.
 
-We ran the candidate pairs just once and did not repeat the experiment to see if we get the similar results.
+We ran the candidate pairs just once and did not repeat the experiment to see if we get the same results.
 We did run few malware pair with positive result more than once, and the result was same (deletion of resource occurred).
 Also, we only ran the candidate pair, \emph{(a,b)}, in single order of execution, such that \emph{`a'} runs first, followed by \emph{`b'}, where \emph{`a'} was supposed to create the resource and \emph{`b'} was supposed to access/delete it.
 We do no know if the behavioral interference persists if we run the candidate pair in reverse order; with \emph{`b'} being executed first followed by \emph{`a'}.

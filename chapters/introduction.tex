@@ -51,7 +51,7 @@ A holistic overview of our research approach is shown in~\autoref{fig:overview}.
 To perform the research, we worked with dataset of {\gettotalmalwarei{}} malware samples, collected overtime (2007--02--07 to 2012--09--10) by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
 Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
 
-Working with the large dataset 
+Working with the large dataset is one of the challenging task.
 Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas analyzing all the possible pairs of millions of malware is not scalable.
 We use heuristics and clustering techniques to filter our dataset and get list of malware pairs that has high probability of exhibiting the behavioral interference.
 We call those malware pairs \textbf{candidate pairs}.
@@ -62,8 +62,9 @@ The candidate pairs are then run in malware analysis system, and the results are
 We generate a list of probable candidate pairs, from our malware dataset, based on the common resource that the malware sample operates (create, access or delete) on.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since \emph{Anubis} emulates the Windows OS, \textbf{system calls} refers to the Windows Application Programming Interface (API) functions.
-The trace of all the resources modified or queried by malware during its execution is referred to as the \textbf{Behavioral Profile} of that malware.
+The trace of all the resources modified or queried by malware during its execution is referred to as the \textbf{behavioral profile} of that malware.
 In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Types and Activities} we define behavioral profiles and different resource types in detail respectively.
+
 In order to minimize our search space for candidate pair selection, and maximize the probability for finding a pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
 If malware makes a failed attempt to access or delete resources created by another malware, there should be some interaction between those malware, as these actions are suspicious.
 It is trying to detect the presence of other files or registries in the environment it is currently running, and its behavior is affected by the positive or negative detection.
