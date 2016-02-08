@@ -305,30 +305,30 @@ After the clustering is done we select candidate as shown in algorithm~\autoref{
 \end{algorithm}
 
 In algorithm~\autoref{alg:Candidate Selection}, we define a function $C(j)$ in line 7--10 which returns the cluster id of given malware $j$.
-In line 11--20, for all resource $r$ in set $R$, we first check if the number of create or access/delete families, associated with the resource $r$ is greater than $N$.
+In line 11--20, for all resource $r$ in set $R$, we first check if the number of create or access/delete families associated with the resource $r$ is greater than $N$.
 We choose $N$ accordingly to filter resource associated with too many families.
 If true, we simply discard it, as resource modified/deleted by too many families is less interesting.
-If false, for every possible malware pair between the create set $A$ and access/delete set $B$, $(x_r,y_r)$, we populate our experiment set $E$, such that $x_r$ and $y_r$ belong to different family.
+If false, for every possible malware pair between the create set $A$ and access/delete set $B$, say $(x_r,y_r)$, we populate our experiment set $E$, such that $x_r$ and $y_r$ belong to different family.
 The final experiment set \emph{E} is a set of such $(x_r, y_r)$ for all resources \emph{r} in \emph{R}.
 
 We decrease the number of candidate pairs with this approach, as we no more take into consideration all the possible candidate pair from tens of thousands of malware sample associated with resource, but select candidate pairs based on cluster those malware sample belongs to.
-For an example, let $r_1$ be the resource which was created by malware samples $x_1,x_2,x_3$ and tried to delete with failure by malware samples $y_1, y_2, y_3$.
+For an example, let $r_1$ be the resource which was created by malware samples $x_1,x_2,x_3$ and was tried to delete with failure by malware samples $y_1, y_2, y_3$.
 Let, $x_1,x_2,y_1,y_2$ malware samples belong to cluster $c_1$, $x_3$ malware sample belongs to cluster $c_2$, and $y_3$ malware sample belongs to cluster $c_3$.
 With previous heuristics, the total candidate pairs would be all possible pairs from the cross product of both set such as $(x_1,y_1), (x_1,y_2), (x_1,y_3),\ldots ,(x_3, y_3)$.
 With candidate selection algorithm, we would only get two probable candidate pairs corresponding to resource $r_1$: $(x_1,y_3)$ and $(x_3,y_3)$, such that both malware in the pair belong to different family.
 \subsection{Running the Candidate}
 \label{sub:Running the Candidate}
 Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
-We created \emph{`packer'} and \emph{`unpacker'} to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
 We used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
+We created \emph{`packer'} and \emph{`unpacker'}, based on the above fact, to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
 The \textbf{unpacker} is a self reading dropper binary.
-With \textbf{Packer}, we attach the append binary of the candidate pair, to the back of \emph{unpacker} binary, one after another in sequence.
+With \textbf{packer}, we append binary of the candidate pair, to the back of \emph{unpacker} binary, one after another in sequence.
 Followed by the binary, meta-information, such as size of both binary and preferred time delay, was appended to the end of the \emph{unpacker}.
 We analyze the packed \emph{unpacker} binary in the \emph{Anubis}.
 When executed, the \emph{unpacker}, would read itself from the behind to get the meta-information, and recreate the packed binaries, and drop them inside the \emph{Anubis} OS environment.
-After both the binaries are dropped, it execute the first binary, waits for time delay specified, and runs another binary.
-The sequence of the execution is: candidate malware that creates the resource first, followed by candidate malware that tried to access/delete the resource with failure.
-In the end, both the binary runs in the \emph{Anubis}, and we analyze the result.
+After both the binaries are dropped, it execute the first binary, waits for specified time delay, and then runs another binary.
+The sequence of the binary execution is: candidate malware that creates the resource first, followed by candidate malware that tried to access/delete the resource with failure.
+In the end, both the binary runs in the \emph{Anubis}, and we analyze the Anubis report.
 In~\autoref{sec:packerunpacker}, we implement the \emph{packer} and \emph{unpacker}.
 \subsection{Result Analysis}
 \label{sub:Result Analysis}
