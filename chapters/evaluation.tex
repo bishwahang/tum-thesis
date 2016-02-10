@@ -1,7 +1,7 @@
 %!TEX root = ../main.tex
 \chapter{Evaluation}
 \label{chapter:evaluation}
-So far we implemented the system to find the minimal set of candidate pairs from our test dataset that has probability of exhibiting behavioral interference.
+So far we implemented the system to find the minimal set of candidate pairs from our test dataset, that has probability of exhibiting behavioral interference.
 In this section, we describe how we test those candidate pairs in the Anubis system to detect if the behavioral interference exists between the malware samples and evaluate the effectiveness of our approach.
 We end the chapter with threats to validity and summary.
 % In this section we describe how we experiment those candidate pair and evaluate the results.
@@ -40,8 +40,8 @@ This infers that in our dataset, there were no two malware sample from two diffe
 \section{Experiment and Results}
 \label{sec:Experiment and Results}
 We had remote access to 7 instances of Anubis system for running the candidate pairs.
-Anubis uses Qemu~\cite[]{qemu}, ``a machine emulator which can run an unmodified target operating system (such as Windows or Linux) and all its applications in a virtual machine'', as emulator component.
-Anubis modifies Qemu's dynamic translation~\cite[]{qemu}, runtime conversion of target CPU instruction into host instruction set, to closely monitor the process under analysis.
+Anubis uses Qemu, ``a machine emulator which can run an unmodified target operating system (such as Windows or Linux) and all its applications in a virtual machine~\cite[]{qemu}'', as emulator component.
+Anubis modifies Qemu's dynamic translation, runtime conversion of target CPU instruction into host instruction set~\cite[]{qemu}, to closely monitor the process under analysis.
 Anubis does so by invoking its callback routine before every basic block (sequence of instruction ending in jump statement or changing the CPU state) is executed on the virtual processor~\cite[]{ttanalyze}.
 Each of the 7 instance of Anubis system emulates an entire PC computer system, running complete and unmodified version of Windows XP (with Service Pack 2) as an underlying operating system, to provide an accurate environment for malware experiment~\cite[]{ttanalyze}.
 \\
@@ -62,11 +62,11 @@ The number of sampled candidate pair and the result of the experiment is shown i
     \toprule
     Resource types & \# tested pairs & \# true positive & precision\\
     \midrule
-    File & 10,000\\
-    Registry & 5,000\\
-    Sync & 1,000\\
-    Section & 1,000\\
-    Process & 54\\
+    File & 10,000 & & 16\\
+    Registry & 5,000 & \\
+    Sync & 1,000 & & \\
+    Section & 1,000 & & \\
+    Process & 54 & & \\
     \bottomrule
     % Total & 263691\\
   \end{tabular}
