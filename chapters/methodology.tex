@@ -322,8 +322,10 @@ With candidate selection algorithm, we would only get two probable candidate pai
 \subsection{Running the Candidate}
 \label{sub:Running the Candidate}
 Our chosen dynamic analysis system [see \autoref{sub:Anubis}], \emph{Anubis}, analyzes only one binary at a time.
-We used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
+We needed a way to be able to run two malware sample together in th Anubis.
+For that, we used the fact that Windows PE executable loader works fine even with extraneous concatenated data at the end of valid executable file.
 We created \emph{`packer'} and \emph{`unpacker'}, based on the above fact, to execute both malware of a candidate pair, packed together as single binary, with time interval in between two execution.
+
 The \textbf{unpacker} is a self reading dropper binary.
 With \textbf{packer}, we append binary of the candidate pair, to the back of \emph{unpacker} binary, one after another in sequence.
 Followed by the binary, meta-information, such as size of both binary and preferred time delay, was appended to the end of the \emph{unpacker}.
@@ -345,10 +347,13 @@ We analyze the resource activities of our candidate pair and any other process s
 We are interested in `access/delete' activity of the `resource', based on which the candidate pair was chosen---`resource' created successfully by one malware, and failed attempt to access/delete the same resource by another.
 Any successful access/delete of that resource (files or registries or others) will be the change in behavior of one malware caused by the presence of another malware.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[scale=0.47]{figures/bigpicture.png}
-  \caption[Big Picture]{Overview of the research and experiment}\label{fig:bigpicture}
+\begin{figure}[ht]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \scalebox{0.7}{\input{figures/bigpicture.pdf_tex}}
+\caption[Big Picture]{Overview of the research and experiment}
+\label{fig:bigpicture}
+\label{fig:overview}
 \end{figure}
 
 \section{Summary}
