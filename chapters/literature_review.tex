@@ -218,7 +218,7 @@ Such behavioral interference between the malware families is an interesting case
 Our research provides a systematic way to find such behavioral interference of malware families on a large scale.
 \\
 
-We gave an overview on two common malware analysis approaches and reason for choosing \emph{Anbuis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.
+We gave an overview on two common malware analysis approaches and reason for choosing \emph{Anubis}, a dynamic malware analysis platform, as we could run our candidate pairs in real time to check for behavioral interference.
 We see that different malware families have different techniques to inject themselves and keep themselves alive even after the system reboot.
 As described in~\autoref{sec:Malware Types and Families}, they copy themselves in certain system paths, disguise themselves with benign filenames and register themselves to autostart services.
 The names of different resources created by malware can be random or peculiar.
@@ -228,13 +228,14 @@ To select the sample candidate pair, we look for the malware that tries to acces
 The detailed approach of selections of pair is described in~\autoref{sub:Candidate Selection}.
 We believe such behavior of malware is suspicious and interesting case of interference between two malware family.\\
 
-We discussed why AV Vendors labeling of malware family are unreliable and how we will be using machine learning to achieve the clustering of malware to families.
+We discussed why AV vendors labeling of malware family are unreliable and how we will be using machine learning to achieve the clustering of malware to families.
 We discussed the use of machine learning techniques in previous research for clustering and classification of malware based on their behavioral profiles.
 The results of the work so far on classification and clustering of malware were good in order to improve efficiency and detection rate of the malware analysis system.
 However, the clustering of malware performed so far are on a small number of samples, consisting of tens of thousands of malware samples, and are not scalable.
 We present a different approach for large scale malware clustering, using LDA for document clustering and python library \emph{Gemsim} for the implementation.\\
 
-Our working dataset consists of {\gettotalmalwarei{}} malware samples.
+Our working dataset consists of millions of malware samples.
+We select a subset of malware sample from the whole dataset that has the probability of behavioral interference and examine them to detect if any.
 The study of behavioral interference between the malware families in this large scale is new research in the field of malware study.
-Our work will be a cornerstone in that topic.
+% Our work will be a cornerstone in that topic.
 It will help to understand dynamic behavior of environment sensitive malware.

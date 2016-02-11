@@ -35,13 +35,14 @@ Initially we considered 3 resource types \textit{File, Registry, Mutex}, and que
 For each resource type, their \textit{create, read, delete} resource activities were queried.
 Our first step was to create a reverse index from the database so that we could get the list of malware that created/deleted/read the resource.
 Since, the number of malware to process were in millions, trying to save all their activities in a data structure would cause our machine to run out of memory and crash.
-We approached this problem with map reduce technique.\\
+We approached this problem with map reduce technique.
+We distributed the work by processing smaller smaller chunk of data and later merged them together to get the final results.
 
 We worked on a batch of $50,000$ malware at a time, and saved the reverse index of activity to the file with a numbering for each batch.
 The resultant numbered files were in the format where resource name and list of unique malware ids were separated by commas (,) as delimiter.
 The numbered files of each resource types were sorted, and then joined, to get the final reverse index.
 The sort and join operation is shown in~\autoref{lst:sortandjoin} and was fast as it was a merge sort $O( n \times \log(n))$.
-Comma is the field separator for both commands denoted by option \emph{`-t'}  and the operation was done on first field denoted by option \emph{`-k'}, which is the resource name.\\
+Comma is the field separator for both commands denoted by option \emph{`-t'}  and the operation was performed on first field denoted by option \emph{`-k'}, which is the resource name.\\
 
 \begin{lstlisting}[numbers=none,language=bash,caption={Sort and join the reverse index},label={lst:sortandjoin}]
   LANG=en_EN sort -t, -k 1,1 $file_name

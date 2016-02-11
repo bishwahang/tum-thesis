@@ -167,9 +167,12 @@ In~\autoref{sub:Running the Candidate} and~\autoref{sub:Result Analysis}, we des
 \subsection{Database}
 \label{sub:Database}
 We required resource activities of the malware samples to process and find malware with behavioral interference.
+In oder to monitor the resource activity of binary, Anubis uses \emph{virtual machine introspection (VMI)} technique.
+According to~\citeauthor{vmi}, ``VMI is the approach of inspecting a virtual machine from the outside for the purpose of analyzing the software running inside it''~\cite[VMI]{vmi}.
 For every binary submitted to Anubis for analysis, it executes the binary inside the emulated environment and keeps track of operating system services that are called by the binary.
 Anubis does this by keeping the log of all the Windows native system calls and Windows API functions that the binary invokes.
-Resource activity such as creating a file or a registry, by the binary with the Windows API functions (\emph{CreateFile, RegCreateKeyEx}), are monitored and recorded.
+To know which operating system function is called, it compares the current value of virtual processor's instruction pointer register to the start address of Windows NT and Windows API functions~\cite[]{ttanalyze}.
+Resource activity such as creating a file or a registry, by the binary with the Windows API functions (\emph{CreateFile, RegCreateKeyEx}), are monitored and recorded.\\
 
 A portion of sample log file is shown in~\autoref{lst:anubislog}.
 In Line 6, \emph{`test.exe'} process was included for the analysis.
@@ -284,7 +287,7 @@ After the clustering is done we select candidate as shown in algorithm~\autoref{
     \State$R$   = Set of all interesting resource
     \State$A_r$ = Set of malware that creates a particular resource `r'
     \State$B_r$ = Set of malware that delete/access (failed) particular resource `r'
-    \State$B_r$ = Set of malware that delete/access (failed) particular resource `r'
+    % \State$B_r$ = Set of malware that delete/access (failed) particular resource `r'
     \State$N$   = Maximum number of families to consider
     \State$E$   = Set of all probable candidate
     \Function{C}{$j$}

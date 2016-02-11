@@ -37,6 +37,11 @@ The study of behavioral interference between malware families will provide novel
 This behavior is also a case for environment-sensitive malware, where malware change their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services.
 To the best of our knowledge, there hasn't been a study of such interference between two malware families so far.
 We present a systematic way to find out such interferences from a large number of malware samples.
+We analyze our malware sample dataset to find the malware pairs that could possibly exhibit the interfering behavior with each other.
+The malware pair is then run in malware analysis system together and examined to detect any behavioral interference.
+% In the following section, we describe how we plan to implement this approach.
+\section{Research Process}
+\label{sec:Research Process}
 
 \begin{figure}[h]
     \centering
@@ -49,21 +54,18 @@ We present a systematic way to find out such interferences from a large number o
 
 A holistic overview of our research approach is shown in~\autoref{fig:overview}.
 To perform the research, we worked with dataset of {\gettotalmalwarei{}} malware samples, collected overtime (2007--02--07 to 2012--09--10) by \emph{Anubis}~\cite[]{anubis}, a dynamic full-system-emulation-based malware analysis environment, from its public web interface and a number of feeds from security organizations.
-Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.
+Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{sec:Malware Analysis}.\\
 
-Working with the large dataset is one of the challenging task.
 Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas analyzing all the possible pairs of millions of malware is not scalable.
 We use heuristics and clustering techniques to filter our dataset and get list of malware pairs that has high probability of exhibiting the behavioral interference.
 We call those malware pairs \textbf{candidate pairs}.
-The candidate pairs are then run in malware analysis system, and the results are further analyzed to detect if there is any behavioral interference between the malware samples.
+The candidate pairs are then run in malware analysis system, and the results are further analyzed to detect if there is any behavioral interference between the malware samples.\\
 
-\section{Research Process}
-\label{sec:Research Process}
 We generate a list of probable candidate pairs, from our malware dataset, based on the common resource that the malware sample operates (create, access or delete) on.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
 Since \emph{Anubis} emulates the Windows OS, \textbf{system calls} refers to the Windows Application Programming Interface (API) functions.
 The trace of all the resources modified or queried by malware during its execution is referred to as the \textbf{behavioral profile} of that malware.
-In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Types and Activities} we define behavioral profiles and different resource types in detail respectively.
+In \autoref{sub:Behavioral Profile} and \autoref{sub:Resource Types and Activities} we define behavioral profiles and different resource types in detail respectively.\\
 
 In order to minimize our search space for candidate pair selection, and maximize the probability for finding a pair with behavioral interference, we take into account only those malware which would create a resource successfully and another malware that tries to access or delete that same resource, but with a failure.
 If malware makes a failed attempt to access or delete resources created by another malware, there should be some interaction between those malware, as these actions are suspicious.
@@ -78,13 +80,11 @@ Clustering of malware based on behavioral profiles has been used extensively in 
 We treat each cluster as a family, and malware falling in those clusters as variants of that family.
 Candidate pairs are chosen in such a way that two malware representing a pair, do not belong to the same family.
 The algorithm for candidate selection based on clustering results and the common resource heuristic is described in~\autoref{sub:Candidate Selection}.
-Each candidate pair from the list of candidate pairs were then run in the \emph{Anubis} system for analysis.
-
+Each candidate pair from the list of candidate pairs were then run in the \emph{Anubis} system for analysis.\\
 Two malware sample belonging to a single candidate pair were run in the \emph{Anubis} system consecutively, with a time interval between the two run.
 The procedure has been described in detail in~\autoref{sub:Running the Candidate}.
 The result of Anubis was then analyzed to see if one malware deletes the resource created by another, which provides proof for behavioral interference between the two malware.
 The details of result analysis is described in~\autoref{sub:Result Analysis}.\\
-
 % An \emph{unpacker} was designed in order to run a candidate pair inside the \emph{Anubis} system for analysis.
 % The \textbf{Unpacker} drops the candidate pair into the analysis system and executes both malware with a set time interval in between two executions [see~\autoref{sec:packerunpacker}].
 % We were able to successfully find X pairs of malware with interfering behavior with a true positive rate of X.\\
