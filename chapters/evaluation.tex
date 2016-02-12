@@ -46,6 +46,7 @@ Although, in our dataset, we had taken resource types {\getresourcetypes{}} into
 This infers that in our dataset, there were no two malware sample from two different families, where one malware created a Job, Device or Driver and another malware accessed or deleted it.
 \section{Results}
 \label{sec:Results}
+We sampled malware pairs randomly from the probable candidate pairs list (\autoref{tab:totalcandidates}) and ran them in Anubis system to test for behavioral interference.
 We had remote access to 7 instances of Anubis system for running the candidate pairs.
 Anubis uses Qemu, ``a machine emulator which can run an unmodified target operating system (such as Windows or Linux) and all its applications in a virtual machine~\cite[]{qemu}'', as emulator component.
 Anubis modifies Qemu's dynamic translation, runtime conversion of target CPU instruction into host instruction set~\cite[]{qemu}, to closely monitor the process under analysis.
@@ -59,7 +60,6 @@ The time delay between the execution of two binaries in the \emph{Unpacker} was 
 This allowed the first binary enough time to perform its resource activities before the second binary starts.
 The total time for a single Anubis run was set to 10 minutes; 4 minutes for each malware and 2 minutes for PC emulator to boot.\\
 
-We sampled malware pairs randomly from the probable candidate pairs list (\autoref{tab:totalcandidates}) and ran them in Anubis system to test for behavioral interference.
 The log of resource activities from the experiment run was then parsed and analyzed as described in~\autoref{sub:Result Analysis} to detect the behavioral interference between the malware samples.
 The number of sampled candidate pair and the result of the experiment is shown in~\autoref{tab:resultscandidate}.
 \begin{table}[ht]
@@ -69,11 +69,11 @@ The number of sampled candidate pair and the result of the experiment is shown i
     \toprule
     Resource types & \# tested pairs & \# true positive & prediction accuracy\\
     \midrule
-    File & 5,000 & 853 & 17\%\\
-    Registry & 5,000 & \\
-    Sync & 1,000 & & \\
-    Section & 1,000 & & \\
-    Process & 54 & & \\
+    File & 5,000 & 1032& 20.64\%\\
+    Registry & 5,000 & 731& 14.62\%\\
+    Sync & 1,000 & 119& 11.9\%\\
+    Section & 1,000 & 93& 9.3\%\\
+    Process & 54 & 8& 14.8\%\\
     \bottomrule
     % Total & 263691\\
   \end{tabular}
