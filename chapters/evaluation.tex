@@ -82,30 +82,32 @@ The number of sampled candidate pair and the result of the experiment is shown i
 \end{table}
 \subsection{Effectiveness}
 \label{sub:Effectiveness}
-With our results shown in~\autoref{tab:resultscandidate}, we can say that our system was able to find malware pair with an average prediction accuracy of $14.25\%$.
+With our results shown in~\autoref{tab:resultscandidate}, we can say that our system was able to find interfering malware pair with an average prediction accuracy of $14.25\%$.
 Prediction accuracy is the ratio of true positive to tested pairs and average is taken upon all the 5 experimented resource types.
 Resource type File had the highest prediction accuracy with $20.64\%$ followed by resource type Registry with $14.62\%$.
 We can say that in our dataset more malware pair were showing behavioral interference associated with File and Registry.
 But, this also might be true because we had larger sample tested from these two resource type, 5000 each, compared to 1000\ samples in the case of Sync and Section, and only 54 for resource type Process.
 \subsection{Interesting Cases}
 \label{sub:Interesting Cases}
-We studied the report of analysis in details for some of the positive pairs and found some interesting cases.
-We present some of these interesting case here.
+We studied the report of analysis in details for few malware pairs with positive result and found interesting cases.
+We present those interesting case here.
 The labeling of the generic malware family name we give to the malware sample for these cases are from Virus Total.
 As discussed earlier, there is inconsistency between the labels provided by different AV vendors.
 We chose the name based on common name given by most of the AV company.
 
-In one case the malware supposed to delete the resource, does the deletion, but then later creates a new file with the same name but through the rename operation.
-The malware variants of \emph{Gen:Trojan.Heur.buW@Ijs6jxj} creates the file \emph{C:\textbackslash windows\textbackslash system32\textbackslash svrchost.exe} with its run. % chktex-file 1
-When the malware variants of \emph{Gen:Trojan.Heur.RP} was run, it first deletes the current \emph{`svrchost.exe'} file and then renames the file \emph{`fuc1.tmp'}, which was created by it in \emph{Temp} windows folder, to the new name \emph{`svrchost.exe'}.
+There was a cases where the malware which was supposed to delete the resource, performs the delete operation on that resource, but then later creates a new file with the same name through the rename operation.
+This case was between the malware of family \emph{Trojan-Spy.Win32.KeyLogger} and \emph{Trojan-PWS.Win32.OnLineGames}.
+The malware of type \emph{Trojan-Spy.Win32.KeyLogger} creates the file \emph{C:\textbackslash windows\textbackslash system32\textbackslash svrchost.exe} when it was run. % chktex-file 1
+When the malware of \emph{Gen:Trojan.Heur.RP} type was run later, it first deletes the current existing \emph{`svrchost.exe'} file created by previous malware.
+It then renames the file \emph{`fuc1.tmp'}, which it created itself in \emph{Temp} folder, with the new name \emph{`svrchost.exe'}.
 
-Another case was with pair consisting malware variants of \emph{Trojan.Win32.Skillis}.
-The variants of \emph{Trojan.Win32.Skillis} family deleted all the files presented in the \emph{C} drive.
-Thus, deleting everything including the resources created by the malware sample it was paired with and was run before it.
+Another case was for malware pair consisting of malware variants of \emph{Trojan.Win32.Skillis} type.
+The malware variants of \emph{Trojan.Win32.Skillis} family deleted all the files presented in the `\emph{C:\textbackslash}' folder.
+Thus, deleting everything including the resources created by the malware sample which was run before it, and it was paired with it.
 This is a false positive case which our system did not handle.
 
-There were also normal deletion of resource  created by malware run first, by the malware run second as expected.
-We found a case where \emph{Artemis} malware variants creates the file \emph{C:\textbackslash old.exe} and the file is deleted by malware variants from \emph{Trojan.Win32.Cosmu}.
+There were also normal deletion of resource created by malware which was run first, by the malware which was run second, as expected.
+For an e.g., we found a case where \emph{Artemis} malware variants creates the file \emph{C:\textbackslash old.exe} which was later deleted by malware variants from \emph{Trojan.Win32.Cosmu}.
 \section{Threats to Validity}
 \label{sec:Threats to Validity}
 The results we presented here is in the context of our approach, with dependent variables which we controlled throughout the experiment.

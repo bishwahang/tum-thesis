@@ -72,9 +72,9 @@ If malware makes a failed attempt to access or delete resources created by anoth
 It is trying to detect the presence of other files or registries in the environment it is currently running, and its behavior is affected by the positive or negative detection.
 This shows the dynamic aspect of malware behavior and its environment-sensitive nature.\\
 
-The simple heuristic of finding interfering malware candidates based on common resource gave us concrete candidate pairs.  The candidate pairs were still too large to run in a scalable manner and find substantial results.
+The simple heuristic of finding interfering malware candidate pairs based on common resource gave us concrete candidate pairs.  The candidate pairs were still too large to run in a scalable manner and find substantial results.
 In order to further study the dataset, we used clustering of malware (based on behavior of malware).
-\textbf{Malware Clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on the behavioral profile in our case, to each other than to those in other group.
+\textbf{Malware clustering} is the process of grouping a set of malware in such a way that malware in the same group are more similar, based on the behavioral profile in our case, to each other than to those in other group.
 Such groups are called \textbf{clusters}.
 Clustering of malware based on behavioral profiles has been used extensively in previous research, which we have listed in details in \autoref{sec:Malware Clustering}.
 We treat each cluster as a family, and malware falling in those clusters as variants of that family.
