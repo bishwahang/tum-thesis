@@ -1,6 +1,6 @@
 %!TEX root = ../main.tex
 \chapter{Methodology}\label{chapter:methodology}
-In this chapter we will give overview of our system design and work flow.
+In this chapter we will provide an overview of our system design and work flow.
 First, in~\autoref{sec:Terminology}, we will give technical descriptions of terms we will be using to describe our work flow.
 In~\autoref{sec:Work Flow}, we will describe the overall procedure of our research work.
 \section{Terminology}
@@ -9,13 +9,13 @@ In this section we give a detailed description of different terms we will be usi
 \subsection{Behavioral Profile}
 \label{sub:Behavioral Profile}
 \citeauthor{bayer} define \textbf{behavioral profile} as, ``the abstraction of a program's execution trace that provides information on the OS objects that the program operated on, along with the operations''.
-OS Object refers to resource type such as file, registry or section, that could be modified or queried with the system calls.
-System calls consisted of Windows NT, native API and the Windows API functions.
+OS object refers to resource type such as file, registry or section, that could be modified or queried with the system calls.
+System calls consists of Windows NT, native API and the Windows API functions.
 A program uses Windows API and native API functions to communicate with the Windows system such as creating a file or deleting a registry.\\
 
 The behavioral profile was based on the execution traces of programs irrespective of order execution as reordering system calls could be done without changing the semantics of program~\cite[]{bayer}.
 It consisted of a list of different operations operated on the different OS objects during the execution of binary.
-The system calls that had same purpose as resultant output but different calling API name were generalized under single name---\emph{NtCreateProcess} and \emph{NtCreateProcessEx} would be generalized as, \emph{`create'} OS Operation for, \emph{`porcess'} OS object~\cite[]{bayer}.\\
+The system calls that had same purpose as resultant output but different calling API name were generalized under single name---\emph{NtCreateProcess} and \emph{NtCreateProcessEx} would be generalized as, \emph{`create'} OS operation for, \emph{`porcess'} OS object~\cite[]{bayer}.\\
 \subsubsection{OS Objects}
 \label{ssub:OS Objects}
 OS Object were primarily the resource that were created, delete, modified during the program execution.
@@ -62,16 +62,16 @@ A snippet of behavioral profile is shown in~\autoref{lst:bpsample} with sample o
    mem_read:1
    mem_write:1
 \end{lstlisting}
-To explain the behavioral profile shown in~\autoref{lst:bpsample}, \textit{`create'} operation for file OS object \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful with success value 1, whereas \textit{`query\_value'} operation with operation-attribute value \emph{'InprocServer32'} for registry OS Object \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-000000000046}'} failed with success value 0. % chktex-file 8
+To explain the behavioral profile shown in~\autoref{lst:bpsample}; \textit{`create'} operation for file OS object \url{`C:\\Program Files\\Common Files\\sumbh.exe'} was successful with success value 1, whereas \textit{`query\_value'} operation with operation-attribute value \emph{'InprocServer32'} for registry OS Object \url{`HKLM\\SOFTWARE\\CLASSES\\CLSID\\{00021401-000000000046}'} failed with success value 0. % chktex-file 8
 \\
 
 We had the ``behavioral profiles'' of the malware samples that we used to create new database which is described in~\autoref{sec:Creation of Database}.
-Informations from \emph{OS Objects} and \emph{Operations} were used to extract resource activities (execution traces) of the malware (program).
+Informations from \emph{OS Objects} and \emph{OS Operations} were used to extract resource activities (execution traces) of the malware (program).
 % recreate the database of all the malware (program) samples and its resource activities (execution traces).
 
 \subsection{Resource Type and Activities}
 \label{sub:Resource Types and Activities}
-As discussed before in~\autoref{ssub:OS Objects}, an OS Object, are representation of resource types.
+As discussed before in~\autoref{ssub:OS Objects}, an OS Object, is representation of resource types.
 For our research, we considered following 8 resource types into consideration, that could best determine the behavioral interference between malware.
 These resource types are the most common resource that malware modifies in order to infect the system and disable security services.
 We will give a short description of each resource type according to Microsoft Developers Network documentation~\cite[MSDN]{msdn}.
@@ -91,8 +91,9 @@ The data stored in the registry varies according to the version of Microsoft Win
 Application performs the basic add, modify, retrieve, or delete operation in the registry through the registry API~\cite[]{msregistry}.\\
 % We take the registry keys associated with the malware into consideration for experiment as it provides vital information on the behavior of a malware sample.
 % Malware with same family might have similar registry key activity and also malware from different family might look for the particular registry key in the system in order to detect the presence of another family.
-Registry keys provide vital information on malware type and behavior as we have seen in~\autoref{sec:Malware Types and Families} that different malware families create different registry keys when they infect a system.
-Malware from same family modify specific registry key, which is used to detect their presence.
+Registry keys provide vital information on malware type and behavior.
+As we have seen in~\autoref{sec:Malware Types and Families} that different malware families create different registry keys when they infect a system.
+Malware from same family modify specific registry key, which can be used to detect their presence.
 \subsubsection{Service}
 \label{ssub:Service}
 A \emph{Service} is a computer program that operates in system background, similar to UNIX daemon~\cite[]{servicedef}.
@@ -123,7 +124,7 @@ The sync object type covers all the synchronization activities.
 \cite[]{mssync}.
 \subsubsection{Driver}
 \label{ssub:Driver}
-A \emph{device driver } is a program that is associated with certain device for its operation and control. It is used as an software interface to communicate between the hardware device and the operating system and other software~\cite[Device Driver]{devicedriver} \\
+A \emph{device driver } is a program that is associated with certain device for its operation and control. It is used as an software interface to communicate between the hardware device and the operating system and other software~\cite[]{devicedriver} \\
 Windows represent devices with device objects, and one device could be represented by more than one device objects. All operation on device is conducted via device object~\cite[]{msdevice}.\\
 We capture those loading and unloading of Windows Device Driver recorded in the behavioral profile.\\
 
@@ -137,10 +138,10 @@ We describe the terms \emph{``words''}, \emph{``document''}, and \emph{``corpora
 \label{sub:Words, Document, Corpora}
 % We have already discussed about using \emph{LDA} for clustering the malware in~\autoref{sec:Malware Clustering}, and what resource activities are in~\autoref{sub:Resource Types and Activities}.
 In this section, we describe the terms \emph{``words''}, \emph{``document''}, and \emph{``corpora''} and how we associate, malware samples and resource activities, with those terms in our work.
-The terms will be used extensively when describing clustering [\autoref{ssub:Latent Dirichlet Allocation}] and its implementation [\autoref{sec:Document Clustering}].
+These terms will be used extensively when describing clustering [\autoref{ssub:Latent Dirichlet Allocation}] and its implementation [\autoref{sec:Document Clustering}].
 \subsubsection{Words}
 \label{ssub:Words}
-In their work,~\citeauthor{Blei}, describe word as, `A \emph{word} is a basic unit of discrete data, defined to be item from a vocabulary indexed by $\{1,\ldots,V\}$''~\cite[]{Blei}.\\
+In their work,~\citeauthor{Blei}, describe word as, ``A \emph{word} is a basic unit of discrete data, defined to be item from a vocabulary indexed by $\{1,\ldots,V\}$''~\cite[]{Blei}.\\
 We represent a single resource activity of a malware as single word.
 For an instance, a file creation activity will be a single distinct word and a file deletion activity will be another distinct word.
 Same resource activity---with same resource type, resource name and operations---will be considered as repetition of same word.
@@ -161,7 +162,7 @@ In this section we outline an overview of our work flow.
 Figure~\ref{fig:bigpicture} depicts the overall structure of of our system.
 We describe about the old database that we had access to and the need for the creation of new database in~\autoref{sub:Database}.
 We create reverse index from the database and use heuristics to select candidate pair which is described in~\autoref{sub:Reverse Indexing} and~\autoref{sub:Heuristics} respectively.
-To lower the number of candidate pair and find malware pair belonging to different families, we cluster the malware based on their behavioral profile as described in~\autoref{sub:Clustering}.
+To lower the number of candidate pair and find malware pair belonging to different families, we cluster the malware based on their resource activities as described in~\autoref{sub:Clustering}.
 The candidate pair selection based on clustering is described in~\autoref{sub:Candidate Selection}.
 In~\autoref{sub:Running the Candidate} and~\autoref{sub:Result Analysis}, we describe running the candidate pair and analyzing the result respectively.
 \subsection{Database}
@@ -172,7 +173,7 @@ According to~\citeauthor{vmi}, ``VMI is the approach of inspecting a virtual mac
 For every binary submitted to Anubis for analysis, it executes the binary inside the emulated environment and keeps track of operating system services that are called by the binary.
 Anubis does this by keeping the log of all the Windows native system calls and Windows API functions that the binary invokes.
 To know which operating system function is called, it compares the current value of virtual processor's instruction pointer register to the start address of Windows NT and Windows API functions~\cite[]{ttanalyze}.
-Resource activity such as creating a file or a registry, by the binary with the Windows API functions (\emph{CreateFile, RegCreateKeyEx}), are monitored and recorded.\\
+Resource activity such as creating a file or a registry by the binary with the Windows API functions (\emph{CreateFile, RegCreateKeyEx}), are monitored and recorded.\\
 
 A portion of sample log file is shown in~\autoref{lst:anubislog}.
 In Line 6, \emph{`test.exe'} process was included for the analysis.
@@ -214,7 +215,7 @@ After we created the database, we created reverse index of the resource activiti
 The database had all the resource activities (failed and success) of the resource types: such as file created, file deleted, registry modified, registry accessed and so on.
 We mapped `resource name', with all the malware, that had operations on that `resource name'.
 For instance, we mapped the resource name of the \emph{files}, with all the malware that modified it.
-Same reverse index was generated for read and delete operations, and for other resource types, \emph{registry}, \emph{Section}, and others.
+Same reverse index was generated for read and delete operations, and for other resource types, \emph{Registry}, \emph{Section}, and others.
 With the reverse index, for each resource, we have a list of all the malware that modified, accessed, or deleted that resource.
 We used the reverse index in our heuristics to select candidate malware pairs.
 \subsection{Heuristics}
@@ -224,7 +225,7 @@ As described in~\autoref{sec:Malware Types and Families}, malware families have 
 One can detect the presence of malware in the system, by checking the presence of unique resource (files, registries, and others) associated with that malware, in the system.
 Thus, when a malware tries to access or delete some resource created by another malware (with a failed attempt because each malware was analyzed by Anubis in new OS environment), that activity is interesting for our candidate selection.\\
 
-We selected malware sample from each of those set \emph{`A'} and \emph{`B'}, to get a candidate pair, with interference corresponding to the resource \emph{`r'}.
+We selected malware sample from each of those set \emph{`A'} and \emph{`B'}, to get a candidate pair, with probable interference corresponding to the resource \emph{`r'}.
 For an instance, if $(x_1,x_2)$ belonged to set `A' and $(y_1,y_2)$ belonged to set `B', then the candidate pairs related to resource `r' are: $(x_1,y_1)$, $(x_2,y_2)$, $(x_2,y_1)$, and $(x_2,y_2)$.
 With initial testing, we found that a single resource name was created by tens of thousands of malware and being accessed by tens of thousands of another malware.
 Large number of candidate pair would be generated even for single resource with this approach.
@@ -351,7 +352,7 @@ Any successful access/delete of that resource (files or registries or others) wi
     \centering
     \def\svgwidth{\columnwidth}
     \scalebox{0.7}{\input{figures/bigpicture.pdf_tex}}
-\caption[Big Picture]{Overview of the research and experiment}
+\caption{Overview of the work flow}
 \label{fig:bigpicture}
 \label{fig:overview}
 \end{figure}

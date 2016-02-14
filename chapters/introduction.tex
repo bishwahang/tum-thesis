@@ -37,7 +37,7 @@ The study of behavioral interference between malware families will provide novel
 This behavior is also a case for environment-sensitive malware, where malware change their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services.
 To the best of our knowledge, there hasn't been a study of such interference between two malware families so far.
 We present a systematic way to find out such interferences from a large number of malware samples.
-We analyze our malware sample dataset to find the malware pairs that could possibly exhibit the interfering behavior with each other.
+We analyze our malware sample dataset to generate the filtered list of the malware pairs that could possibly exhibit the interfering behavior with each other.
 The malware pair is then run in malware analysis system together and examined to detect any behavioral interference.
 % In the following section, we describe how we plan to implement this approach.
 \section{Research Process}
@@ -48,7 +48,7 @@ The malware pair is then run in malware analysis system together and examined to
     \def\svgwidth{\columnwidth}
     \scalebox{0.7}{\input{figures/overview.pdf_tex}}
     % \input{figures/overview.pdf_tex}
-\caption{System Overview}
+\caption{System overview}
 \label{fig:overview}
 \end{figure}
 
@@ -59,7 +59,7 @@ Detailed discussion on \emph{Anubis} and malware analysis is done in~\autoref{se
 Randomly picking a malware pair to analyze from the available dataset would not be a good approach, whereas analyzing all the possible pairs of millions of malware is not scalable.
 We use heuristics and clustering techniques to filter our dataset and get list of malware pairs that has high probability of exhibiting the behavioral interference.
 We call those malware pairs \textbf{candidate pairs}.
-The candidate pairs, which is the subset of whole dataset (thousands in numbers), are then run in malware analysis system, and the results are further analyzed to detect if there is any behavioral interference between the malware samples.\\
+The candidate pairs, which is the small subset of whole dataset, are then run in malware analysis system, and the results are further analyzed to detect if there is any behavioral interference between the malware samples.\\
 
 We generate a list of probable candidate pairs, from our malware dataset, based on the common resource that the malware sample operates (create, access or delete) on.
 \textbf{Resource} refers to any entity, such as Files, Registry, Section, Sync, that can be modified or queried by malware using system calls.
@@ -96,10 +96,7 @@ Our research will provide the following contributions:
     Our work is based on wide variety of a large malware dataset collected over time in the wild.
     This novel research will help better understand the dynamic aspect of malware behavior.
   \item A novel approach to malware clustering based on malware behavior profiles.
-    % We show our clustering approach is good at grouping similar behaving malware in to the same cluster.
   \item An automated system that detects interfering malware samples on a large scale.
-  % Our system was able to find malware pairs with interfering behavior with good accuracy.
-  % TODO: number of pairs
 \end{itemize}
 We discuss malware types and families, evidence of interaction between malware families, malware analysis system, previous works on the use of malware clustering based on malware behavior generated from dynamic malware analysis, and motivation for our research in \autoref{chapter:literature_review}.
 In \autoref{chapter:methodology}, following the motivation, we give an overview, design rationale, and give a technical description of our work flow and system.

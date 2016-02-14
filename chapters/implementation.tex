@@ -1,6 +1,6 @@
 %!TEX root = ../main.tex
 \chapter{Implementation}\label{chapter:implementation}
-In this chapter we give a detail explanation of how we implemented and conducted our research as described in~\autoref{chapter:methodology}.
+In this chapter, we present in detail the explanation of how we implemented and conducted our research as described in~\autoref{chapter:methodology}.
 We start with study of old database structure and creation of reverse index in~\autoref{sec:Old Database and Reverse Index}.
 We describe the implementation of the \emph{packer} and the \emph{unpacker} to run the candidate pair inside \emph{Anubis} in~\autoref{sec:packerunpacker} and in~\autoref{sec:Initial Experiment} we run our preliminary test of candidate pairs.
 Because the old database did not had record of failed activities, we create the new database with both success and failed resource activity in~\autoref{sec:Creation of Database}.
@@ -32,11 +32,11 @@ SELECT name from db_report.file_created join db_report.file_name using (file_nam
 
 The total number of malware samples that we had in our test database were \textbf{\gettotalmalwarei{}}.
 Initially we considered 3 resource types \textit{File, Registry, Mutex}, and queried the database for \textit{create, read, delete} resource activities.
-For each resource type, their \textit{create, read, delete} resource activities were queried.
+% For each resource type, their \textit{create, read, delete} resource activities were queried.
 Our first step was to create a reverse index from the database so that we could get the list of malware that created/deleted/read the resource.
 Since, the number of malware to process were in millions, trying to save all their activities in a data structure would cause our machine to run out of memory and crash.
 We approached this problem with map reduce technique.
-We distributed the work by processing smaller smaller chunk of data and later merged them together to get the final results.
+We distributed the work by processing smaller chunk of data and later merged them together to get the final results.
 
 We worked on a batch of $50,000$ malware at a time, and saved the reverse index of activity to the file with a numbering for each batch.
 The resultant numbered files were in the format where resource name and list of unique malware ids were separated by commas (,) as delimiter.
@@ -79,7 +79,7 @@ It will then create the candidate binaries from the read bytes, and run both bin
 \end{figure}
 
 Code snippet of the \emph{`Unpacker'} binary is shown in~\autoref{lst:unpacker.c}.
-We used a struct of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte of \emph{Unpacker} has the binary pair sizes information and the delay time, known as meta information.
+We used a \emph{struct} (data type in C programming language) of 3 integer size to read and hold the meta information. The size of last three \textit{unsigned int} byte of \emph{Unpacker} has the binary pair sizes information and the delay time, known as meta information.
 The offset for meta-information was calculated by deduction of $3 \times \textit{size of `uint'}$ from the total size of itself (Unpacker).
 We calculate the starting position of appended binaries, and use \texttt{`fseek\(\)'} function to set the file position pointer there.
 We then start reading the bytes until the exact size of binary is read.
@@ -142,7 +142,7 @@ The status of the operation, failed or successful, was taken into account this t
 The resource name, type of operation, and status of operation represented the resource activities of a malware.
 We create a new database with resource activities of all our malware samples.\\
 
-We considered eight resource type into account while parsing the profile files: File, Registry, Sync, Section, Process, Service, Job, and Driver [see \autoref{sub:Resource Types and Activities}].
+We considered eight resource type into account while parsing the behavioral profile files: File, Registry, Sync, Section, Process, Service, Job, and Driver [see \autoref{sub:Resource Types and Activities}].
 Windows Native and Windows API calls were generalized into OS Operation during the creation of behavioral profile [see~\autoref{sub:Behavioral Profile}].
 We went through the list of OS Operations~[\autoref{ssub:OS Operations}] and mapped them into the broad three categories \emph{Modify, Access, and Delete}.
 The modify, access, and read list for the resource types \emph{\getresourcetypes{}} are shown in~\autoref{lbl:ntapi}.\\
@@ -204,8 +204,6 @@ When accessing the data for later use, we re-factored our program so that we che
 We processed \gettotalmalwareii{} behavioral profiles.
 The final database size was 1.2 Terabyte.
 About $62\%$ of execution time was taken to load the gzip pickle~\cite[]{pythonpickle} of malware profile and the normal SQL CRUD (create, read, update, and delete) operation, which can be seen in Figure~\ref{fig:dbcreation}.\\
-% The execution profile is shown in~\autoref{fig:dbcreation}
-%TODO: put profile.png
 \begin{figure}[ht]
     \centering
     \def\svgwidth{\columnwidth}
@@ -227,7 +225,6 @@ With the reverse index mapping, we chose the candidate pairs such that one malwa
 But, the number of possible pairs were too many with this simple heuristic and we hit the \emph{n-combination} problem.
 A single resource \texttt{`r'} would have been created by tens of thousands of malware and another tens of thousands of malware trying to access/delete it unsuccessfully.
 The combination of candidate pairs from the candidate sets with thousands of malware are of large number to run and analyze result.\\
-%TODO: add one more reason "not good enough"
 
 We wanted to filter our candidate sets without compromising the quality.
 We performed clustering of the malware based on their resource activities (behavior) to address this problem.
@@ -282,10 +279,6 @@ The iterator operates on each line, which represents a document, of corpus text 
 Bag of words is a list of two-element tuple, which represents word (token-id) and its count (number of occurrence) in document.
 In line 15~[\autoref{lst:lda.py}], we create a LDA model for our corpus with 1000 topics.
 The LDA gives the probability of different clusters that a document can belong to and we assign the document to the cluster with highest probability.\\
-% The malware samples were clustered into 752 unique topics.
-% This was based on heuristic after studying the cdf graph of activities to number of malware.
-%TODO: add cdf of reverse index
-% The number of topic was chosen to be 1000, however our malware samples were distributed among only 752 unique topic.
 \begin{lstlisting}[float,floatplacement=H,language=python,caption={Script to run Gensim LDA},label={lst:lda.py}]
 from gensim import corpora, models
 import sys
@@ -315,7 +308,7 @@ Similarly, \emph{4 million} malware, which is the $65\%$ of total malware cluste
 \begin{center}
   \includegraphics[scale=0.5]{figures/histclustersize_new.png}
 \end{center}
-\caption{Histogram showing the distribution of Cluster size}
+\caption{Histogram showing the distribution of cluster size}
 \label{fig:histclustersize}
 \end{figure}
 
@@ -410,12 +403,10 @@ There are two cluster-resource combination, $(oc_2,r_2)$ and $(oc_1,r_2)$, in la
 So our candidate pairs would be, $(m_1,m_5)$ and $(m_1,m_4)$ operating on `$r_2$'.
 Path from source (S) to $m_2$ in layer 1 and $(ic_2,r_1)$ in layer 2 does not reach the sink (T); hence, it is omitted.\\
 
-%TODO: maxflow did not provide optimal
-% The max flow approach, did lower
 The max flow approach gave us optimal candidate pairs such that each pair of cluster is only covered once.
 However, the approach did not take care of repetition of cluster pair corresponding to different resource.
 % If malware pair $(m_1,m_2$) is associated with resource $(r_1,r_2,r_3)$, same candidate pairs gets repeated three times.
-If malware $m_1$ is belongs to input cluster $ic_1$ and malware $m_2$ belongs to output cluster $oc_2$ and both are associated with resource $(r_1,r_2,r_3)$, same candidate pairs $(m_1,m_2)$, belonging to same cluster pair $(ic_1,oc_2)$, gets repeated three times.
+If malware $m_1$ belongs to input cluster $ic_1$ and malware $m_2$ belongs to output cluster $oc_2$ and both are associated with resource $(r_1,r_2,r_3)$, same candidate pairs $(m_1,m_2)$, belonging to same cluster pair $(ic_1,oc_2)$, gets repeated three times.
 % We wanted to group those repetition so that we get only single candidate pair $(m_1,m_2)$and analyze the behavioral interference they might have on different resources.
 We wanted to group those repetition so that we get single candidate pair $(m_1,m_2)$ that covers the unique cluster pair $(ic_1,oc_2)$, for all its corresponding resources $(r_1,r_2,\ldots,r_n)$.
 We used heuristics approach to eliminate those repetition.
@@ -452,7 +443,7 @@ db = { (c_i, c_o) :
      }
 }
 \end{lstlisting}
-\begin{lstlisting}[float,floatplacement=htbp,language=python,caption={Pseudo code (Python) to get minimal set of candidates for all resource},label={lst:heuristicalgo}]
+\begin{lstlisting}[float,floatplacement=ht,language=python,caption={Pseudo code (Python) to get minimal set of candidates for all resource},label={lst:heuristicalgo}]
 candidate_set = set()
 for c_pair, v in db.iteritems():
     # reverse sort malware pairs by number of associated resources
