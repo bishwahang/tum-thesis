@@ -8,7 +8,7 @@ We believe that when malware sample of the candidate pair are run together, the 
 
 In this chapter, we first give a detail break down of candidate pairs that we generate from our algorithm in~\autoref{sec:Candidate Pairs}.
 Then, we describe the specifications of Anubis system and experiment setup in~\autoref{sec:Experiment Setup}.
-We show our results and discuss the effectiveness of our approach and some interesting cases in~\autoref{sec:Results}
+We show our results and discuss the effectiveness of our approach along with some interfering malware pairs in~\autoref{sec:Results}
 We elaborate on the threats to validity of our approach in~\autoref{sec:Threats to Validity}.
 Lastly, we end this chapter with summary in~\autoref{sec:Summary}.
 % We end the chapter with threats to validity and summary of the results.
@@ -90,7 +90,7 @@ But, this also might be true because we had larger sample tested from these two 
 \subsection{Interfering Malware Pairs}
 \label{sub:Interfering Malware Pairs}
 We did a detailed study of the analysis report of few malware pairs with positive result of interfering behavior.
-We describe those cases of interference here.
+We present those few cases of interference here.
 The labeling of the malware with generic family name is done from the VirusTotal labels.
 As discussed earlier, there is inconsistency between the labels provided by different AV vendors.
 We chose the family name of the malware based on common name given by the most of the AV vendor.
@@ -102,13 +102,13 @@ We chose the family name of the malware based on common name given by the most o
 % There were normal deletion of resource, created by malware which was run first, by the malware which was run second (after the first malware run), as expected.
 We had a case where malware of \emph{Artemis!} family created the file \url{C:\\Old.exe} which was later deleted when malware variants from \emph{Trojan.Win32.Cosmu} was run.
 We also had another case for malware pair of variants \emph{Worm:Win32/VB.CB} and \emph{Trojan:Win32/Startpage.AI}.
-The \emph{Worm:Win32/VB.CB} malware type created the file \url{c:\\WINDOWS\\window.exe} and also created an autostart in the folder \url{C:\\Documents and Settings\\Administrator\\Start Menu\\Programs\\Startup\\window.exe}.
-After the first malware run, when the malware of \emph{Trojan:Win32/Startpage.AI} type was executed, it deleted the file \url{c:\\WINDOWS\\window.exe} created previously by \emph{Worm:Win32/VB.CB} malware type.
+The \emph{Worm:Win32/VB.CB} malware type created the file \url{C:\\WINDOWS\\window.exe} and also created an autostart in the folder \url{C:\\Documents and Settings\\Administrator\\Start Menu\\Programs\\Startup\\window.exe}.
+After the first malware run, when the malware of \emph{Trojan:Win32/Startpage.AI} type was executed, it deleted the file \url{C:\\WINDOWS\\window.exe} created previously by \emph{Worm:Win32/VB.CB} malware type.
 
 There was also an interesting cases where the malware which was supposed to delete the resource, performs the delete operation on that resource, but then later creates a new file with the same name through the rename operation.
 This case was between the malware of family \emph{Trojan-Spy.Win32.KeyLogger} and \emph{Trojan-PWS.Win32.OnLineGames}.
 The malware of type \emph{Trojan-Spy.Win32.KeyLogger}, which was run first, created the file `\url{C:\\windows\\system32\\svrchost.exe}'. % chktex-file 1
-Later, when the malware of \emph{Gen:Trojan.Heur.RP} type was run, it first deleted the current existing \emph{`svrchost.exe'} file created by first malware run, and then renamed the file \emph{`fuc1.tmp'}, which it had created in \emph{Temp} folder, with the new name \emph{`svrchost.exe'}.\\
+Later, when the malware of \emph{Gen:Trojan.Heur.RP} type was run, it first deleted the already existing \emph{`svrchost.exe'} file created by first malware run, and then renamed the file \emph{`fuc1.tmp'}, which it had created in \emph{Temp} folder, to the new name \emph{`svrchost.exe'}.\\
 
 \section{Threats to Validity}
 \label{sec:Threats to Validity}
