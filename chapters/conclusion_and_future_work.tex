@@ -2,23 +2,20 @@
 \chapter{Conclusion and Future Work}\label{chapter:conclusion_and_future_work}
 We have presented a systematic approach to find the behavioral interference between the malware families at large scale.
 We analyzed the behavioral profile of millions of malware samples to find the probable candidate malware pairs that could interfere with each other.
-Few thousands candidate pairs were sampled randomly from the total candidate pairs list and then run in the Anubis system, to detect the interference during live run.\\
+Few thousands candidate pairs were sampled randomly from the total candidate pairs list and then run in the Anubis system, to detect the interference during live run.
 
 Using document clustering, where each malware was represented as a document and their resource activities as words, we clustered the malware dataset into different families.
 We used heuristics based on common resource to select candidate pairs, such that one malware creates a resource, and another malware tries to delete or access the same resource.
-Also, the two malware sample of a candidate pair were chosen from two different families.\\
+Also, the two malware sample of a candidate pair were chosen from two different families.
 
 % The candidate pair were run in Anubis and the results were analyzed to detect the behavioral interference.
 Our approach found the malware pair with behavioral interference with an average prediction accuracy of $14.25\%$.
-With results from our approach, in our dataset, File and Registry were the mostly interfered resource types and Process was the least interfered resource type.\\
-% Also, in our dataset, there were no candidate pair with behavioral interference based on resource types Job, Device, and Driver.\\
+With results from our approach, in our dataset, File and Registry were the most interfered resource types and Process was the least interfered resource type.\\
 
 Our work in its current form has many constraints.
 As a future work, we need to find efficient way to run the experiment multiple times, while changing the values of variables such as family count cutoff, analysis run time, and sequence of malware pair execution.
 We also need to extend our system to be able to do thorough static analysis of malware pair, which had positive behavioral interference detection.
-This will help us know the semantics of malware pair and find if there is true animosity between the malware.
-\\
+This will help us know the semantics of malware pair and find if there is true animosity between the malware.\\
 
 We conclude that the behavioral interference between the malware families exists, and also illustrated an approach to find such case where malware belonging to different family try to detect each other's presence and remove the resources, such as files or registries, created by another malware.
 This behavior is also one of the traits of environment-sensitive malware.
-% It also infers that malware authors from one family try to negate the dominance of another family.
