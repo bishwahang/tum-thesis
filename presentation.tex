@@ -3,7 +3,7 @@
 % for themes, etc.
 \mode<presentation>
 { \usetheme{boxes} }
-
+\usepackage{booktabs}
 \usepackage{times}  % fonts are up to you
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
@@ -145,9 +145,76 @@ Our research will provide the following contributions:
 
 \section{Evaluation}
 \label{sec:Evaluation}
-\begin{frame}[t]{title}
-  
+\subsection{Experiment}
+\label{sub:Experiment}
+\begin{frame}[t]{List of Candidate Pairs}
+\begin{columns}
+\begin{column}{4.7cm}
+\begin{itemize}
+  \item Value of N (maximum family cutoff) in algorithm chosen to be 10
+  \item File with the highest number of candidate pair and Process the lowest
+  \item No candidate pair from resource type Job, Device, Driver
+\end{itemize}
+\end{column}
+\begin{column}{5.3cm}
+  \begin{tabular}{l l l l}
+    \toprule
+    Resource types & \#candidate pairs\\
+    \midrule
+    File & 213,171 \\
+    Registry & 39,899 \\
+    Sync & 7,781 \\
+    Section & 2,786 \\
+    Process & 54\\
+    \bottomrule
+    Total & 263,691\\
+  \end{tabular}
+\end{column}
+\end{columns}
 \end{frame}
+\begin{frame}[t]{Experiment Setup}
+  \begin{itemize}
+    \item 7 Anubis instance
+    \item Each instance emulates entire running PC with Windows XP Service Pack 3 as OS
+    \item Uses Qemu and monitors process by invoking callback routine for every basic block executed in virtual processor
+    \item Unpacker and Packer used to run the candidate pair
+    \item 10 minutes as total run time of each candidate pair experiment
+    \item 4 minute for each malware, and 2 minute to boot system
+  \end{itemize}
+\end{frame}
+\begin{frame}[t]{Result of Candidate Run}
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{l l l l}
+    \toprule
+    Resource types & \# tested pairs & \# true positive & prediction accuracy\\
+    \midrule
+    File & 5,000 & 1032& 20.64\%\\
+    Registry & 5,000 & 731& 14.62\%\\
+    Sync & 1,000 & 119& 11.9\%\\
+    Section & 1,000 & 93& 9.3\%\\
+    Process & 54 & 6& 11.11\%\\
+    \bottomrule
+    % Total & 263691\\
+  \end{tabular}%
+}
+\begin{itemize}
+  \item Highest Accuracy for File and Registry
+  \item Lowest for Process
+  \item Average accuracy rate $14.25\%$
+\end{itemize}
+\end{frame}
+\subsection{Threats to Validity}
+\label{sub:Threats to Validity}
+\begin{frame}[t]{Threats to Validity}
+  \begin{itemize}
+    \item Different values of N would give different candidate pairs and different results
+    \item Random resource name
+    \item Total execution time 10 minutes
+    \item Sequence of execution
+    \item Semantics of Malware
+  \end{itemize}
+\end{frame}
+
 
 \section{Conclusion}
 \subsection{Summary}
