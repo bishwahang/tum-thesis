@@ -1,0 +1,75 @@
+\documentclass[]{beamer}
+
+% for themes, etc.
+\mode<presentation>
+{ \usetheme{boxes} }
+
+\usepackage{times}  % fonts are up to you
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{algorithmic,algorithm2e,float}
+\usepackage{url}
+
+\usepackage{caption}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\setbeamertemplate{footline}[frame number]
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+% these will be used later in the title page
+\title{``Botnet Battlefield'': A Structured Study of Behavioral Interference Between Different Malware Families}
+\author[Bishwa Hang Rai]{
+Bishwa Hang Rai
+\\{\small Supervisor: Prof.\ Dr.\ Alexander Pretschner}
+\\{\small Advisor: Mr.\ Tobias Wüchner}}
+%\author{Bishwa Hang Rai}
+
+\institute{\includegraphics[width=0.15\textwidth]{logos/tum.png}~\\[1cm]Department of Informatics\\
+TU München}
+\date{January 22, 2016}
+% \setbeamertemplate{caption}[numbered]
+% note: do NOT include a \maketitle line; also note that this title
+% material goes BEFORE the \begin{document}
+
+% have this if you'd like a recurring outline
+\AtBeginSection[]  % "Beamer, do the following at the start of every section"
+{
+\begin{frame}<beamer>
+\frametitle{Outline} % make a frame titled "Outline"
+\tableofcontents[currentsection]  % show TOC and highlight current section
+\end{frame}
+}
+\begin{document}
+
+% this prints title, author etc. info from above
+\begin{frame}
+\begin{titlepage}
+\end{titlepage}
+\end{frame}
+\frame{\frametitle{Table of contents}\tableofcontents}
+\section{Introduction}
+\begin{frame}
+\frametitle{ Verification of Markov Decision Process}
+\begin{itemize}
+\item first studied by Bellmann and Howrad in the 1950
+\item motivated by optimization problem in context of operations research
+\item used in Robotics, economics, semantics of randomized protocol, etc.
+\item MDP as an operational model for Probabilistic System
+\end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+\frametitle{Conclusion}
+\begin{itemize}
+    \item foobar
+\end{itemize}
+\end{frame}
+\end{document}
