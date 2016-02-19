@@ -18,13 +18,23 @@ basicstyle=\small\ttfamily,
 columns=flexible,
 breaklines=true
 }
+\graphicspath{{./figures/}}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{mathtools}
-\setbeamertemplate{footline}[frame number]
+\setbeamercolor{footline}{fg=blue}
+\setbeamerfont{footline}{series=\bfseries}
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber\
+}
+\usepackage{beamerthemeshadow}
+
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 % these will be used later in the title page
-\title{``Botnet Battlefield'': A Structured Study of Behavioral Interference Between Different Malware Families}
+\title[``Botnet Battlefield'']{``Botnet Battlefield'': A Structured Study of Behavioral Interference Between Different Malware Families}
 \author[Bishwa Hang Rai]{
 Bishwa Hang Rai
 \\{\small Supervisor: Prof.\ Dr.\ Alexander Pretschner}
@@ -55,21 +65,108 @@ TU München}
 \end{frame}
 \frame{\frametitle{Table of contents}\tableofcontents}
 \section{Introduction}
-\begin{frame}
-\frametitle{ Verification of Markov Decision Process}
+\subsection{Background}
+\label{sub:Background}
+\begin{frame}[t]{Malware}
 \begin{itemize}
-\item first studied by Bellmann and Howrad in the 1950
-\item motivated by optimization problem in context of operations research
-\item used in Robotics, economics, semantics of randomized protocol, etc.
-\item MDP as an operational model for Probabilistic System
+    \item Malware is a general term to refer any malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
+    \item It can be classified into self replicating and non-replicating
+    \item Self replicating can make copies of themselves e.g. \emph{Virus and Worms}
+    \item Non-replicating cannot make copies of themselves e.g. \emph{Trojans}
 \end{itemize}
+\end{frame}
+\begin{frame}[t]{Malware}
+  \begin{itemize}
+    \item Based on its ability to change its structure it can also be broadly classified into Polymorphic and Metamorphic
+    \item Polymorphic uses encryption and code obfuscation (dead-code insertion, subroutine reordering, instruction substitution) techniques
+    \item Metamorphic malware uses only code obfuscation
+    \item Different variants of same malware with same semantics or from same author are regarded as to be from same family.
+  \end{itemize}
+\end{frame}
+\begin{frame}[t]{Growth of Malware}
+  \begin{itemize}
+    \item With the increase in growth of the Internet, many of our daily life activities such as email, banking, bill payment, and social networking are dependent on it.
+    \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
+    \item Annual loss caused by malware in 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
+    \item Driven by monetary profit, high rise in numbers of new malware with 140 million new malware introduced in 2015 alone
+  \end{itemize}
+\end{frame}
+\begin{frame}[t]{Interference Between Malware Families}
+  \begin{itemize}
+    \item There has been some anecdotal evidences of feud between the malware families
+    \item In 2004, NetSky vs Bagle and MyDoom trying to remove each other along with message of profanity
+    \item In 2010, SpyEye vs Zbot with KillZeus feature
+    \item In 2015, Shifu malware family with AV like feature
+    \item All of these interferences were to negate the presence of another malware
+    \item Increase their own profit taking control of larger share of economy
+  \end{itemize}
+\end{frame}
+\subsection{Problem Statement}
+\label{sub:Problem Statement}
+\begin{frame}[t]{Problem Statement}
+\begin{itemize}
+  \item The purpose of our research is to identify the existence of aforementioned behavioral interference between the malware families
+  \item The study will provide novel knowledge for understanding the dynamic aspect of modern malware, the inter-family relations, and their associated underground economy
+  \item This behavior is also a case for environment-sensitive malware
+  \item That is to say malware changing their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services
+\end{itemize}
+\end{frame}
+\begin{frame}[t]{Research Process}
+\begin{itemize}
+\item Get wide variety of malware samples
+\item Use heuristics and clustering to get the candidate pair list
+\item Run each candidate pair in malware analysis system (Anubis in our case)
+\item Analyze the log of analysis run to detect behavioral interference
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \def\svgwidth{\columnwidth}
+    \scalebox{0.5}{\input{figures/overview.pdf_tex}}
+\end{figure}
+\end{frame}
+
+\subsection{Contribution}
+\label{sub:Contribution}
+\begin{frame}[t]{Contribution}
+Our research will provide the following contributions:
+\begin{itemize}
+  \item To the best of our knowledge, we are the first to perform a systematic study of interferences between malware families\\
+    % Our work is based on wide variety of a large malware dataset collected over time in the wild.\\
+    % This novel research will help better understand the dynamic aspect of malware behavior.
+  \item A novel approach to malware clustering based on malware behavior profiles
+  \item An automated system that detects interfering malware samples on a large scale
+\end{itemize}
+\end{frame}
+\section{Methodology}
+\label{sec:Methodology}
+\begin{frame}[t]{title}
+  
+\end{frame}
+
+\section{Evaluation}
+\label{sec:Evaluation}
+\begin{frame}[t]{title}
+  
 \end{frame}
 
 \section{Conclusion}
-\begin{frame}
-\frametitle{Conclusion}
-\begin{itemize}
-    \item foobar
-\end{itemize}
+\subsection{Summary}
+\label{sub:Summary}
+\begin{frame}[t]{Summary}
+  \begin{itemize}
+    \item Behavioral interference between malware families exists
+    \item Malware checks for the presence of resource created by other malware and deletes it
+    \item Our system could detect such interfering malware with average accuracy rate of $14.25\%$
+    \item In our dataset, Files and Registries were the most interfered resource and Process was the least
+  \end{itemize}
+\end{frame}
+\subsection{Future Work}
+\label{sub:Future Work}
+\begin{frame}[t]{Future Work}
+  \begin{itemize}
+    \item Make the experiment more efficient to run multiple times with different parameters
+    \item Research on other different approaches to clustering
+    \item In depth analysis (static) of positive pair to know the true semantics of malware
+  \end{itemize}
 \end{frame}
 \end{document}
