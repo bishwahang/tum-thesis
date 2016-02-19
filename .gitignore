@@ -1,5 +1,6 @@
 /build/*
 !/build/main.pdf
+!/build/presentation.pdf
 /logos/*.pdf
 main*
 !main.tex
