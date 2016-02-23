@@ -11,6 +11,9 @@
 \usepackage{hyperref}
 \usepackage{algorithmic,algorithm2e,float}
 \usepackage{url}
+\usepackage[sc]{mathpazo}
+
+\usepackage{appendixnumberbeamer}
 
 \usepackage{caption}
 \lstset{
@@ -70,18 +73,10 @@ TU München}
 \begin{frame}[t]{Malware}
 \begin{itemize}
     \item Malware is a general term to refer any malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
-    \item It can be classified into self replicating and non-replicating
-    \item Self replicating can make copies of themselves e.g. \emph{Virus and Worms}
-    \item Non-replicating cannot make copies of themselves e.g. \emph{Trojans}
-\end{itemize}
-\end{frame}
-\begin{frame}[t]{Malware}
-  \begin{itemize}
+    \item It can be classified into self-replicating (virus,worms) and non-replicating (Trojan)
     \item Based on its ability to change its structure it can also be broadly classified into Polymorphic and Metamorphic
-    \item Polymorphic uses encryption and code obfuscation (dead-code insertion, subroutine reordering, instruction substitution) techniques
-    \item Metamorphic malware uses only code obfuscation
-    \item Different variants of same malware with same semantics or from same author are regarded as to be from same family.
-  \end{itemize}
+    \item Different variants of same malware with similar semantics or same author are regarded as to be from same family
+\end{itemize}
 \end{frame}
 \begin{frame}[t]{Growth of Malware}
   \begin{itemize}
@@ -111,6 +106,9 @@ TU München}
   \item That is to say malware changing their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services
 \end{itemize}
 \end{frame}
+
+\section{Methodology}
+\label{sec:Methodology}
 \begin{frame}[t]{Research Process}
 \begin{itemize}
 \item Get wide variety of malware samples
@@ -125,22 +123,14 @@ TU München}
 \end{figure}
 \end{frame}
 
-\subsection{Contribution}
-\label{sub:Contribution}
+\section{Contribution}
 \begin{frame}[t]{Contribution}
 Our research will provide the following contributions:
 \begin{itemize}
   \item To the best of our knowledge, we are the first to perform a systematic study of interferences between malware families\\
-    % Our work is based on wide variety of a large malware dataset collected over time in the wild.\\
-    % This novel research will help better understand the dynamic aspect of malware behavior.
   \item A novel approach to malware clustering based on malware behavior profiles
   \item An automated system that detects interfering malware samples on a large scale
 \end{itemize}
-\end{frame}
-\section{Methodology}
-\label{sec:Methodology}
-\begin{frame}[t]{title}
-  
 \end{frame}
 
 \section{Evaluation}
@@ -182,6 +172,8 @@ Our research will provide the following contributions:
     \item 4 minute for each malware, and 2 minute to boot system
   \end{itemize}
 \end{frame}
+\subsection{Results}
+\label{sub:Results}
 \begin{frame}[t]{Result of Candidate Run}
   \resizebox{\columnwidth}{!}{%
   \begin{tabular}{l l l l}
@@ -211,8 +203,7 @@ Our research will provide the following contributions:
   \end{itemize}
   
 \end{frame}
-\subsection{Threats to Validity}
-\label{sub:Threats to Validity}
+\section{Threats to Validity}
 \begin{frame}{Threats to Validity}
   \begin{itemize}
     \item Different values of N would give different candidate pairs and different results
@@ -224,10 +215,8 @@ Our research will provide the following contributions:
 \end{frame}
 
 
-\section{Conclusion}
-\subsection{Summary}
-\label{sub:Summary}
-\begin{frame}{Summary}
+\section{Conclusion and Future Work}
+\begin{frame}{Conclusion}
   \begin{itemize}
     \item Behavioral interference between malware families exists
     \item Malware checks for the presence of resource created by other malware and deletes it
@@ -235,13 +224,43 @@ Our research will provide the following contributions:
     \item In our dataset, Files and Registries were the most interfered resource and Process was the least
   \end{itemize}
 \end{frame}
-\subsection{Future Work}
-\label{sub:Future Work}
 \begin{frame}{Future Work}
   \begin{itemize}
     \item Make the experiment more efficient to run multiple times with different parameters
     \item Research on other different approaches to clustering
     \item In depth analysis (static) of positive pair to know the true semantics of malware
   \end{itemize}
+\end{frame}
+\begin{frame}{Questions}
+  
+\end{frame}
+\appendix
+\begin{frame}[plain]{Candidate Selection}
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+    \STATE$R$   = Set of all interesting resource
+    \STATE$A_r$ = Set of malware that creates a particular resource `r'
+    \STATE$B_r$ = Set of malware that delete/access (failed) particular resource `r'
+    \STATE$N$   = Maximum number of families to consider
+    \STATE$E$   = Set of all probable candidate
+    \STATE\ \textbf{function} C (j)
+      \STATE\hspace{\algorithmicindent} $c_j =$ cluster id that malware $j$ belongs to
+      \STATE\hspace{\algorithmicindent} \textit{Return} $c_j$
+    \STATE\ \textbf{end function}
+    % \Function\
+    % \EndFunction\
+    \FORALL{$r \in R$}
+      \IF{|$C(x_r): x \in A_r| > N \lor |C(y_r): y \in B_r| > N$}
+        \STATE\ \textbf{continue}
+      \ENDIF\
+      \FORALL{$(x_r,y_r) \in A_r \times B_r$}
+        \IF{$C(x_r) \neq(y_r)$}
+          \STATE$E\gets (x_r, y_r)$
+        \ENDIF\
+      \ENDFOR\
+    \ENDFOR\
+  \end{algorithmic}
+\end{algorithm}
 \end{frame}
 \end{document}
