@@ -52,13 +52,13 @@ TU München}
 % material goes BEFORE the \begin{document}
 
 % have this if you'd like a recurring outline
-\AtBeginSection[]  % "Beamer, do the following at the start of every section"
-{
-\begin{frame}<beamer>
-\frametitle{Outline} % make a frame titled "Outline"
-\tableofcontents[currentsection]  % show TOC and highlight current section
-\end{frame}
-}
+% \AtBeginSection[]  % "Beamer, do the following at the start of every section"
+% {
+% \begin{frame}<beamer>
+% \frametitle{Outline} % make a frame titled "Outline"
+% \tableofcontents[currentsection]  % show TOC and highlight current section
+% \end{frame}
+% }
 \begin{document}
 
 % this prints title, author etc. info from above
@@ -72,16 +72,35 @@ TU München}
 \label{sub:Background}
 \begin{frame}[t]{Malware}
 \begin{itemize}
-    \item Malware is a general term to refer any malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
-    \item It can be classified into self-replicating (virus,worms) and non-replicating (Trojan)
-    \item Based on its ability to change its structure it can also be broadly classified into Polymorphic and Metamorphic
-    \item Different variants of same malware with similar semantics or same author are regarded as to be from same family
+    \item Malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{figures/malware_type.png}
+  \label{fig:malware_type}
+  \end{figure}
+  \item Different variants of same malware and hard to detect with signature based
 \end{itemize}
 \end{frame}
-\begin{frame}[t]{Growth of Malware}
+
+\begin{frame}[plain]{Growth of Malware}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[scale=0.18]{figures/malware_all.png}
+        \end{center}
+      \end{figure}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[scale=0.18]{figures/malware_new.png}
+        \end{center}
+      \end{figure}
+    \end{column}
+  \end{columns}
   \begin{itemize}
-    \item With the increase in growth of the Internet, many of our daily life activities such as email, banking, bill payment, and social networking are dependent on it.
-    \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
+    % \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
     \item Annual loss caused by malware in 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
     \item Driven by monetary profit, high rise in numbers of new malware with 140 million new malware introduced in 2015 alone
   \end{itemize}
@@ -92,7 +111,7 @@ TU München}
     \item In 2004, NetSky vs Bagle and MyDoom trying to remove each other along with message of profanity
     \item In 2010, SpyEye vs Zbot with KillZeus feature
     \item In 2015, Shifu malware family with AV like feature
-    \item All of these interferences were to negate the presence of another malware
+    \item All of these interferences were to remove/prevent the infection of another malware
     \item Increase their own profit taking control of larger share of economy
   \end{itemize}
 \end{frame}
@@ -118,9 +137,73 @@ TU München}
 \end{itemize}
 \begin{figure}[h]
     \centering
-    \def\svgwidth{\columnwidth}
     \scalebox{0.5}{\input{figures/overview.pdf_tex}}
 \end{figure}
+\end{frame}
+\begin{frame}[t]{Heuristics}
+  \begin{itemize}
+    \item Millions of malware samples collected over time by Anubis
+    \item Need to find candidate pairs from the dataset with probability of behavioral interference
+    \item Choose based on common resource such that one malware created the resource and another malware tried to delete the same resource, but with failure
+    \item Parsed behavioral profiles of malware to get the failed delete/access operations
+    \item Reverse index of resource to malware samples
+    \item Large number of possible pairs and inconsistent AntiVirus label lead to Clustering of malware sample
+  \end{itemize}
+\end{frame}
+\subsection{Clustering}
+\label{sub:Clustering}
+\begin{frame}[t]{Latent Dirichlet Allocation}
+  \begin{itemize}
+    \item Clustering of malware with respect to their behavioral profile
+    \item LDA\@: General probabilistic model for collection of discrete data such as text corpora
+    \item Does not depend on number of documents and its memory footprint is $O (words \times topics)$
+    \item Each malware is represented as document and their activities as words in document
+    \item Resource types, operations, and resource name were represented by numeric id
+    \item We had a good clustering result with high intra-distance and low inter-distance of clusters
+  \end{itemize}
+\end{frame}
+
+\subsection{Candidate Selection}
+\label{sub:Candidate Selection}
+\begin{frame}[plain]{Candidate Selection}
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+    \STATE$R$   = Set of all interesting resource
+    \STATE$A_r$ = Set of malware that creates a particular resource `r'
+    \STATE$B_r$ = Set of malware that delete/access (failed) particular resource `r'
+    \STATE$N$   = Maximum number of families to consider
+    \STATE$E$   = Set of all probable candidate
+    \STATE\ \textbf{function} C (j)
+      \STATE\hspace{\algorithmicindent} $c_j =$ cluster id that malware $j$ belongs to
+      \STATE\hspace{\algorithmicindent} \textit{Return} $c_j$
+    \STATE\ \textbf{end function}
+    % \Function\
+    % \EndFunction\
+    \FORALL{$r \in R$}
+      \IF{$|C(x_r): x \in A_r| > N \lor |C(y_r): y \in B_r| > N$}
+        \STATE\ \textbf{continue}
+      \ENDIF\
+      \FORALL{$(x_r,y_r) \in A_r \times B_r$}
+        \IF{$C(x_r) \neq(y_r)$}
+          \STATE$E\gets (x_r, y_r)$
+        \ENDIF\
+      \ENDFOR\
+    \ENDFOR\
+  \end{algorithmic}
+\end{algorithm}
+\end{frame}
+
+\subsection{Executing the Candidate Pair}
+\label{sub:Executing the Candidate Pair}
+\begin{frame}[t]{Packer/Unpacker}
+  \begin{itemize}
+    \item The candidate pairs had to be run together inside the Anubis system
+    \item We used the fact that addition of extraneous data would not affect the binary execution
+    \item `Unpacker' binary read itself from the behind
+    \item The `Packer' packs the candidate pair along with meta-information such as its size and time delay to Unpacker
+    \item The Unpacker then would create the malware sample and execute it with specified time delay inside Anubis
+  \end{itemize}
 \end{frame}
 
 \section{Contribution}
@@ -201,13 +284,12 @@ Our research will provide the following contributions:
     \item VB.CB vs Startpage.AI on resource \url{C:\\WINDOWS\\window.exe}
     \item KeyLogger vs OnlineGames on resource \url{C:\\windows\\system32\\svrchost.exe}
   \end{itemize}
-  
 \end{frame}
 \section{Threats to Validity}
 \begin{frame}{Threats to Validity}
   \begin{itemize}
     \item Different values of N would give different candidate pairs and different results
-    \item Random resource name
+    \item Didn't deal with random resource name
     \item Total execution time 10 minutes
     \item Sequence of execution
     \item Semantics of Malware
@@ -227,40 +309,72 @@ Our research will provide the following contributions:
 \begin{frame}{Future Work}
   \begin{itemize}
     \item Make the experiment more efficient to run multiple times with different parameters
-    \item Research on other different approaches to clustering
+    \item Research on other possible approaches to clustering
     \item In depth analysis (static) of positive pair to know the true semantics of malware
   \end{itemize}
 \end{frame}
-\begin{frame}{Questions}
-  
+\begin{frame}[plain,c]{Questions}
+  \begin{center}
+    \Huge QUESTIONS???
+  \end{center}
 \end{frame}
 \appendix
-\begin{frame}[plain]{Candidate Selection}
-\begin{algorithm}[H]
-  \small
-  \begin{algorithmic}[1]
-    \STATE$R$   = Set of all interesting resource
-    \STATE$A_r$ = Set of malware that creates a particular resource `r'
-    \STATE$B_r$ = Set of malware that delete/access (failed) particular resource `r'
-    \STATE$N$   = Maximum number of families to consider
-    \STATE$E$   = Set of all probable candidate
-    \STATE\ \textbf{function} C (j)
-      \STATE\hspace{\algorithmicindent} $c_j =$ cluster id that malware $j$ belongs to
-      \STATE\hspace{\algorithmicindent} \textit{Return} $c_j$
-    \STATE\ \textbf{end function}
-    % \Function\
-    % \EndFunction\
-    \FORALL{$r \in R$}
-      \IF{|$C(x_r): x \in A_r| > N \lor |C(y_r): y \in B_r| > N$}
-        \STATE\ \textbf{continue}
-      \ENDIF\
-      \FORALL{$(x_r,y_r) \in A_r \times B_r$}
-        \IF{$C(x_r) \neq(y_r)$}
-          \STATE$E\gets (x_r, y_r)$
-        \ENDIF\
-      \ENDFOR\
-    \ENDFOR\
-  \end{algorithmic}
-\end{algorithm}
+\begin{frame}[plain,fragile]{Reverse Index}
+\begin{lstlisting}[numbers=none,language=bash,caption={Sort and join the reverse index}]
+LANG=en_EN sort -t, -k 1,1 $file_name
+LANG=en_EN join -t , -a1 -a2 $fn1 $fn2
+\end{lstlisting}
+\begin{lstlisting}[numbers=none,caption={Sample of reverse index created for File activity},label={lst:reverseindex}]
+C:\mbr.exe,189524063,184501719,87504631,86763863
+C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/telnet.exe,178046895,174206059,183601891,89650247
+C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
+\end{lstlisting}
+\end{frame}
+\begin{frame}[plain]{Unpacker}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.5]{figures/unpacker.png}
+\caption{Structure of the Unpacker binary that would create the candidate pair and run them with delay.}
+\label{fig:unpacker}
+\end{figure}
+\end{frame}
+\begin{frame}[plain]{Inter and Intra Distance}
+\begin{columns}
+  \begin{column}{5cm}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[scale=0.3]{figures/intra_clustered_common.png}
+      \end{center}
+      \captionsetup{font=small}
+      \caption{ Graph showing cdf distribution of common resource between same family topic}
+    \end{figure}
+  \end{column}
+  \begin{column}{5cm}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[scale=0.3]{figures/intra_clustered_common.png}
+      \end{center}
+      \captionsetup{font=small}
+      \caption{ Graph showing cdf distribution of common resource between same family topic}
+    \end{figure}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[plain]{Max Flow}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.2]{figures/maxflow2.png}
+  \caption[Max Flow]{Graph representing the max flow implementation}\label{fig:maxflow}
+\end{figure}
+\end{frame}
+
+\begin{frame}[plain]{Heuristics}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.3]{figures/dhkheuristics.png}
+  \caption[]{Heuristics approach to optimal malware pair selection}\label{fig:dhkheuristics}
+  \centering
+\end{figure}
 \end{frame}
 \end{document}

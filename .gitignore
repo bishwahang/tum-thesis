@@ -3,4 +3,5 @@
 !/build/presentation.pdf
 /logos/*.pdf
 main*
+figures/*
 !main.tex
