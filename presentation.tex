@@ -77,58 +77,64 @@ TU München}
 \section{Introduction}
 \subsection{Background}
 \label{sub:Background}
-\begin{frame}[t]{Malware}
+\begin{frame}[h]{Malware}
 \begin{itemize}
     \item Malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
-  \begin{figure}[H]
+  \begin{figure}[h]
     \centering
     \includegraphics[scale=0.3]{figures/malware_type.png}
   \label{fig:malware_type}
   \end{figure}
-  \item Different variants of same malware and hard to detect with signature based
+  \item Different variants of same malware
+  \item Hard to detect with signature based
+  \item Static and dynamic analysis
 \end{itemize}
 \end{frame}
 
-\begin{frame}[plain]{Growth of Malware}
+\begin{frame}[plain,t]{Growth of Malware}
   \begin{columns}
     \begin{column}{5cm}
-      \begin{figure}[H]
+      \begin{figure}[t]
         \begin{center}
           \includegraphics[scale=0.18]{figures/malware_all.png}
         \end{center}
       \end{figure}
     \end{column}
     \begin{column}{5cm}
-      \begin{figure}[H]
+      \begin{figure}[t]
         \begin{center}
           \includegraphics[scale=0.18]{figures/malware_new.png}
         \end{center}
       \end{figure}
     \end{column}
   \end{columns}
+  \begin{center}
+  \tiny Source: https://www.av-test.org/en/statistics/
+  \end{center}
   \begin{itemize}
     % \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
-    \item High rise, driven by monetary profit
+    \item Growth driven by monetary profit
     \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
   \end{itemize}
 \end{frame}
-\begin{frame}[t]{Interference Between Malware Families}
+\begin{frame}[h]{Interference Between Malware Families}
   \begin{itemize}
-    \item There has been some anecdotal evidences of feud between the malware families
-    \item In 2004, NetSky vs Bagle and MyDoom trying to remove each other along with message of profanity
-    \item In 2010, SpyEye vs Zbot with KillZeus feature
-    \item In 2015, Shifu malware family with AV like feature
+    \item Anecdotal evidences
+    \item In 2004, NetSky vs Bagle and MyDoom
+    \item In 2010, SpyEye vs Zbot
+    \item In 2015, highly evasive Shifu malware
     \item remove/prevent the infection of another malware
-    \item Increase their own profit?
+    \item Increase their share in economy
   \end{itemize}
 \end{frame}
 \subsection{Problem Statement}
 \label{sub:Problem Statement}
-\begin{frame}[t]{Problem Statement}
+\begin{frame}[h]{Problem Statement}
 \begin{itemize}
-  \item The purpose of our research is to identify the existence of aforementioned behavioral interference between the malware families
-  \item Dynamic aspect of modern malware, the inter-family relations, and their associated underground economy
+  \item Identify the existence of behavioral interference between the malware families
+  \item Dynamic aspect of modern malware
   \item Environment-sensitive malware
+  \item The inter-family relations and their associated underground economy
   % \item The study will provide novel knowledge for understanding the dynamic aspect of modern malware, the inter-family relations, and their associated underground economy
   % \item This behavior is also a case for environment-sensitive malware
   % \item That is to say malware changing their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services
@@ -137,6 +143,107 @@ TU München}
 
 \section{Methodology}
 \label{sec:Methodology}
+\begin{frame}[h]{The Big Picture}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{figures/bigpicture.png}
+  \label{fig:malware_type}
+  \end{figure}
+\end{frame}
+\begin{frame}[h]{Initial Phase}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{itemize}
+        \item Datasets: Millions of malware samples from Anubis
+        \item Behavioral Profile: execution trace
+        \item Failed resource activity
+        \item Resource types: File, Registry,Sync, Section, and Process
+        \item Resource activities: Create, Delete, Access
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.28]{figures/initial_phase.png}
+      \label{fig:malware_type}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+\begin{frame}[h]{Clustering}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{itemize}
+        \item Combinatorial problem
+        \item Virus Total not reliable and inconsistent
+        \item Document Clustering w.r.t behavioral activities
+        \item Latent Dirichlet Allocation
+        \item $O(\#words * \#topics)$
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.28]{figures/clustering.png}
+      \label{fig:malware_type}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+\begin{frame}[plain]{Candidate Selection}
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+    \STATE$R$   = Set of all interesting resource
+    \STATE$A_r$ = Set of malware that creates a particular resource `r'
+    \STATE$B_r$ = Set of malware that delete/access (failed) particular resource `r'
+    \STATE$N$   = Maximum number of families to consider
+    \STATE$E$   = Set of all probable candidate
+    \STATE\ \textbf{function} C (j)
+      \STATE\hspace{\algorithmicindent} $c_j =$ cluster id that malware $j$ belongs to
+      \STATE\hspace{\algorithmicindent} \textit{Return} $c_j$
+    \STATE\ \textbf{end function}
+    % \Function\
+    % \EndFunction\
+    \FORALL{$r \in R$}
+      \IF{$|C(x_r): x \in A_r| > N \lor |C(y_r): y \in B_r| > N$}
+        \STATE\ \textbf{continue}
+      \ENDIF\
+      \FORALL{$(x_r,y_r) \in A_r \times B_r$}
+        \IF{$C(x_r) \neq(y_r)$}
+          \STATE$E\gets (x_r, y_r)$
+        \ENDIF\
+      \ENDFOR\
+    \ENDFOR\
+  \end{algorithmic}
+\end{algorithm}
+\end{frame}
+\begin{frame}[plain]{Candidate Pair Analysis}
+  \begin{columns}
+    \begin{column}{5cm}
+    \begin{itemize}
+      \item Candidate pairs analyzed in Anubis
+      \item Extraneous data appended to binary
+      \item Packer packs candidate pair to Unpacker
+      \item Unpacker self reads and drops
+      \item Logs parsed
+    \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.26]{figures/unpacker.png}
+      \label{fig:unpacker}
+      \end{figure}
+      \tiny \centering Unpacker
+      \begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.28]{figures/analysis.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % \begin{frame}[t]{Research Process}
 % \begin{itemize}
 % \item Get wide variety of malware samples
@@ -174,34 +281,6 @@ TU München}
 
 % \subsection{Candidate Selection}
 % \label{sub:Candidate Selection}
-% \begin{frame}[plain]{Candidate Selection}
-% \begin{algorithm}[H]
-%   \small
-%   \begin{algorithmic}[1]
-%     \STATE$R$   = Set of all interesting resource
-%     \STATE$A_r$ = Set of malware that creates a particular resource `r'
-%     \STATE$B_r$ = Set of malware that delete/access (failed) particular resource `r'
-%     \STATE$N$   = Maximum number of families to consider
-%     \STATE$E$   = Set of all probable candidate
-%     \STATE\ \textbf{function} C (j)
-%       \STATE\hspace{\algorithmicindent} $c_j =$ cluster id that malware $j$ belongs to
-%       \STATE\hspace{\algorithmicindent} \textit{Return} $c_j$
-%     \STATE\ \textbf{end function}
-%     % \Function\
-%     % \EndFunction\
-%     \FORALL{$r \in R$}
-%       \IF{$|C(x_r): x \in A_r| > N \lor |C(y_r): y \in B_r| > N$}
-%         \STATE\ \textbf{continue}
-%       \ENDIF\
-%       \FORALL{$(x_r,y_r) \in A_r \times B_r$}
-%         \IF{$C(x_r) \neq(y_r)$}
-%           \STATE$E\gets (x_r, y_r)$
-%         \ENDIF\
-%       \ENDFOR\
-%     \ENDFOR\
-%   \end{algorithmic}
-% \end{algorithm}
-% \end{frame}
 
 % \subsection{Executing the Candidate Pair}
 % \label{sub:Executing the Candidate Pair}
@@ -307,24 +386,30 @@ Our research will provide the following contributions:
 
 
 \section{Conclusion and Future Work}
-\begin{frame}{Conclusion}
+\begin{frame}{Conclusion and Future Work}
+  \begin{block}{Conclusion}
   \begin{itemize}
     \item Behavioral interference between malware families exists
     \item Malware checks for the presence of resource created by other malware and deletes it
     \item Our system could detect such interfering malware with average accuracy rate of $14.25\%$
     \item In our dataset, Files and Registries were the most interfered resource and Process was the least
   \end{itemize}
-\end{frame}
-\begin{frame}{Future Work}
+  \end{block}
+  \begin{block}{Future Work}
   \begin{itemize}
     \item Make the experiment more efficient to run multiple times with different parameters
-    \item Research on other possible approaches to clustering
+    % \item Research on other possible approaches to clustering
     \item In depth analysis (static) of positive pair to know the true semantics of malware
   \end{itemize}
+  \end{block}
 \end{frame}
 \begin{frame}[plain,c]{Questions}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.15]{figures/questions.jpg}
+  \end{figure}
   \begin{center}
-    \Huge QUESTIONS???
+    \Huge QUESTIONS?\@
   \end{center}
 \end{frame}
 \appendix
@@ -338,14 +423,6 @@ C:\mbr.exe,189524063,184501719,87504631,86763863
 C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/telnet.exe,178046895,174206059,183601891,89650247
 C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
 \end{lstlisting}
-\end{frame}
-\begin{frame}[plain]{Unpacker}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.5]{figures/unpacker.png}
-\caption{Structure of the Unpacker binary that would create the candidate pair and run them with delay.}
-\label{fig:unpacker}
-\end{figure}
 \end{frame}
 \begin{frame}[plain]{Inter and Intra Distance}
 \begin{columns}
