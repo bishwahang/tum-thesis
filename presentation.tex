@@ -75,8 +75,8 @@ TU München}
 \end{frame}
 \frame{\frametitle{Table of contents}\tableofcontents}
 \section{Introduction}
-\subsection{Background}
-\label{sub:Background}
+% \subsection{Background}
+% \label{sub:Background}
 \begin{frame}[h]{Malware}
 \begin{itemize}
     \item Malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
@@ -127,8 +127,8 @@ TU München}
     \item Increase their share in economy
   \end{itemize}
 \end{frame}
-\subsection{Problem Statement}
-\label{sub:Problem Statement}
+% \subsection{Problem Statement}
+% \label{sub:Problem Statement}
 \begin{frame}[h]{Problem Statement}
 \begin{itemize}
   \item Identify the existence of behavioral interference between the malware families
@@ -159,6 +159,7 @@ TU München}
         \item Failed resource activity
         \item Resource types: File, Registry,Sync, Section, and Process
         \item Resource activities: Create, Delete, Access
+        \item Combinatorial problem
       \end{itemize}
     \end{column}
     \begin{column}{5cm}
@@ -170,15 +171,16 @@ TU München}
     \end{column}
   \end{columns}
 \end{frame}
-\begin{frame}[h]{Clustering}
+\begin{frame}[h,fragile]{Clustering}
   \begin{columns}
     \begin{column}{5cm}
       \begin{itemize}
-        \item Combinatorial problem
         \item Virus Total not reliable and inconsistent
-        \item Document Clustering w.r.t behavioral activities
+        \item Bayer used LSH for 75K malware sample
+        \item Document Clustering based on resource activities
         \item Latent Dirichlet Allocation
-        \item $O(\#words * \#topics)$
+        \item \textbf{tf-idf} $O(\#words \times \#documents)$
+        \item \textbf{LDA} $O(\#words \times \#topics)$
       \end{itemize}
     \end{column}
     \begin{column}{5cm}
@@ -187,6 +189,12 @@ TU München}
         \includegraphics[scale=0.28]{figures/clustering.png}
       \label{fig:malware_type}
       \end{figure}
+      \begin{lstlisting}[numbers=none,basicstyle=\tiny,language=python]
+        RESOURCE_CODE    = {"file" : "1", "registry" : "2"...}
+        OPERATION_CODE   = {"access" : "1", "delete" : "2", "modify" : "3"}
+      \end{lstlisting}
+      A file delete action of filename ``\emph{foo.txt}'' with file\_name\_id $`789'$ in our database would be represented as:\\
+      $`1\_2\_789'$
     \end{column}
   \end{columns}
 \end{frame}
@@ -244,55 +252,6 @@ TU München}
   \end{columns}
 \end{frame}
 
-% \begin{frame}[t]{Research Process}
-% \begin{itemize}
-% \item Get wide variety of malware samples
-% \item Use heuristics and clustering to get the candidate pair list
-% \item Run each candidate pair in malware analysis system (Anubis in our case)
-% \item Analyze the log of analysis run to detect behavioral interference
-% \end{itemize}
-% \begin{figure}[h]
-%     \centering
-%     \scalebox{0.5}{\input{figures/overview.pdf_tex}}
-% \end{figure}
-% \end{frame}
-% \begin{frame}[t]{Heuristics}
-%   \begin{itemize}
-%     \item Millions of malware samples collected over time by Anubis
-%     \item Need to find candidate pairs from the dataset with probability of behavioral interference
-%     \item Choose based on common resource such that one malware created the resource and another malware tried to delete the same resource, but with failure
-%     \item Parsed behavioral profiles of malware to get the failed delete/access operations
-%     \item Reverse index of resource to malware samples
-%     \item Large number of possible pairs and inconsistent AntiVirus label lead to Clustering of malware sample
-%   \end{itemize}
-% \end{frame}
-% \subsection{Clustering}
-% \label{sub:Clustering}
-% \begin{frame}[t]{Latent Dirichlet Allocation}
-%   \begin{itemize}
-%     \item Clustering of malware with respect to their behavioral profile
-%     \item LDA\@: General probabilistic model for collection of discrete data such as text corpora
-%     \item Does not depend on number of documents and its memory footprint is $O (words \times topics)$
-%     \item Each malware is represented as document and their activities as words in document
-%     \item Resource types, operations, and resource name were represented by numeric id
-%     \item We had a good clustering result with high intra-distance and low inter-distance of clusters
-%   \end{itemize}
-% \end{frame}
-
-% \subsection{Candidate Selection}
-% \label{sub:Candidate Selection}
-
-% \subsection{Executing the Candidate Pair}
-% \label{sub:Executing the Candidate Pair}
-% \begin{frame}[t]{Packer/Unpacker}
-%   \begin{itemize}
-%     \item The candidate pairs had to be run together inside the Anubis system
-%     \item We used the fact that addition of extraneous data would not affect the binary execution
-%     \item `Unpacker' binary read itself from the behind
-%     \item The `Packer' packs the candidate pair along with meta-information such as its size and time delay to Unpacker
-%     \item The Unpacker then would create the malware sample and execute it with specified time delay inside Anubis
-%   \end{itemize}
-% \end{frame}
 
 \section{Contribution}
 \begin{frame}[t]{Contribution}
@@ -306,8 +265,8 @@ Our research will provide the following contributions:
 
 \section{Evaluation}
 \label{sec:Evaluation}
-\subsection{Experiment}
-\label{sub:Experiment}
+% \subsection{Experiment}
+% \label{sub:Experiment}
 \begin{frame}[t]{List of Candidate Pairs}
 \begin{columns}
 \begin{column}{4.7cm}
@@ -343,8 +302,8 @@ Our research will provide the following contributions:
     \item 4 minute for each malware, and 2 minute to boot system
   \end{itemize}
 \end{frame}
-\subsection{Results}
-\label{sub:Results}
+% \subsection{Results}
+% \label{sub:Results}
 \begin{frame}[t]{Result of Candidate Run}
   \resizebox{\columnwidth}{!}{%
   \begin{tabular}{l l l l}
@@ -366,13 +325,7 @@ Our research will provide the following contributions:
   \item Average accuracy rate $14.25\%$
 \end{itemize}
 \end{frame}
-\begin{frame}{Some Examples}
-  \begin{itemize}
-    \item Artemis! vs Cosmu on resource \url{C:\\Old.exe}
-    \item VB.CB vs Startpage.AI on resource \url{C:\\WINDOWS\\window.exe}
-    \item KeyLogger vs OnlineGames on resource \url{C:\\windows\\system32\\svrchost.exe}
-  \end{itemize}
-\end{frame}
+
 \section{Threats to Validity}
 \begin{frame}{Threats to Validity}
   \begin{itemize}
@@ -383,7 +336,6 @@ Our research will provide the following contributions:
     \item Semantics of Malware
   \end{itemize}
 \end{frame}
-
 
 \section{Conclusion and Future Work}
 \begin{frame}{Conclusion and Future Work}
@@ -463,4 +415,61 @@ C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
   \centering
 \end{figure}
 \end{frame}
+
+\begin{frame}{Some Examples}
+  \begin{itemize}
+    \item Artemis! vs Cosmu on resource \url{C:\\Old.exe}
+    \item VB.CB vs Startpage.AI on resource \url{C:\\WINDOWS\\window.exe}
+    \item KeyLogger vs OnlineGames on resource \url{C:\\windows\\system32\\svrchost.exe}
+  \end{itemize}
+\end{frame}
 \end{document}
+% \begin{frame}[t]{Research Process}
+% \begin{itemize}
+% \item Get wide variety of malware samples
+% \item Use heuristics and clustering to get the candidate pair list
+% \item Run each candidate pair in malware analysis system (Anubis in our case)
+% \item Analyze the log of analysis run to detect behavioral interference
+% \end{itemize}
+% \begin{figure}[h]
+%     \centering
+%     \scalebox{0.5}{\input{figures/overview.pdf_tex}}
+% \end{figure}
+% \end{frame}
+% \begin{frame}[t]{Heuristics}
+%   \begin{itemize}
+%     \item Millions of malware samples collected over time by Anubis
+%     \item Need to find candidate pairs from the dataset with probability of behavioral interference
+%     \item Choose based on common resource such that one malware created the resource and another malware tried to delete the same resource, but with failure
+%     \item Parsed behavioral profiles of malware to get the failed delete/access operations
+%     \item Reverse index of resource to malware samples
+%     \item Large number of possible pairs and inconsistent AntiVirus label lead to Clustering of malware sample
+%   \end{itemize}
+% \end{frame}
+% \subsection{Clustering}
+% \label{sub:Clustering}
+% \begin{frame}[t]{Latent Dirichlet Allocation}
+%   \begin{itemize}
+%     \item Clustering of malware with respect to their behavioral profile
+%     \item LDA\@: General probabilistic model for collection of discrete data such as text corpora
+%     \item Does not depend on number of documents and its memory footprint is $O (words \times topics)$
+%     \item Each malware is represented as document and their activities as words in document
+%     \item Resource types, operations, and resource name were represented by numeric id
+%     \item We had a good clustering result with high intra-distance and low inter-distance of clusters
+%   \end{itemize}
+% \end{frame}
+
+% \subsection{Candidate Selection}
+% \label{sub:Candidate Selection}
+
+% \subsection{Executing the Candidate Pair}
+% \label{sub:Executing the Candidate Pair}
+% \begin{frame}[t]{Packer/Unpacker}
+%   \begin{itemize}
+%     \item The candidate pairs had to be run together inside the Anubis system
+%     \item We used the fact that addition of extraneous data would not affect the binary execution
+%     \item `Unpacker' binary read itself from the behind
+%     \item The `Packer' packs the candidate pair along with meta-information such as its size and time delay to Unpacker
+%     \item The Unpacker then would create the malware sample and execute it with specified time delay inside Anubis
+%   \end{itemize}
+% \end{frame}
