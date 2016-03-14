@@ -78,68 +78,92 @@ TU München}
 % \subsection{Background}
 % \label{sub:Background}
 \begin{frame}[h]{Malware}
+Malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
+\begin{columns}
+  \begin{column}{5cm}
+    \begin{figure}[t]
+      \centering
+      \includegraphics[scale=0.17]{figures/malware_type.png}
+      \label{fig:malware_type}
+    \end{figure}
+  \end{column}
+  \begin{column}{5cm}
+    \begin{figure}[t]
+      \begin{center}
+        \includegraphics[scale=0.15]{figures/malware_all.png}
+      \end{center}
+    \end{figure}
+  % \begin{center}
+  % \tiny Source: https://www.av-test.org/en/statistics/
+  % \end{center}
+  % \begin{itemize}
+  %   % \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
+  %   \item Growth driven by monetary profit
+  %   \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
+  % \end{itemize}
+  \end{column}
+\end{columns}
 \begin{itemize}
-    \item Malicious software that corrupts or steals data, or disrupt operations with illegitimate access to computer or computer networks
-  \begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.3]{figures/malware_type.png}
-  \label{fig:malware_type}
-  \end{figure}
-  \item Different variants of same malware
+  % \item Different variants of same malware
   \item Hard to detect with signature based
   \item Static and dynamic analysis
+  \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
 \end{itemize}
 \end{frame}
 
-\begin{frame}[plain,t]{Growth of Malware}
-  \begin{columns}
-    \begin{column}{5cm}
-      \begin{figure}[t]
-        \begin{center}
-          \includegraphics[scale=0.18]{figures/malware_all.png}
-        \end{center}
-      \end{figure}
-    \end{column}
-    \begin{column}{5cm}
-      \begin{figure}[t]
-        \begin{center}
-          \includegraphics[scale=0.18]{figures/malware_new.png}
-        \end{center}
-      \end{figure}
-    \end{column}
-  \end{columns}
-  \begin{center}
-  \tiny Source: https://www.av-test.org/en/statistics/
-  \end{center}
-  \begin{itemize}
-    % \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
-    \item Growth driven by monetary profit
-    \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
-  \end{itemize}
-\end{frame}
-\begin{frame}[h]{Interference Between Malware Families}
-  \begin{itemize}
-    \item Anecdotal evidences
-    \item In 2004, NetSky vs Bagle and MyDoom
-    \item In 2010, SpyEye vs Zbot
-    \item In 2015, highly evasive Shifu malware
-    \item remove/prevent the infection of another malware
-    \item Increase their share in economy
-  \end{itemize}
+% \begin{frame}[plain,t]{Growth of Malware}
+%   \begin{columns}
+%   \begin{column}{5cm}
+%     \begin{figure}[t]
+%       \begin{center}
+%         \includegraphics[scale=0.18]{figures/malware_all.png}
+%       \end{center}
+%     \end{figure}
+%   \end{column}
+%     \begin{column}{5cm}
+%       \begin{figure}[t]
+%         \begin{center}
+%           \includegraphics[scale=0.18]{figures/malware_new.png}
+%         \end{center}
+%       \end{figure}
+%     \end{column}
+%   \end{columns}
+%   \begin{itemize}
+%     % \item Malware authors are introducing new malware on daily basis to steal those valuable data and personal information and sell it illegally in the underground market.
+%     \item Growth driven by monetary profit
+%     \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
+%   \end{itemize}
+% \end{frame}
+\begin{frame}[h]{Problem Statement}
+  \begin{block}{Interference Between Malware Families}
+    \begin{itemize}
+      \item In 2004, NetSky vs Bagle and MyDoom
+      \item In 2010, SpyEye vs Zbot
+      \item In 2015, highly evasive Shifu malware
+      % \item Most of the feud:
+      % \begin{itemize}
+      % \item remove/prevent the infection of another malware
+      % \item Increase their share in economy
+      % \end{itemize}
+    \end{itemize}
+  \end{block}
+  \pause\
+  \begin{block}{Problem Statement}
+    Identify the existence of behavioral interference between the malware families
+      \pause\
+    \begin{itemize}
+      \item Dynamic aspect/environment-sensitive malware
+      \item The inter-family relations and their associated underground economy
+    \end{itemize}
+  \end{block}
 \end{frame}
 % \subsection{Problem Statement}
 % \label{sub:Problem Statement}
-\begin{frame}[h]{Problem Statement}
-\begin{itemize}
-  \item Identify the existence of behavioral interference between the malware families
-  \item Dynamic aspect of modern malware
-  \item Environment-sensitive malware
-  \item The inter-family relations and their associated underground economy
+% \begin{frame}[h]{Problem Statement}
   % \item The study will provide novel knowledge for understanding the dynamic aspect of modern malware, the inter-family relations, and their associated underground economy
   % \item This behavior is also a case for environment-sensitive malware
   % \item That is to say malware changing their behavior depending on different factors of their running environment, such as presence or absence of files, programs, or running services
-\end{itemize}
-\end{frame}
+% \end{frame}
 
 \section{Methodology}
 \label{sec:Methodology}
@@ -156,9 +180,9 @@ TU München}
       \begin{itemize}
         \item Datasets: Millions of malware samples from Anubis
         \item Behavioral Profile: execution trace
-        \item Failed resource activity
-        \item Resource types: File, Registry,Sync, Section, and Process
+        \item Resource types: File, Registry, Sync, Section, Process
         \item Resource activities: Create, Delete, Access
+        \item Modeled the problem into Map-reduce
         \item Combinatorial problem
       \end{itemize}
     \end{column}
@@ -226,7 +250,7 @@ TU München}
   \end{algorithmic}
 \end{algorithm}
 \end{frame}
-\begin{frame}[plain]{Candidate Pair Analysis}
+\begin{frame}[plain,h]{Candidate Pair Analysis}
   \begin{columns}
     \begin{column}{5cm}
     \begin{itemize}
@@ -254,7 +278,7 @@ TU München}
 
 
 \section{Contribution}
-\begin{frame}[t]{Contribution}
+\begin{frame}[h]{Contribution}
 Our research will provide the following contributions:
 \begin{itemize}
   \item Systematic study of interferences between malware families
@@ -267,16 +291,11 @@ Our research will provide the following contributions:
 \label{sec:Evaluation}
 % \subsection{Experiment}
 % \label{sub:Experiment}
-\begin{frame}[t]{List of Candidate Pairs}
+\begin{frame}[h]{Results}
+  \begin{block}{List of Candidate Pairs}
 \begin{columns}
-\begin{column}{4.7cm}
-\begin{itemize}
-  \item Value of N (maximum family cutoff) in algorithm chosen to be 10
-  \item File with the highest number of candidate pair and Process the lowest
-  \item No candidate pair from resource type Job, Device, Driver
-\end{itemize}
-\end{column}
-\begin{column}{5.3cm}
+  \begin{column}{{0.5\textwidth}}
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{l l l l}
     \toprule
     Resource types & \#candidate pairs\\
@@ -289,23 +308,19 @@ Our research will provide the following contributions:
     \bottomrule
     Total & 263,691\\
   \end{tabular}
+}
+\end{column}
+\begin{column}{{0.5\textwidth}}
+\begin{itemize}
+  \item Value of N (maximum family cutoff) in algorithm chosen to be 10
+  \item `\emph{File}' with the highest number of candidate pair and `\emph{Process}' with the lowest
+  % \item No candidate pair from resource type Job, Device, Driver
+\end{itemize}
 \end{column}
 \end{columns}
-\end{frame}
-\begin{frame}[t]{Experiment Setup}
-  \begin{itemize}
-    \item 7 Anubis instance
-    \item Each instance emulates entire running PC with Windows XP Service Pack 3 as OS
-    \item Uses Qemu and monitors process by invoking callback routine for every basic block executed in virtual processor
-    \item Unpacker and Packer used to run the candidate pair
-    \item 10 minutes as total run time of each candidate pair experiment
-    \item 4 minute for each malware, and 2 minute to boot system
-  \end{itemize}
-\end{frame}
-% \subsection{Results}
-% \label{sub:Results}
-\begin{frame}[t]{Result of Candidate Run}
-  \resizebox{\columnwidth}{!}{%
+  \end{block}
+\begin{block}{Result of Candidate Run}
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{l l l l}
     \toprule
     Resource types & \# tested pairs & \# true positive & prediction accuracy\\
@@ -316,18 +331,14 @@ Our research will provide the following contributions:
     Section & 1,000 & 93& 9.3\%\\
     Process & 54 & 6& 11.11\%\\
     \bottomrule
-    % Total & 263691\\
   \end{tabular}%
 }
 \begin{itemize}
-  \item Highest Accuracy for File and Registry
-  \item Lowest for Process
-  \item Average accuracy rate $14.25\%$
+  \item Average prediction accuracy: {$14.25\%$}
 \end{itemize}
+\end{block}
 \end{frame}
-
-\section{Threats to Validity}
-\begin{frame}{Threats to Validity}
+\begin{frame}[h]{Threats to Validity}
   \begin{itemize}
     \item Different values of N would give different candidate pairs and different results
     \item Didn't deal with random resource name
@@ -415,7 +426,16 @@ C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
   \centering
 \end{figure}
 \end{frame}
-
+\begin{frame}[h]{Experiment Setup}
+  \begin{itemize}
+    \item 7 Anubis instance
+    \item Each instance emulates entire running PC with Windows XP Service Pack 3 as OS
+    \item Uses Qemu and monitors process by invoking callback routine for every basic block executed in virtual processor
+    \item Unpacker and Packer used to run the candidate pair
+    \item 10 minutes as total run time of each candidate pair experiment
+    \item 4 minute for each malware, and 2 minute to boot system
+  \end{itemize}
+\end{frame}
 \begin{frame}{Some Examples}
   \begin{itemize}
     \item Artemis! vs Cosmu on resource \url{C:\\Old.exe}
@@ -473,3 +493,28 @@ C:/DOCUME~1/ADMINI~1/LOCALS~1/Temp/1.jpg,161552035,116241803
 %     \item The Unpacker then would create the malware sample and execute it with specified time delay inside Anubis
 %   \end{itemize}
 % \end{frame}
+
+% \subsection{Results}
+% \label{sub:Results}
+% \begin{frame}[h]{Result of Candidate Run}
+%   \resizebox{\columnwidth}{!}{%
+%   \begin{tabular}{l l l l}
+%     \toprule
+%     Resource types & \# tested pairs & \# true positive & prediction accuracy\\
+%     \midrule
+%     File & 5,000 & 1032& 20.64\%\\
+%     Registry & 5,000 & 731& 14.62\%\\
+%     Sync & 1,000 & 119& 11.9\%\\
+%     Section & 1,000 & 93& 9.3\%\\
+%     Process & 54 & 6& 11.11\%\\
+%     \bottomrule
+%     % Total & 263691\\
+%   \end{tabular}%
+% }
+% \begin{itemize}
+%   \item Highest Accuracy for File and Registry
+%   \item Lowest for Process
+%   \item Average accuracy rate $14.25\%$
+% \end{itemize}
+% \end{frame}
+
