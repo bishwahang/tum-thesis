@@ -86,6 +86,11 @@ Malicious software that corrupts or steals data, or disrupt operations with ille
       \includegraphics[scale=0.17]{figures/malware_type.png}
       \label{fig:malware_type}
     \end{figure}
+\begin{itemize}
+  % \item Different variants of same malware
+  \item Hard to detect with signature based
+  \item Static and dynamic analysis (Anubis)
+\end{itemize}
   \end{column}
   \begin{column}{5cm}
     \begin{figure}[t]
@@ -101,14 +106,19 @@ Malicious software that corrupts or steals data, or disrupt operations with ille
   %   \item Growth driven by monetary profit
   %   \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
   % \end{itemize}
+    \begin{itemize}
+      \item Monetary profit
+      \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
+    \end{itemize}
   \end{column}
 \end{columns}
-\begin{itemize}
-  % \item Different variants of same malware
-  \item Hard to detect with signature based
-  \item Static and dynamic analysis
-  \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
-\end{itemize}
+% \begin{itemize}
+%   % \item Different variants of same malware
+%   \item Hard to detect with signature based
+%   \item Static and dynamic analysis (Anubis)
+%   \item Driven by monetary profit
+%   \item In 2006, 2.8 billion dollars in US and 9.3 billion euros in Europe
+% \end{itemize}
 \end{frame}
 
 % \begin{frame}[plain,t]{Growth of Malware}
@@ -183,7 +193,7 @@ Malicious software that corrupts or steals data, or disrupt operations with ille
         \item Resource types: File, Registry, Sync, Section, Process
         \item Resource activities: Create, Delete, Access
         \item Modeled the problem into Map-reduce
-        \item Combinatorial problem
+        \item N-combination problem
       \end{itemize}
     \end{column}
     \begin{column}{5cm}
@@ -199,12 +209,13 @@ Malicious software that corrupts or steals data, or disrupt operations with ille
   \begin{columns}
     \begin{column}{5cm}
       \begin{itemize}
-        \item Virus Total not reliable and inconsistent
-        \item Bayer used LSH for 75K malware sample
-        \item Document Clustering based on resource activities
-        \item Latent Dirichlet Allocation
+        \item Document Clustering
+        % \item Virus Total not reliable and inconsistent
+        % \item Bayer used LSH for 75K malware sample
         \item \textbf{tf-idf} $O(\#words \times \#documents)$
         \item \textbf{LDA} $O(\#words \times \#topics)$
+        \item Filter extremes: no\_below 10 and no\_above 1 Millions
+        \item Large intra-distance and small inter-distance
       \end{itemize}
     \end{column}
     \begin{column}{5cm}
@@ -242,7 +253,7 @@ Malicious software that corrupts or steals data, or disrupt operations with ille
         \STATE\ \textbf{continue}
       \ENDIF\
       \FORALL{$(x_r,y_r) \in A_r \times B_r$}
-        \IF{$C(x_r) \neq(y_r)$}
+        \IF{$C(x_r) \neq C(y_r)$}
           \STATE$E\gets (x_r, y_r)$
         \ENDIF\
       \ENDFOR\
@@ -318,7 +329,8 @@ Our research will provide the following contributions:
 \end{itemize}
 \end{column}
 \end{columns}
-  \end{block}
+\end{block}
+\pause\
 \begin{block}{Result of Candidate Run}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{l l l l}
@@ -344,7 +356,7 @@ Our research will provide the following contributions:
     \item Didn't deal with random resource name
     \item Total execution time 10 minutes
     \item Sequence of execution
-    \item Semantics of Malware
+    \item True semantics of malware
   \end{itemize}
 \end{frame}
 
@@ -360,9 +372,9 @@ Our research will provide the following contributions:
   \end{block}
   \begin{block}{Future Work}
   \begin{itemize}
-    \item Make the experiment more efficient to run multiple times with different parameters
+    \item Make the experiment more efficient
     % \item Research on other possible approaches to clustering
-    \item In depth analysis (static) of positive pair to know the true semantics of malware
+    \item In depth analysis (static) of positive pair
   \end{itemize}
   \end{block}
 \end{frame}
